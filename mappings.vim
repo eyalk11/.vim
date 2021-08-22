@@ -14,9 +14,10 @@ endwhile
 
 "mouse 
 "nmap <MiddleMouse> :redraw<CR>
-nmap <MiddleMouse> i
-imap <MiddleMouse> <ESC>
+"nmap <MiddleMouse> i
+"imap <MiddleMouse> <ESC>
 "
+"
 "speical insert
 nmap <RightMouse> <F12>
 imap <RightMouse> <ESC>
@@ -347,9 +348,15 @@ imap <S-CR> <c-o>
 "nmap <silent> <D-K> <Plug>(ale_next_wrap)
 "nmap <silent> <D-k> <Plug>(ale_next_wrap) a\n/
 
-imap <D-g> <Plug>(IPy-Complete)
-nmap <D-k> <Plug>(IPy-WordObjInfo) 
-nmap <D-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
+if g:on_windows 
+    imap <M-g> <Plug>(IPy-Complete)
+    nmap <M-k> <Plug>(IPy-WordObjInfo) 
+    nmap <M-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
+else
+    nmap <D-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
+    imap <D-g> <Plug>(IPy-Complete)
+    nmap <D-k> <Plug>(IPy-WordObjInfo) 
+endif
 "nmap <D-r> :call IPyRun(input('enter python: '))<CR>
 nmap <D-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
 nmap <D-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
@@ -741,32 +748,35 @@ nnoremap <leader>oc :copen<CR>
 "opens file
 nmap <leader>of :vsp<CR>ml<D-Bslash>
 nmap <leader>OF :vsp<CR>mm
+nmap <leader>mf :vsp<CR>mm
 "open python
 nmap <leader>op :sp <bar> :exec ':'. bufnr('\[jupyter\]') .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
 nnoremap <leader>oi :call RecallInserts2()<CR>
 nnoremap <leader>ol :lopen<CR>
-nnoremap <leader>ov :TN ~/vimpy3/.vimrc<CR>
+nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
 nnoremap <leader>oE :!
 
 function! TermOV(use_file_dir)
+    let t=&shell
+    set shell=cmd.exe
 	set splitright
 	let k=g:neoterm.last_id+1
-	vertical Tnew
-	exe k."T . /etc/bashrc"
-	exe k."T . ~/.bash_profile"
+	vertical Tnew "~/"
+	"exe k."T . /etc/bashrc"
+	"exe k."T . ~/.bash_profile"
 	if a:use_file_dir
 		exe k."T cd " . expand('%:p:h')
-	else
-		exe k."T hookvim" 
+	"else
+		"exe k."T hookvim" 
 	endif  
-		exe k."T set -o emacs"
-	if g:on_ek_computer
-		exe k."T bind '\"\\C-r\": \"\\C-ahstr -- \\C-j\"'"
-	endif
-
+		"exe k."T set -o emacs"
+	"if g:on_ek_computer
+		"exe k."T bind '\"\\C-r\": \"\\C-ahstr -- \\C-j\"'"
+	"endif
 	exe k."Tclear"
+    set shell=t
 endfunction
 
 function! TermO()
@@ -825,8 +835,8 @@ nnoremap <silent> <Leader>- :exe "vertical resize " . (winwidth(0) * 2)/3<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>l :wincmd l<CR>
-nnoremap <leader>m :tabnext<CR>
-nnoremap <leader>n :tabprevious<CR>
+nnoremap <leader>mt :tabnext<CR>
+nnoremap <leader>nt :tabprevious<CR>
 
 nmap ml <leader>l
 nmap mj <leader>j
@@ -1052,12 +1062,12 @@ nmap <BS> call Show_documentation()<CR>
 "let g:jedi#usages_command = "<leader>gn"
 "let g:jedi#completions_command = "<C-b>"
 
-nnoremap <leader>gg :YcmCompleter GoTo<CR>
-nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>gD :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gI :YcmCompleter GoToInclude<CR>
-nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-nnoremap <leader>gT :YcmCompleter GetType<CR>
+"nnoremap <leader>gg :YcmCompleter GoTo<CR>
+"nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>gD :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>gI :YcmCompleter GoToInclude<CR>
+"nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
+"nnoremap <leader>gT :YcmCompleter GetType<CR>
 "
 "au filetype c nnoremap K :YcmCompleter GetDoc<CR>
 noremap <leader>gl :YcmCompleter GoToDeclaration<CR>

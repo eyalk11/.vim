@@ -288,7 +288,7 @@ endfunction
 	 endfor 
  endfunction 
 if g:on_ek_computer 
-     source ~/vimpy3/secfunc.vim
+"     source ~/vimpy3/secfunc.vim
 endif
 
 function! ReplaceRPC()

@@ -448,6 +448,7 @@ function! TimerFunc(a)
 	endif
 
 endfunction
+
 function! SaveLastReg()
     if (b:save_inserts==0)
         return

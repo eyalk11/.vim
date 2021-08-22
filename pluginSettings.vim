@@ -1,9 +1,10 @@
+
 "plugin settings. but not including mappings.
 "includes special functions/adaptations of the plugins
 """
 "
 
-packadd! syntax-vim-ex
+"packadd! syntax-vim-ex
 colorscheme onedark
 
 if or(or(has('python_dynamic'),has('python')),has('python3'))
@@ -381,13 +382,15 @@ let g:NETRPreviewDefaultOn=0
 :autocmd FileType netranger setlocal noswapfile
 call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 :autocmd FileType netranger nmap <buffer> R SM
+:autocmd FileType netranger cmap <buffer> <C-K> <CR><CR>
 :autocmd FileType netranger nmap <buffer> <space> za
 :autocmd FileType netranger nmap <buffer> <M-Right> :call DoOpen()<CR><c-s>
 :autocmd FileType netranger cmap <buffer> <M-Right> <CR>:call DoOpen()<CR><c-s>
 :autocmd FileType netranger nmap <buffer> <M-left> :call DoClose()<CR>
+:autocmd FileType netranger nmap <buffer> <leader>sp :call CloseAllWindowsButCurrent()<CR>:vnew %<CR>
 :autocmd FileType netranger cmap <buffer> <M-left> :call DoClose()<CR>
-:autocmd FileType netranger nmap <buffer> <C-K> :call DoOpen()<CR><c-s>
-:autocmd FileType netranger cmap <buffer> <C-K> <CR>:call DoOpen()<CR><c-s>
+":autocmd FileType netranger nmap <buffer> <C-K> :call DoOpen()<CR><c-s>
+":autocmd FileType netranger cmap <buffer> <C-K> <CR>:call DoOpen()<CR><c-s>
 :autocmd FileType netranger nmap <buffer> <C-N> :call DoClose()<CR>
 :autocmd FileType netranger cmap <buffer> <C-N> :call DoClose()<CR>
 :autocmd FileType netranger nnoremap <buffer> cd :PY netranger.api.NETRApi.ranger.NETRVimCD()<CR>
@@ -407,6 +410,9 @@ call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 "
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
+let g:Lf_DevIconsFont = "DroidSansMono Nerd Font Mono"
+
+set ambiwidth=double
 let g:Lf_PreviewResult = {
 			\ 'File': 0,
 			\ 'Buffer': 1,
@@ -429,14 +435,16 @@ let g:Lf_NormalMap ={
 		\ 'History' :[['I','"zyy:exec g:Lf_py "lineExplManager.quit()"<CR>"zp']]
 			\} 
 
+let g:Lf_StlSeparator = { 'left': '', 'right': '' }
 
+let g:Lf_StlColorscheme = 'powerline'
 "Make c-h , c-l a valid option in leaderf
 let g:Lf_CommandMap = {'<C-k>':['<C-h>'], '<C-j>':['<C-l>'], '<Down>': ['<C-j>','<Down>'], '<UP>': ['<C-k>','<UP>']}
 
 let g:Lf_MruMaxFiles=100000
 let g:Lf_ShowHidden  = 1
 let g:Lf_MaxCount = 50000
-let g:Lf_PreviewInPopup =1
+let g:Lf_PreviewInPopup =0
 
 let g:Lf_PopupHeight =0.5
 let g:Lf_PopupWidth =0.9
@@ -444,7 +452,7 @@ let g:Lf_WindowPosition = 'popup'
 
 ""ideally would be called each time
 let g:Lf_PopupPosition=[max([float2nr(&lines * 0.4),10]),1]
-let g:Lf_CacheDirectory = "/users/eyalkarni/vimpy3/ll"
+let g:Lf_CacheDirectory = "c:\\users\\ekarni\\.vim\\lcache"
 let g:Lf_IndexTimeLimit =7
 let g:Lf_RgConfig = [ "--max-columns=150"]
 let g:Lf_WorkingDirectoryMode = 'c'
@@ -473,10 +481,10 @@ command! -bang -nargs=* FzfRgDir
   \   <bang>0)
 
 let g:fzf_action = {'ctrl-o' : '!open'}
-let g:fzf_history= "~/.fzf/history"
-let $FZF_DEFAULT_OPTS="--history=" . $HOME . "/.fzf/history_file"
-"
-"
+"let g:fzf_history= "~/.fzf/history"
+let g:fzf_history=  "C:\\users\\ekarni\\.fzf\\history"
+let $FZF_DEFAULT_OPTS="--history=" . $HOME . "\\.fzf\\history_file" 
+"#. "\\.fzf\\history_file"
 "nvim-ipy stuff
 let g:nvim_ipy_perform_mappings=0
 
@@ -554,7 +562,7 @@ let g:ycm_filetype_whitelist = {'c': 1,'cpp':1} "'tex':1
 
 if g:on_ek_computer
 "JDevlieghere/dotfiles
-	let g:ycm_global_ycm_extra_conf= '~/vimpy3/globalycm.py'
+	"let g:ycm_global_ycm_extra_conf= '~/vimpy3/globalycm.py'
 endif
 
 "Coc
@@ -609,3 +617,13 @@ let g:coc_files=' *.py '
 "
 let g:textobj_function_no_default_key_mappings=1
 
+"fugitive
+"
+"C:\Program Files\Git\bin
+"let g:fugitive_git_executable = 'C:\\Program Files\\Git\\bin\\git.exe'
+
+"Bookmarks
+"
+nmap <leader>gg :BookmarkGo<CR><c-s>
+nmap <leader>GG :BookmarkGo<CR>
+nmap <leader>ga :BookmarkAdd<CR>

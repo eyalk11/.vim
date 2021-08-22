@@ -3,74 +3,21 @@
 "includes autocmds and autocmds for file types and commands
 "Should be indepdenent of plugins!
 
-let ver=system('pyenv version')
-if !ver
-	if has('python3')
-		command! -nargs=* -range PY <line1>,<line2>python3 <args>
-	elseif has('python')
-		command! -nargs=* -range PY <line1>,<line2>python <args>
-	else
-		echo 'no python'
-	endif
+let ver= "3.9.6" "system('pyenv version')
+let g:on_windows=1
 
-else
-let ver=matchlist(ver,'\(.*\)\s(.*$')[1]
 let g:ver=ver
 "allows ctrl-c I think
 set allowrevins
 if has('nvim')
 	set inccommand=split
 endif 
+
+command! -nargs=* -range PY <line1>,<line2>python3 <args>
 set noerrorbells visualbell t_vb=
 set noeb vb t_vb=
 autocmd GUIEnter * set visualbell t_vb=
 
-if has('python_dynamic') "or(or(has('python_dynamic'),has('python')),has('python3')) it runs python when this command runs!!!
-	if ver == "3.8.5"
-		echo 'using python 3.7'
-		let g:pymode_python = 'python3'
-		if g:on_ek_computer
-		let $PYTHONPATH=''
-		"let $PYTHONPATH='/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/'
-		let &pyxversion =3
-	endif 
-				command! -nargs=* -range PY <line1>,<line2>python3 <args>
-	else
-		echo 'using python 2'
-		if g:on_ek_computer
-			let $PYTHONPATH='/usr/local/lib/python2.7/site-packages:/Users/eyalkarni/utils/jmpacket:/Users/eyalkarni/utils:/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'
-		endif
-		command! -nargs=* -range PY <line1>,<line2>python <args>
-		let &pyxversion =2
-	endif
-	silent! PY 1
-else
-	if has('python3')
-
-        if g:on_ek_computer
-            "let $PYTHONPATH='/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/'
-            let $PYTHONPATH=''
-        endif
-		command! -nargs=* -range PY <line1>,<line2>python3 <args>
-		let &pyxversion =3
-	elseif has('python')
-		if g:on_ek_computer
-			let $PYTHONPATH='/usr/local/lib/python2.7/site-packages:/Users/eyalkarni/utils/jmpacket:/Users/eyalkarni/utils:/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'
-		endif
-		command! -nargs=* -range PY <line1>,<line2>python <args>
-		let &pyxversion =2
-	else
-		echo 'no python'
-	endif
-endif
-endif
-
-
-if g:on_ek_computer
-	let $PYENV_ROOT="/Users/eyalkarni/.pyenv"
-	let g:python_host_prog= "/Users/ekarni/.pyenv/versions/2.7.18/bin/python2.7"
-	let g:python3_host_prog= "/Users/ekarni/.pyenv/versions/3.8.5/bin/python3"
-endif
 "let g:yanktools_main_key = 'Z'
 ":20verbose
 "message log
@@ -102,6 +49,8 @@ set cursorline
 set nosplitright
 
 set clipboard+=unnamed
+":echo system('git --version') 
+
 "plus
 "set paste
 set go+=a "???
@@ -114,7 +63,7 @@ set spelllang=en_us
 
 set updatetime =3000
 
-packadd! syntax-vim-ex
+"packadd! syntax-vim-ex
 "autocmd filetype python :call PythonSetup()
 " Defaults
 
@@ -125,7 +74,7 @@ filetype plugin indent on
 "
 "set noswapfile
 "for swap files
-set directory=/users/eyalkarni/vimpy3/swap/
+set directory=c:\\users\\ekarni\\.vim\\swap
 set shortmess=a  "added now
 set shm+=A
 set shortmess+=A
@@ -162,14 +111,14 @@ endif
 
 
 
-if !isdirectory($HOME."/.vim")
-	call mkdir($HOME."/.vim", "", 0770)
+if !isdirectory($HOME."\\.vim")
+	call mkdir($HOME."\\.vim", "", 0770)
 endif
-if !isdirectory($HOME."/.vim/undo")
-	call mkdir($HOME."/.vim/undo", "", 0700)
+if !isdirectory($HOME."\\.vim\\undo")
+	call mkdir($HOME."\\.vim\\undo", "", 0700)
 endif
 
-set undodir=~/.vim/undo
+set undodir=~\\.vim\\undo
 set undofile
 
 "important autocmds
@@ -193,7 +142,10 @@ au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
 au ExitPre * nested call timer_stop(g:autosaveWS)
 function! OnLoad()
-    echom "onload"
+    set guifont=Fira\ Code:h9
+    sleep 500ms
+    "echom "onload"
+    cd ~/.vim
 ":profile start /Users/eyalkarni/ab.log
 ":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
 "call ToggleVerbose() 
@@ -205,12 +157,12 @@ function! OnLoad()
 	endif 
 	call MakeItFaster(0)
 	if g:on_ek_computer
-		let g:SessionFile = '/Users/eyalkarni/vimpy3/sess2'
+		let g:SessionFile = ($HOME."\\.vim\\session_file") 
 		if exists('g:GuiLoaded') || ( g:on_vimr) || exists(':GonvimWorkspaceNew')
-			let g:ctrlspaceWorkspace = '/Users/eyalkarni/vimpy3/.git/cs_workspaces'
+			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\.cs_workspaces")
 		else
-			let g:ctrlspaceWorkspace = '/Users/eyalkarni/vimpy3/.git/cs_workspacesCMD'
-		endif 
+			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\.cs_workspacesCWD")
+        endif 
 		let g:overrideCWD=1
 	endif
 	
@@ -246,22 +198,23 @@ function! OnLoad()
 		if uu==-1
 			"echom "loading"
 			":CocDisable
-			":CtrlSpaceLoadWorkspace default
+			:CtrlSpaceLoadWorkspace default
 		endif
 	endif
 	"if exists('g:GuiLoaded') || ( g:on_vimr)
 		"imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
 	"endif 
-	if exists('g:GuiLoaded') || exists(':GonvimWorkspaceNew') || ( g:on_vimr) 
-		imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
-	else
-		nnoremap <c-s> :w<CR>
-	endif
+	"if exists('g:GuiLoaded') || exists(':GonvimWorkspaceNew') || ( g:on_vimr)
+		"imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
+	"else
+		"nnoremap <c-s> :w<CR>
+	"endif
 	"nvimQT
 	
 	if exists('g:GuiLoaded') || exists(':GonvimWorkspaceNew')
+        "echom "exists"
 		"set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h12
-        set guifont=Inconsolata-dz\ for\ powerline:h14
+        "set guifont=Inconsolata-dz\ for\ powerline:h14
 		if !exists(':GonvimWorkspaceNew')
 			:GuiTabline 0
 			"source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
@@ -273,6 +226,8 @@ function! OnLoad()
 			inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
 			vnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
 			if g:on_ek_computer
+
+
                 source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
 				"nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
 				"nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
@@ -281,22 +236,26 @@ function! OnLoad()
 		else
 			"~/nvimMACfiles/macmap042.vim
             if g:on_ek_computer
-                source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
+                "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
             endif
-			"set guifont=Fira\ Code:h14
 		endif 
         "override
         nmap <D-f> <Plug>(easymotion-s2) 
 
-        imap <D-v> <c-o>P
+        "imap <D-v> <c-o>P
         nnoremap <Home> ^
         vnoremap <Home> ^
 		"set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 "		set guifont=Monaco\ for\ Powerline:h12 
 		set mouse+=a
-		"nmap <D-S> :w<CR>
-		"nmap <D-s> :w<CR>
-		nmap <D-v> p
+        inoremap <c-p> <c-v>
+        cnoremap <c-p> <c-v>
+        imap <c-v> <c-r><c-p>+
+        imap <c-v> <c-r><c-p>+
+        cmap <c-v> <c-r>+
+		nmap <c-v> p
+        nnoremap <M-v> <c-v>
+        nmap <M-a> ggVG
 		"nmap <D-v> p
 		"imap <D-V> 
 		"imap <D-v> 
@@ -315,7 +274,7 @@ function! OnLoad()
 		endif
 	endif
 	"echom "ignore this no such mapping"
-if getcwd()=='/'
+if getcwd()=='/' || getcwd()=="c:\\Windows\\system32"
     cd ~
     "normal \ov
 endif
@@ -329,6 +288,7 @@ let g:autoreg=timer_start(2000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(20000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
 au! GonvimAu OptionSet
+set mouse=a
 endfunction
 
 function! OnEnd()
