@@ -22,6 +22,7 @@ endwhile
 nmap <RightMouse> <F12>
 imap <RightMouse> <ESC>
 
+nmap <Home> ^
 
 
 "replace vanila
@@ -50,7 +51,7 @@ nnoremap <leader>' ``
 nmap ~ <c-a>c
 noremap m? ?
 nmap ? <Plug>(easymotion-sl)
-nmap <D-/> <Plug>(easymotion-tl)
+nmap <A-/> <Plug>(easymotion-tl)
 
 
 :nnoremap s :exec "normal i".nr2char(getchar())."\e"<CR>
@@ -60,9 +61,9 @@ nmap <D-/> <Plug>(easymotion-tl)
 "nnoremap F f
 "nmap S :<C-U>call InsertAfter(v:count1)<CR>
 nmap q <Plug>(easymotion-s)
-"The <D-t> provides omni tl-search 
+"The <A-t> provides omni tl-search 
 
-nmap <D-f> <Plug>(easymotion-s2)
+nmap <A-f> <Plug>(easymotion-s2)
 
 "replacing default
 nnoremap zq q
@@ -121,7 +122,7 @@ map _# :e #<CR>
 
 "Previous and next visited buffer \<c-o> of course
 "nmap <c-[> <bar><DOWN><CR>
-"nmap <D-[> <bar><UP><CR>
+"nmap <A-[> <bar><UP><CR>
 
 nmap _t :exe "tabn ".g:lasttab<CR>
 "Coc _ mappings 
@@ -227,12 +228,12 @@ function! Teasy()
     endif 
 endfunction
 
-imap <D-f> <c-o><Plug>(easymotion-s2)
+imap <A-f> <c-o><Plug>(easymotion-s2)
 imap <c-.> <c-o><Plug>(easymotion-s)
 imap <c-t> <c-o>:call Teasy()<CR>
 "this is untill"
-imap <D-t> <c-o><Plug>(easymotion-sl)
-nmap <D-t> <Plug>(easymotion-bd-t)
+imap <A-t> <c-o><Plug>(easymotion-sl)
+nmap <A-t> <Plug>(easymotion-bd-t)
 nmap <c-t> <Plug>(easymotion-bd-tl)
 
 "finds the best next item and complete up to it. in Vim!
@@ -243,16 +244,16 @@ nmap <c-t> <Plug>(easymotion-bd-tl)
 
 
 "Logical, since in normal we have s and S
-imap <D-d> <c-o><Plug>(esymotion-bd-W)
-nmap <D-d> <Plug>(easymotion-bd-W)
+imap <A-d> <c-o><Plug>(esymotion-bd-W)
+nmap <A-d> <Plug>(easymotion-bd-W)
 "
 "beginning of words
 "
 imap <c-d> <c-o>:call EasyMotion#WBL(0,2)<CR>
-nmap <c-d> <Plug>(easymotion-bd-wl)
+nmap <c-d> <Plug>(easymotion-bd-W)
 "end of word 
-imap <c-h> <c-o><Plug>(easymotion-bd-el)
-nmap <c-h> <Plug>(easymotion-bd-el)
+imap <c-h> <c-o><Plug>(easymotion-bd-E)
+nmap <c-h> <Plug>(easymotion-bd-E)
 "imap <c-c> <c-o><Plug>(easymotion-lineanywhere) 
 "nmap <c-c> <Plug>(easymotion-lineanywhere) 
 "one line down
@@ -270,8 +271,8 @@ nmap <c-g> :call CocActionAsync("doHover")<cr>
 
 nmap <C-e> mn-
 
-nmap <D-E> -mn+
-nmap <D-e> -mn+
+nmap <A-E> -mn+
+nmap <A-e> -mn+
 
 "repeat the move 
 imap <c-;> <c-o>;
@@ -286,10 +287,10 @@ imap <c-a> <c-o><c-a>
 
 
 
-imap <D-Right> <c-o>W
-imap <D-Left> <c-o>B
-imap <D-Up> <c-h>
-imap <D-Down> <c-o><Plug>(easymotion-bd-wl)
+imap <A-Right> <c-o>W
+imap <A-Left> <c-o>B
+imap <A-Up> <c-h>
+imap <A-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
 imap <expr> <C-L>  pumvisible()? "<c-l>" : "<esc>:call RecallInserts()<CR>"
@@ -341,25 +342,25 @@ imap <c-z> <CMD>call DoCz()<CR>
 imap <expr> <c-z> DoCz() 
 imap <M-Space> <c-o>
 imap <S-CR> <c-o>
-" D-mappings
+" A-mappings
 
-"nmap <silent> <D-J> <Plug>(ale_previous_wrap)
-"nmap <silent> <D-j> <Plug>(ale_previous_wrap)
-"nmap <silent> <D-K> <Plug>(ale_next_wrap)
-"nmap <silent> <D-k> <Plug>(ale_next_wrap) a\n/
+"nmap <silent> <A-J> <Plug>(ale_previous_wrap)
+"nmap <silent> <A-j> <Plug>(ale_previous_wrap)
+"nmap <silent> <A-K> <Plug>(ale_next_wrap)
+"nmap <silent> <A-k> <Plug>(ale_next_wrap) a\n/
 
 if g:on_windows 
     imap <M-g> <Plug>(IPy-Complete)
     nmap <M-k> <Plug>(IPy-WordObjInfo) 
     nmap <M-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
 else
-    nmap <D-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
-    imap <D-g> <Plug>(IPy-Complete)
-    nmap <D-k> <Plug>(IPy-WordObjInfo) 
+    nmap <A-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
+    imap <A-g> <Plug>(IPy-Complete)
+    nmap <A-k> <Plug>(IPy-WordObjInfo) 
 endif
-"nmap <D-r> :call IPyRun(input('enter python: '))<CR>
-nmap <D-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
-nmap <D-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
+"nmap <A-r> :call IPyRun(input('enter python: '))<CR>
+nmap <A-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
+nmap <A-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
 
 
 let g:neoterm_automap_keys="<plug>(aaaa)"
@@ -374,8 +375,8 @@ let g:neoterm_automap_keys="<plug>(aaaa)"
 " to handle bug of sear
 
 "needed to be in onload
-"imap <D-a> <c-x><c-o>
-"imap <D-A> <c-x><c-o>
+"imap <A-a> <c-x><c-o>
+"imap <A-A> <c-x><c-o>
 "inoremap ^] ^X^]
 "inoremap ^L ^X^L
 "go forward and back
@@ -404,21 +405,21 @@ endfunction
 "com
 "completion by fuzzing of anything
 imap <c-'> <CMD>:call CompleteInf()<CR>
-imap <D-K> <plug>(fzf-complete-word)
-imap <D-k> <plug>(fzf-complete-word)
-"imap <D-F> <plug>(fzf-complete-path)
-"imap <D-f> <plug>(fzf-complete-path)
-imap <D-J> <plug>(fzf-complete-file-ag)
-imap <D-j> <plug>(fzf-complete-file-ag)
-imap <D-L> <plug>(fzf-complete-line)
-imap <D-l> <plug>(fzf-complete-line)
+imap <A-K> <plug>(fzf-complete-word)
+imap <A-k> <plug>(fzf-complete-word)
+"imap <A-F> <plug>(fzf-complete-path)
+"imap <A-f> <plug>(fzf-complete-path)
+imap <A-J> <plug>(fzf-complete-file-ag)
+imap <A-j> <plug>(fzf-complete-file-ag)
+imap <A-L> <plug>(fzf-complete-line)
+imap <A-l> <plug>(fzf-complete-line)
 
 
 
 "let g:targets_pairs = '() {} [] <>'
 "let g:textobj#anyblock#blocks = ['(', '{', '[', '<']
 
-"this very dangerous and also quit diff<D-x>
+"this very dangerous and also quit diff<A-x>
 
 
 
@@ -534,12 +535,17 @@ nnoremap mP :call Domp()<CR>"zp
 nnoremap MP :call Domp()<CR>"zP
 "convert from WINDOWS style <CR> 
 nmap mwin :s/\<lf>CR>//g<CR>
+
 "remove empty spaces and lines
-nnoremap memp :%s/\s\+$//e<CR>:g/^$/d<CR>
+nnoremap msA :%s/^[\t ]*//<CR>:%s/\s\+$//e<CR>:%g/^[\t ]*$/d<CR>:%s/[  ]* / /g<CR>
+nnoremap msa :s/^[\t ]*//<CR>:s/\s\+$//e<CR>:.g/^[\t ]*$/d<CR>:s/[  ]* / /g<CR>
+
+nnoremap msb :%s/\s\+$//e<CR>:g/^$/d<CR>:%s/[  ]* / /g<CR>
 "remove multi space in current line
 nnoremap mss :s/\s\+/ /g<CR>
 "remove empty lines
 nnoremap msl :%s/\s\+$//e<CR>
+nnoremap msl :%g/^\s*$/norm dd<CR>
 "open cur folder 
 noremap mt :call CloseAllNR()<CR>:sleep 200m<CR>:exec ":vert topleft split " . getcwd()<CR>
 noremap mT :call CloseAllNR()<CR>:sleep 200m<CR>:exe ":tabnew ".expand("%:p:h")<CR>
@@ -629,15 +635,15 @@ nnoremap <leader>R R
 "c-q for insert mode%. R for other modes.
 func! MapR()
 	let lst=['+','*','.','=','%']
-    imap <D--> <CMD>:echo getreg("+")<CR>
-    imap <D--> <CMD>:echo getreg("+")<CR>
-    imap <D-=> <CMD>:echo getreg("=")<CR>
-    imap <D-=> <CMD>:echo getreg("=")<CR>
+    imap <A--> <CMD>:echo getreg("+")<CR>
+    imap <A--> <CMD>:echo getreg("+")<CR>
+    imap <A-=> <CMD>:echo getreg("=")<CR>
+    imap <A-=> <CMD>:echo getreg("=")<CR>
 	for i in range(10)
 		call add(lst,string(i))
-		exec 'map <D-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
-		exec 'imap <D-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
-		"exec 'vmap <D-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+		exec 'map <A-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+		exec 'imap <A-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+		"exec 'vmap <A-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
 	endfor
 	let k=char2nr('a')
 	for j in range(26)
@@ -646,7 +652,7 @@ func! MapR()
 for i in lst 
 		exec 'nmap R'. i .' :echo getreg("'.i .'")<CR>'
 		exec 'vmap R'. i .' <CMD>:echo getreg("'.i .'")<CR>'
-		"exec 'imap <D-'. i .'> <CMD>:echo getreg("'.(i) .'")<CR>'
+		"exec 'imap <A-'. i .'> <CMD>:echo getreg("'.(i) .'")<CR>'
 endfor 
 endf
 
@@ -665,9 +671,9 @@ nnoremap <silent> <C-a>m :call fzf#run({'source': GetMappings(),'options': '-m -
 nnoremap <silent> <C-a>M :call fzf#run({'source': GetMappings(),'options': '-m'} )<CR>
 nnoremap <leader><bar> <bar>
 "nnoremap <silent> <bar> :call FZFOpen(':Buffers')<CR>
-"<D-Bslash>
-"<D-Bslash>
-nmap <D-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
+"<A-Bslash>
+"<A-Bslash>
+nmap <A-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
 nnoremap <silent> <bar> :let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
 nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
@@ -714,6 +720,7 @@ nnoremap <leader>Ge :Gedit<CR>
 nnoremap <leader>Gr :Gread<CR>
 nnoremap <leader>Gw :Gwrite<CR>
 nnoremap <leader>Gl :silent! Glog<CR>
+nnoremap <leader>GL :Git log<CR>
 nnoremap <leader>Gp :Ggrep<Space>
 nnoremap <leader>Gm :Gmove<Space>
 nnoremap <leader>Gb :Git branch<Space>
@@ -728,15 +735,16 @@ map <silent> <leader>? <Plug>(IPy-WordObjInfo)
 noremap  <leader>od :exec ":vs " . getcwd()<CR>
 nnoremap <leader>em :call Exec("messages")<CR>
 "enable save
-nnoremap <leader>es :let b:auto_save = !b:auto_save<CR>:echo "it is now ". b:auto_save<CR>
-nnoremap <leader>as :let b:save_inserts= !b:save_inserts<CR>:echo "it is now ". b:save_inserts<CR>
-nmap     <leader>at :AutoSaveToggle<CR>
+nnoremap <leader>AS :let b:auto_save = !b:auto_save<CR>:echo "it is now locally". b:auto_save<CR>
+nnoremap <leader>si :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
+nmap     <leader>as :let g:disable_auto_save=!g:disable_auto_save<CR>:echo "Autosave is now ". !g:disable_auto_save<CR>
+"fgdfgd
 
 nnoremap <leader>do :diffoff<CR>
 nnoremap <leader>du :diffupdate<CR>
 nnoremap <leader>dt :diffthis<CR>
 
-nmap <leader>rf  :exec ":call IPyRun(\"%run '". expand('%:p') . "\'\")"<CR>
+nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
 map <silent> <leader>rb <Plug>(IPy-Interrupt)
 nmap <leader>rt <Plug>(IPy-Terminate)
 map <leader>rc <Plug>(IPy-RunCell)
@@ -746,20 +754,32 @@ nnoremap <leader>rd <c-L>
 "todo FZF
 nnoremap <leader>oc :copen<CR>
 "opens file
-nmap <leader>of :vsp<CR>ml<D-Bslash>
+nmap <leader>of :vsp<CR>ml<A-Bslash>
 nmap <leader>OF :vsp<CR>mm
 nmap <leader>mf :vsp<CR>mm
 "open python
-nmap <leader>op :sp <bar> :exec ':'. bufnr('\[jupyter\]') .'buffer'<CR><c-w>k
+nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
 nnoremap <leader>oi :call RecallInserts2()<CR>
 nnoremap <leader>ol :lopen<CR>
 nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
+nmap <leader>om :TN ~/.vim/mappings.vim<CR>
+
 nnoremap <leader>oE :!
+
+function! TermLOV()
+    set splitright
+    let t=&shell
+    set shell=cmd.exe
+    let g:neoterm_shell = "wsl" 
+    vertical Tnew "~/"
+    set shell=t
+endfunction
 
 function! TermOV(use_file_dir)
     let t=&shell
+    let g:neoterm_shell = executable('pwsh') ? 'pwsh' : 'powershell'
     set shell=cmd.exe
 	set splitright
 	let k=g:neoterm.last_id+1
@@ -797,6 +817,7 @@ nnoremap <leader>ot :tabnew <bar> :call TermO()<CR>:call feedkeys("i")<CR>
 "open terminal in new window
 nmap <leader>tt :call TermOV(0)<CR>li
 nmap <leader>Tt :call TermOV(1)<CR>li
+nmap <leader>gt :call TermLOV()<CR>li
 
 nnoremap <leader>vL :TN ~/.vim/vimlog.log<CR>
 nmap <leader>vs         <Plug>VimspectorStop
@@ -1017,8 +1038,10 @@ runtime ftplugin/man.vim " adds Man command
 
 
 "COC
+
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gY <Plug>(coc-type-definition)
+nnoremap <silent> gy  :<C-u>CocList -A yank<cr>
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gR <Plug>(coc-refactor)
@@ -1169,6 +1192,22 @@ let g:sickness#field#use_default_maps = 1
 "vmap aFa <plug>(textobj-sickness-field-chevron-a)
 let g:sick_symbol_default_mappings =0
 
+nmap [; <Plug>Argumentative_Prev
+nmap ]; <Plug>Argumentative_Next
+xmap [; <Plug>Argumentative_XPrev
+xmap ]; <Plug>Argumentative_XNext
+nmap <; <Plug>Argumentative_MoveLeft
+nmap >; <Plug>Argumentative_MoveRight
+xmap i; <Plug>Argumentative_InnerTextObject
+xmap a; <Plug>Argumentative_OuterTextObject
+omap i; <Plug>Argumentative_OpPendingInnerTextObject
+omap a; <Plug>Argumentative_OpPendingOuterTextObject
+"Goto next and prev arguments!!
+vmap [; <ESC>2[;vi,
+vmap ]; <ESC>];vi,
+vmap [, <ESC>[,hvi,
+vmap ], <ESC>],vi,
+
 "textobj-function
 autocmd  FileType * vmap <nowait> <buffer> aF <Plug>(textobj-function-A)
 
@@ -1179,7 +1218,9 @@ vmap	iF	<Plug>(textobj-function-i)
         "\ #{key: 'c', info: 'commit', action: ":Gcommit\<CR>", flags: 'n'},
         "\ ],
         "\ {})
-"call popsikey#register('<leader>g', [ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'}], {})
+call popsikey#register('mZ', [ 
+            \ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'},
+    \ {'key': 'c', 'info': 'commit', 'action': ":Gcommit\<CR>", 'flags': 'n'}], {})
 
 "to call at the end
 function! DefineMapping()
@@ -1200,9 +1241,9 @@ for keys in [[']E','[E'],[']a','[a'],[']e','[e'],[']h','[h'],['&','z&']]
 endfor
 " Now following can also be repeated with `,` and `;`:
 "
-"for keys in [['l','h'],['k','j'], ['[[', ']]'], ['[]', ']['], [']m', '[m'], [']M', '[M'], [']c', '[c'] ,  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<D-K>','<D-J>'],['{','}'],['(',')']]
+"for keys in [['l','h'],['k','j'], ['[[', ']]'], ['[]', ']['], [']m', '[m'], [']M', '[M'], [']c', '[c'] ,  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<A-K>','<A-J>'],['{','}'],['(',')']]
 "Not to mess with vim-tex [']]','[[']
-for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'] , [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<D-K>','<D-J>'],['{','}'],['(',')']]
+for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'] , [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<A-K>','<A-J>'],['{','}'],['(',')']]
     execute 'silent noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
     execute 'silent noremap <expr> '.keys[1]." repmo#Key('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
     "execute 'noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."')|sunmap ".keys[0]
@@ -1210,4 +1251,16 @@ for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'], [']='
 endfor
 endfunction
 
+:autocmd CmdwinEnter * noremap <buffer> <F2> <CR>q:
+:au BufWritePost * :let g:init=1
 call DefineMapping()
+
+function! GetIt()
+    let x = getreg('+')
+    let x = substitute(x,'/mnt/c','c:','')
+    exec ':e '. x
+endfunction
+"function! GetRegs()
+    "call fzf#run({'source':":reg",'sink': function('PInsert')})<CR>
+"endendfunction
+

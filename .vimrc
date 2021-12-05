@@ -14,26 +14,33 @@
 " remember m-space to enter command and ~ to search and of course ` to enter
 " and exit mode. and c-F to search (c-- c-= next back). but of course, c-` is c-o (btw alt-` is
 " windows switcher). To print just this ` we have c-]).
+"
 " TODO: use set for inserts.
 " ctrl-d ctrl-h ctrl-t for inside line search.
 " g; is a very nice command to iterate through changes. (g, older)
+"
 " also 'I and `I made to work.
 " let us remember that ! is `
 " Gdiffsplit! for merge!!!!
-let g:on_ek_computer=(filewritable("/Users/ekarni")==2)
+let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
 "silent !pyenv global 2.7
 "g:vimloc is ~/.vim folder
 let g:vimloc=split(&packpath,',')[0]
 
-exe 'source' . g:vimloc . "/vimsettings.vim"
+exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
 
 
 "let &shell='/usr/bin/bash --login'
 "source ~/.vim2/autoload/repmo.vim
 "
+"
 call plug#begin('~/.vim/plugged')
+Plug 'kamykn/popup-menu.nvim'
+"Peek at registers before pasting
+Plug 'junegunn/vim-peekaboo'
+Plug 'PeterRincker/vim-argumentative'
 "match inner blocks and z% 
 Plug 'andymass/vim-matchup'
 "Plug 'scrooloose/nerdtree'
@@ -53,7 +60,7 @@ Plug 'puremourning/vimspector'
  "Plug 'jlanzarotta/bufexplorer'
 "Plug 'AndrewRadev/undoquit.vim'
 "Plug 'Shougo/denite.nvim'
-Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'simnalamburt/vim-mundo'
 Plug 'sjl/gundo.vim'
 
@@ -114,7 +121,7 @@ Plug 'inkarkat/vim-ingo-library'
 endif
 Plug 'octol/vim-cpp-enhanced-highlight' "additional vim c++ syntax highlighting
 "Plug 'valloric/youcompleteme'
-
+"Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/EnhancedJumps'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'jeetsukumaran/vim-indentwise'
@@ -131,6 +138,8 @@ endif
 Plug 'eiginn/netrw'
 "Plug 'WolfgangMehner/bash-support'
 "Plug 'Shougo/deoplete.nvim' , { 'do': ':UpdateRemotePlugins' }
+Plug 'ipod825/vim-bookmark'
+Plug 'beeender/Comrade'
 call plug#end()
 "Plug 'ivanov/vim-ipython'
 "Plug 'vim-scripts/mru.vim'
@@ -162,7 +171,7 @@ endif
 "Plug 'scrooloose/nerdtree'
 "Plug 'terryma/vim-multiple-cursors'
 "Plug 'davidhalter/jedi-vim' " Python autocomplete
-"Plug 'Houl/vim-repmo' "repeat moves
+Plug 'Houl/vim-repmo' "repeat moves
 "Plug 'sjl/gundo.vim'
 "Plug 'w0rp/ale' " lint
 "Plug 'IngoHeimbach/neco-vim'
@@ -185,15 +194,15 @@ endif
 " Plug 'severin-lemaignan/vim-minimap'
 
 
-exe 'source' . g:vimloc . "/pluginSettings.vim"
-exe 'source' . g:vimloc . "/hacks.vim"
-exe 'source' . g:vimloc . "/helperfuncs.vim"
+exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
+exe 'source' . " " . g:vimloc . "\\hacks.vim"
+exe 'source' . " " . g:vimloc . "\\helperfuncs.vim"
 
 "include math mappings
-if filereadable(g:vimloc . "/math.vim")
-	exe 'source' . g:vimloc . "/math.vim"
+if filereadable(" " . g:vimloc . "\\math.vim")
+	"exe 'source' . " " . g:vimloc . "\\math.vim"
 endif
 
-exe 'source' . g:vimloc . "/mappings.vim"
+exe 'source' . " " . g:vimloc . "\\mappings.vim"
 
 

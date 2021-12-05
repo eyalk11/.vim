@@ -142,7 +142,9 @@ au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
 au ExitPre * nested call timer_stop(g:autosaveWS)
 function! OnLoad()
-    set guifont=Fira\ Code:h9
+    set guifont=Fira\ Code:h12
+    "set guifont=JetBrains\ Mono\ Medium:h11
+
     sleep 500ms
     "echom "onload"
     cd ~/.vim
@@ -167,39 +169,42 @@ function! OnLoad()
 	endif
 	
 	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
+    if expand("%:p:t")=="special"
+        :CtrlSpaceLoadWorkspace default
+    endif 
 	if argc()==0
-		PY import vim
-		PY import os
-		PY pid=os.getpid()
-		PY kk=os.popen('ps -o ppid= -p ' + str(pid)).read()
-		PY kk=kk.replace('\n','')
-		PY tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
-		PY vim.command(tt)
-		let uuA=substitute(uu,"^.\\{-}\/","",'g')
-		let uu="bash"
-		PY kk=os.popen('ps -o ppid= -p ' + str(kk)).read()
-		PY kk=kk.replace('\n','')
-		"if it is 1 then fail 
-		PY if kk!=1: tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
-		PY vim.command(tt)
-		let uu=substitute(uu,"^.\\{-}\/","",'g')
-		if (uu=~".*bash.*")
-			"too much indentation
-			let uu=uuA
-		endif
+		"PY import vim
+		"PY import os
+		"PY pid=os.getpid()
+		"PY kk=os.popen('ps -o ppid= -p ' + str(pid)).read()
+		"PY kk=kk.replace('\n','')
+		"PY tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
+		"PY vim.command(tt)
+		"let uuA=substitute(uu,"^.\\{-}\/","",'g')
+		"let uu="bash"
+		"PY kk=os.popen('ps -o ppid= -p ' + str(kk)).read()
+		"PY kk=kk.replace('\n','')
+		""if it is 1 then fail 
+		"PY if kk!=1: tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
+		"PY vim.command(tt)
+		"let uu=substitute(uu,"^.\\{-}\/","",'g')
+		"if (uu=~".*bash.*")
+			""too much indentation
+			"let uu=uuA
+		"endif
 
  
-		"echom 'cmdline: '.uu
+		""echom 'cmdline: '.uu
 		
-		"for neovim-qt
-		let uu=substitute(uu," -psn.\\{-}$","",'g')
-		PY vim.command('let uu='+str(vim.eval('uu').replace('\n','').find(' ')))
+		""for neovim-qt
+		"let uu=substitute(uu," -psn.\\{-}$","",'g')
+		"PY vim.command('let uu='+str(vim.eval('uu').replace('\n','').find(' ')))
 
-		if uu==-1
-			"echom "loading"
-			":CocDisable
-			:CtrlSpaceLoadWorkspace default
-		endif
+		"if uu==-1
+			""echom "loading"
+			"":CocDisable
+			"":CtrlSpaceLoadWorkspace default
+		"endif
 	endif
 	"if exists('g:GuiLoaded') || ( g:on_vimr)
 		"imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
@@ -216,7 +221,7 @@ function! OnLoad()
 		"set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h12
         "set guifont=Inconsolata-dz\ for\ powerline:h14
 		if !exists(':GonvimWorkspaceNew')
-			:GuiTabline 0
+			":GuiTabline 0
 			"source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
 			"it started to act normal
 			imap <M-ß> :w<CR>
@@ -228,17 +233,22 @@ function! OnLoad()
 			if g:on_ek_computer
 
 
-                source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
+                "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
 				"nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
 				"nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
-				"nmap <leader>Rv mwd:!osascript -e 'do shell script "sh /users/eyalkarni/vimpy3/vimqt2.sh <bar><bar> exit"'<CR>
+				"nmap <leader>rv mwd:sleep 1<CR>:exec '!start \"powershell  ps \| Where-Object -Property ProcessName  -Like \"*goneovim*\" \| \%{Write-Host $_.Id ,$_.ProcessName ;$_.Kill()} ;  C:\Users\ekarni\Downloads\Goneovim-v0.4.12-win64\goneovim.exe\"'
 			endif
 		else
 			"~/nvimMACfiles/macmap042.vim
             if g:on_ek_computer
+                nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo"<CR>
+
                 "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
             endif
 		endif 
+        set shell=cmd 
+
+        exec "!echo ". $NVIM_LISTEN_ADDRESS . " > c:\\temp\\listen.txt"
         "override
         nmap <D-f> <Plug>(easymotion-s2) 
 
@@ -287,7 +297,7 @@ let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
 let g:autoreg=timer_start(2000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(20000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
-au! GonvimAu OptionSet
+"au! GonvimAu OptionSet
 set mouse=a
 endfunction
 
@@ -313,6 +323,7 @@ autocmd filetype python let b:auto_save = 1
 
 
 
+let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
 "autocmd! TermEnter * :startinsert
 
 "commands

@@ -129,6 +129,7 @@ if has('nvim')
 	let g:airline#extensions#whitespace#checks = [ 'indent', 'conflicts' ]
 	" add the current folder to the display
 	let g:airline_section_c= '%<%{tabpagenr()} %<%{getcwd()} | %f%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
+    let g:airline#extensions#branch#vcs_checks = []
 	if !exists('g:gui_oni')
 		let g:airline_powerline_fonts = 1
 		set t_Co=256
@@ -321,6 +322,7 @@ function! NERDDoOpen()
 		execute "norm \<CR>ztj"
 	endif
 endfunction
+
 function! DoClose()
 PY<<EOF
 import vim
@@ -482,8 +484,10 @@ command! -bang -nargs=* FzfRgDir
 
 let g:fzf_action = {'ctrl-o' : '!open'}
 "let g:fzf_history= "~/.fzf/history"
-let g:fzf_history=  "C:\\users\\ekarni\\.fzf\\history"
-let $FZF_DEFAULT_OPTS="--history=" . $HOME . "\\.fzf\\history_file" 
+let g:fzf_history=  "C:\\users\\ekarni\\.fzf\\history_f"
+set shell=cmd.exe
+let $FZF_DEFAULT_OPTS="--history=" . ("C:/users/ekarni/.fzf/history_file")
+" had to change ~/.fzf to add escape for default_OPTS
 "#. "\\.fzf\\history_file"
 "nvim-ipy stuff
 let g:nvim_ipy_perform_mappings=0
@@ -624,6 +628,14 @@ let g:textobj_function_no_default_key_mappings=1
 
 "Bookmarks
 "
-nmap <leader>gg :BookmarkGo<CR><c-s>
+nmap <leader>gg :BookmarkGo<CR><Plug>(easymotion-bd-jk)
 nmap <leader>GG :BookmarkGo<CR>
 nmap <leader>ga :BookmarkAdd<CR>
+
+"targets
+"
+"
+"autocmd User targets#mappings#user call targets#mappings#extend({
+    "\ ',': {},
+    "\ })
+let g:neoterm_eof = "\r"

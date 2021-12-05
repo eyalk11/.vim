@@ -415,3 +415,7 @@ func! ToggleHebrew()
   end
 endfunc
 
+func! FixCoc()
+    let g:WorkspaceFolders=[getcwd()]
+    CocRestart
+endfunc
