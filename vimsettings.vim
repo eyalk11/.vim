@@ -6,6 +6,16 @@
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
 
+func! UsePW()
+		let &shell = has('win32') ? 'powershell' : 'pwsh'
+		let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
+		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		set shellquote= shellxquote=
+    "set shellpipe=|
+    "set shellredir=>
+endfunction
+
 let g:ver=ver
 "allows ctrl-c I think
 set allowrevins
@@ -142,7 +152,9 @@ au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
 au ExitPre * nested call timer_stop(g:autosaveWS)
 function! OnLoad()
-    set guifont=Fira\ Code:h12
+    if exists('g:GuiLoaded')
+        :GuiFont! Fira\ Code:h12
+    endif
     "set guifont=JetBrains\ Mono\ Medium:h11
 
     sleep 500ms
@@ -310,10 +322,12 @@ endfunction
 		"execute "source " . g:ses
 	"endif
 "endfunction
-
+function! PyAS()
+    autocmd filetype python let b:auto_save = 1
+endfunction
+command Pyauto call PyAS()<CR>
 " autocmds for  file types
 autocmd filetype vim let b:auto_save = 1
-autocmd filetype python let b:auto_save = 1
 
 "completing next function 
 :autocmd FileType vim nnoremap <buffer> ]m /^\(\s\)*function<CR>
@@ -323,20 +337,21 @@ autocmd filetype python let b:auto_save = 1
 
 
 
-let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
-"autocmd! TermEnter * :startinsert
+    let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
+    let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
+    "autocmd! TermEnter * :startinsert
 
-"commands
-"
-command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert topleft split <args>
-command! -nargs=*  -complete=help Help vert :help <args>
+    "commands
+    "
+    command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert topleft split <args>
+    command! -nargs=*  -complete=help Help vert :help <args>
 
-" search
-set noincsearch
-:noh
-set nohlsearch
+    " search
+    set noincsearch
+    :noh
+    set nohlsearch
 
-augroup vimrc-noincsearch-highlight
-  autocmd!
-  autocmd CmdlineLeave / :set noincsearch | :noh
-augroup END
+    augroup vimrc-noincsearch-highlight
+        autocmd!
+        autocmd CmdlineLeave / :set noincsearch | :noh
+    augroup END

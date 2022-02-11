@@ -129,7 +129,7 @@ if has('nvim')
 	let g:airline#extensions#whitespace#checks = [ 'indent', 'conflicts' ]
 	" add the current folder to the display
 	let g:airline_section_c= '%<%{tabpagenr()} %<%{getcwd()} | %f%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
-    let g:airline#extensions#branch#vcs_checks = []
+    "let g:airline#extensions#branch#vcs_checks = []
 	if !exists('g:gui_oni')
 		let g:airline_powerline_fonts = 1
 		set t_Co=256
@@ -393,8 +393,8 @@ call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 :autocmd FileType netranger cmap <buffer> <M-left> :call DoClose()<CR>
 ":autocmd FileType netranger nmap <buffer> <C-K> :call DoOpen()<CR><c-s>
 ":autocmd FileType netranger cmap <buffer> <C-K> <CR>:call DoOpen()<CR><c-s>
-:autocmd FileType netranger nmap <buffer> <C-N> :call DoClose()<CR>
-:autocmd FileType netranger cmap <buffer> <C-N> :call DoClose()<CR>
+":autocmd FileType netranger nmap <buffer> <C-N> :call DoClose()<CR>
+":autocmd FileType netranger cmap <buffer> <C-N> :call DoClose()<CR>
 :autocmd FileType netranger nnoremap <buffer> cd :PY netranger.api.NETRApi.ranger.NETRVimCD()<CR>
 :autocmd FileType netranger nnoremap <buffer> CD :exe "edit ". getcwd()<CR>
 ":autocmd FileType netranger mm :LeaderfMru<CR>
@@ -412,6 +412,10 @@ call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 "
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
+command LeaderfTogglePreview let g:Lf_PreviewInPopup = !g:Lf_PreviewInPopup 
+command LeaderfEnablePreview let g:Lf_PreviewInPopup = 1
+command LeaderfDisablePreview let g:Lf_PreviewInPopup = 0
+
 let g:Lf_DevIconsFont = "DroidSansMono Nerd Font Mono"
 
 set ambiwidth=double
@@ -519,11 +523,15 @@ let g:vimtex_fold_enabled =1
 "autocmd BufEnter *.tex set foldexpr=vimtex#fold#level(v:lnum)
 "autocmd BufEnter *.tex set foldtext=vimtex#fold#text()
 "
-let g:vimtex_view_method = 'skim'
-"let g:vimtex_view_method = 'mupdf'
+"let g:vimtex_view_method = 'skim'
+let g:vimtex_view_method = 'general'
 let g:vimtex_compiler_progname = 'nvr'
 "    \ 'build_dir' : '/tmp/builddir',
-"
+  let g:vimtex_view_general_viewer = 'SumatraPDF'
+  let g:vimtex_view_general_options
+      \ = '-reuse-instance -forward-search @tex @line @pdf'
+  let g:vimtex_view_general_options_latexmk = '-reuse-instance'
+
 let g:vimtex_compiler_latexmk = {
     \ 'backend' : 'nvim',
     \ 'background' : 1,

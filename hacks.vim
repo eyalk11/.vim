@@ -257,12 +257,13 @@ except Exception as e:
 	exp=traceback.format_exc()
 	retval=None
 	try:
-		vim.command("echom \"" + str(exp).replace("\"","\\\"") + "\"")
+		vim.command("echom pyxeval(\"exp\")")
 	except:
 		pass
 
 if retval==None: retval=match
-vim.command("let retInVim=\"" + str(retval).replace("\"","\\\"") + "\"")
+#vim.command("let retInVim=\"" + str(retval).replace("\"","\\\"") + "\"")
+vim.command('let retInVim=pyxeval("retval")')
 EOF
 return retInVim
 endfunction
@@ -271,8 +272,8 @@ function! RunPython(match,run)
 PY << EOF
 import vim
 try:
-	match=vim.eval("a:match")
-	vim.command(' exec "PY " . a:run')
+    match=vim.eval("a:match")
+    exec(vim.eval("a:run"))
 except Exception as e:
 	import traceback
 	exp=traceback.format_exc()
@@ -285,7 +286,10 @@ return ""
 endfunction
 
 function! GL(arg) range
-	let lst=matchlist(a:arg,'/\(.\{-\}\)/\(.\{-}\) \(.*\)$')
+    let arg= substitute(a:arg,'\\/','REALSLASH','g')
+	let lst=matchlist(arg,'/\(.\{-\}\)/\(.\{-}\) \(.*\)$')
+    let lst[1]= substitute(lst[1],'REALSLASH','/','g')
+    let lst[3]= substitute(lst[3],'REALSLASH','/','g')
 "	echo lst
 	if lst[2]==#"rpy"
 		exec a:firstline. "," . a:lastline . ":s\/" . lst[1] . "/\\=RunPython2(submatch(1),\"". escape(lst[3],"\"//") . "\")"

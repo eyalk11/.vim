@@ -37,6 +37,8 @@ exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
 "
 "
 call plug#begin('~/.vim/plugged')
+"tpope/vim-eunuch.git best in linux env I guess...
+Plug 'liuchengxu/vim-which-key'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting
 Plug 'junegunn/vim-peekaboo'
@@ -100,7 +102,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'bfredl/nvim-ipy'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
+Plug 'udalov/kotlin-vim'
 Plug 'vim-ctrlspace/vim-ctrlspace'
 " 
 Plug 'yegappan/mru'

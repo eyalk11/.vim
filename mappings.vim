@@ -92,7 +92,8 @@ nnoremap <leader>F F
 "end only until the end and not one more
 vnoremap <end> $h
 
-nnoremap , :Leaderf line --popup<CR>
+nnoremap , :LeaderfDisablePreview<CR>:Leaderf line --popup<CR>
+nmap m, :LeaderfEnablePreview<CR>:Leaderf line --popup<CR>
 "nnoremap <leader><c-t> <c-t>
 
 "wroks with all letters but N
@@ -141,7 +142,7 @@ nnoremap <silent> _j  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent> _k  :<C-u>CocPrev<CR>
 " Resume latest coc list
-nnoremap <silent> _p  :<C-u>CocListResume<CR>
+"nnoremap <silent> _p  :<C-u>CocListResume<CR>
 
 noremap _b :bnext<CR>
 noremap _B :bprev<CR>
@@ -559,8 +560,7 @@ nnoremap mu :UndotreeToggle<CR>
 nnoremap mws :CtrlSpaceSaveWorkspace<CR>
 nnoremap mwd :let g:overrideCWD=0<CR>:CtrlSpaceSaveWorkspace default<CR>let g:overrideCWD=1<CR>
 
-nmap m, :LeaderfLineCword<CR>
-nmap TT m,
+nmap TT :LeaderfLineCword<CR>
 vnoremap T "xy:call feedkeys( ":LeaderfLine\<lt>CR>". @x ,'t')<CR>
 function! SpecialFindLeader(type)
   let &selection = "inclusive"
@@ -674,13 +674,15 @@ nnoremap <leader><bar> <bar>
 "<A-Bslash>
 "<A-Bslash>
 nmap <A-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
+"nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
 nnoremap <silent> <bar> :let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
 nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
 
 nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
 "nnoremap <silent> <C-a>g :call FZFOpen(':FzfRg!')<CR>
-nnoremap <silent> <C-a>G :LeaderfRgInteractive<CR><CR><CR>
+nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
+
 "for exact
 "nnoremap <silent> <C-a>G :call FZFOpen(':FzfRg! -e')<CR>
 nnoremap <silent> <C-a>C :call FZFOpen(':Commands')<CR>
@@ -701,7 +703,6 @@ nmap <silent> <C-a>H :call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<
 nnoremap <silent> <C-a>a :call FZFOpen(':Ag')<CR>
 nnoremap <silent> <C-a>d :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>w :call FZFOpen(':Windows')<CR>
-nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
 nnoremap <silent> <C-a>s :call FZFOpen(':Snippets')<CR>
 "use it to increase
 nnoremap <silent> <C-a><C-a> <C-a>
@@ -710,17 +711,19 @@ nnoremap <silent> <C-a><C-a> <C-a>
   " current file's2 directory
   "
 "does diff of all files (could be vs version) 
-nmap <leader>GD Git! diff<CR>
 nnoremap <leader>Gs :Gstatus<CR>
 nnoremap <leader>Gc :Gcommit -v -q<CR>
 nnoremap <leader>Ga :Gcommit --amend<CR>
 nnoremap <leader>Gt :Gcommit -v -q %<CR>
 nnoremap <leader>Gd :Gdiff<CR>
+nmap <leader>GD Git! diff<CR>
 nnoremap <leader>Ge :Gedit<CR>
 nnoremap <leader>Gr :Gread<CR>
 nnoremap <leader>Gw :Gwrite<CR>
+"Git log all commits
 nnoremap <leader>Gl :silent! Glog<CR>
-nnoremap <leader>GL :Git log<CR>
+"Git log current
+nnoremap <leader>GL :0GcLog<CR>
 nnoremap <leader>Gp :Ggrep<Space>
 nnoremap <leader>Gm :Gmove<Space>
 nnoremap <leader>Gb :Git branch<Space>
@@ -755,6 +758,7 @@ nnoremap <leader>rd <c-L>
 nnoremap <leader>oc :copen<CR>
 "opens file
 nmap <leader>of :vsp<CR>ml<A-Bslash>
+nmap <leader>og :vsp<CR>:LeaderfFile<CR>
 nmap <leader>OF :vsp<CR>mm
 nmap <leader>mf :vsp<CR>mm
 "open python
@@ -774,7 +778,7 @@ function! TermLOV()
     set shell=cmd.exe
     let g:neoterm_shell = "wsl" 
     vertical Tnew "~/"
-    set shell=t
+    let &shell=t
 endfunction
 
 function! TermOV(use_file_dir)
@@ -796,7 +800,7 @@ function! TermOV(use_file_dir)
 		"exe k."T bind '\"\\C-r\": \"\\C-ahstr -- \\C-j\"'"
 	"endif
 	exe k."Tclear"
-    set shell=t
+    let &shell=t
 endfunction
 
 function! TermO()
@@ -890,6 +894,23 @@ function! InsertBefore(count) range
 	endfor 
 endfunction
 
+function! MJoin()
+    let t=input('enter st start with " or '' to surround :')
+    let so= ''
+    if (t[0] =='"' || t[0]=="'")
+        echo 'aaa'
+        let so=t[0] 
+        let t=t[1:]
+    endif
+        
+    let tex= getreg('x')
+    let res = map (split(tex,'\n'), 'so . v:val . so')
+    let res = join(res,t)
+    return res
+endfunction 
+
+vmap mjoin "xdi<C-r>=MJoin()<CR>
+
 function! InsertAfter(count) range
 	if a:count==0
 		let l=1
@@ -943,9 +964,9 @@ nnoremap c "zc
 "vnoremap cc "zcc
 vnoremap c "zc
 
-"to the dfs not  on pasting visual " would still be as
-"usual. Z  it 
-vnoremap p p:let @z=@"<CR>:let @*=@0<CR>:let @"=@0<CR>
+"We want to keep the pasted text, while z is the precented text in the visual
+"...
+vnoremap p :<C-U>let a=@*<CR>gvp:let @z=@"<CR>:let @*=a<CR>:let @"=a<CR>
 vnoremap c "zdi
 
 "cnnoremap <leader>. @:
@@ -976,9 +997,6 @@ nnoremap Y :set incsearch<CR>/\c
 "nnoremap , :set incsearch<CR>/\c
 "nnoremap <C-[> :set incsearch<CR>/\c
 "vnoremap <nowait> af <Plug>(textobj-function-a) 
-"execute a function based on the current visual selection
-vnoremap F "xd"=HandleF()<CR>P
-vnoremap <C-F> "xd"=HandleCF()<CR>p
 
 "execute a function based on the current visual selection but replace content of selection
 vnoremap H "xy:call HandleH()<CR>
@@ -1210,7 +1228,7 @@ vmap ], <ESC>],vi,
 
 "textobj-function
 autocmd  FileType * vmap <nowait> <buffer> aF <Plug>(textobj-function-A)
-
+"select func
 vmap	aF	<Plug>(textobj-function-a)
 vmap	iF	<Plug>(textobj-function-i)
 "call popsikey#register('<leader>g', [
@@ -1229,7 +1247,7 @@ map <expr> ; repmo#LastKey(';') | sunmap ;
 nmap <expr> <C-\> repmo#LastRevKey(',')
 " Still repeat fFtT (now with counts):
 noremap <expr> f repmo#ZapKey('f',1)|sunmap f
-noremap <expr> F repmo#ZapKey('F',1) | sunmap F
+noremap <expr> F repmo#ZapKey('F',1) | nunmap F
 "snoremap <expr> t repmo#ZapKey('t',1)|sunmap t
 "snoremap <expr> T repmo#ZapKey('T',1)|sunmap T
 nnoremap <expr> <leader>T repmo#ZapKey('T',1)
@@ -1255,12 +1273,34 @@ endfunction
 :au BufWritePost * :let g:init=1
 call DefineMapping()
 
-function! GetIt()
-    let x = getreg('+')
-    let x = substitute(x,'/mnt/c','c:','')
-    exec ':e '. x
-endfunction
+"evals a function based on the current visual selection
+vnoremap F "xd"=HandleF()<CR>P
+"execute a function based on the current visual selection
+vnoremap <C-F> "xy:call HandleCF()<CR>p
+
 "function! GetRegs()
     "call fzf#run({'source':":reg",'sink': function('PInsert')})<CR>
 "endendfunction
+nnoremap <silent> <leader> :WhichKey '\'<CR>
+nnoremap <silent> m :WhichKey 'm'<CR>
+g:which_key_vertical=1
 
+function! Ff()
+    let x=getline(".")
+    let c=split(x,'\s')
+PY << EOF
+t= vim.eval('c')
+for x in t:
+    if 'map' in x:
+        continue
+    if x.startswith('<') and x.endswith('>'):
+        continue
+    break
+vim.command('let x = pyxeval("x")')
+EOF
+
+     "substitute(getline("."),'\w*map\w*.\{-}\(\<[a-z0-9A-Z<>]\{-}\>\)\s*',"\\1","")
+    norm - 
+    let com=substitute(getline("."),'^\s*"\(.\{-}\)$','\1','')
+    echo printf("'%s','%s'", x,com)
+endfunction

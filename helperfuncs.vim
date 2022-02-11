@@ -184,16 +184,16 @@ endfunction
 
 
 function! HandleH()
-	let func=input('Enter python to execute(match is the input):	')
-	echo "\<CR>"
-	let retInVim=RunPython(@x,func)
-    return retInVim
+    let func=input('Enter "cmd" to eval vim cmd(@x is arg): 	')
+" echo "\<CR>"
+return eval(func)
 endfunction
 
 function! HandleCF()
-	let func=input('Enter "cmd" to eval vim cmd(@x is arg): 	')
-	" echo "\<CR>"
-	return eval(func)
+    let func=input('Enter python to execute(match is the input):	')
+echo "\<CR>"
+let retInVim=RunPython(@x,func)
+return retInVim
 endfunction
 
 
@@ -419,3 +419,9 @@ func! FixCoc()
     let g:WorkspaceFolders=[getcwd()]
     CocRestart
 endfunc
+
+function! GetIt()
+    let x = getreg('+')
+    let x = substitute(x,'/mnt/c','c:','')
+    exec ':e '. x
+endfunction
