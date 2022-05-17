@@ -202,7 +202,7 @@ exe 'source' . " " . g:vimloc . "\\helperfuncs.vim"
 
 "include math mappings
 if filereadable(" " . g:vimloc . "\\math.vim")
-	"exe 'source' . " " . g:vimloc . "\\math.vim"
+	exe 'source' . " " . g:vimloc . "\\math.vim"
 endif
 
 exe 'source' . " " . g:vimloc . "\\mappings.vim"

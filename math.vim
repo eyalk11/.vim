@@ -202,112 +202,112 @@ endfunction
 autocmd filetype tex nmap <buffer> <leader>st :set filetype=tex<CR>:w<CR>itemplate<TAB>a<esc>:VimtexToggleMain<CR>
 autocmd filetype tex nmap <buffer> <leader>so :let tt=expand('%:t')<CR>:VimtexCompileOutput<CR>:exe ":MC ". tt . ":"<CR>
 
-autocmd filetype tex imap <buffer> <D-d>s sec<c-g>
-autocmd filetype tex imap <buffer> <D-d>f /<c-g>
-autocmd filetype tex imap <buffer> <D-d>c cap<c-g>
+autocmd filetype tex imap <buffer> <M-d>s sec<c-g>
+autocmd filetype tex imap <buffer> <M-d>f /<c-g>
+autocmd filetype tex imap <buffer> <M-d>c cap<c-g>
 
 
-autocmd filetype tex imap <buffer> <D-d>f \frac
-autocmd filetype tex imap <buffer> <D-d>s sq<c-g>
-autocmd filetype tex imap <buffer> <D-d>x _
-autocmd filetype tex imap <buffer> <D-d>e ^
-autocmd filetype tex imap <buffer> <D-d>u sum<c-g>
-autocmd filetype tex imap <buffer> <D-d>i dint<c-g>
+autocmd filetype tex imap <buffer> <M-d>f \frac
+autocmd filetype tex imap <buffer> <M-d>s sq<c-g>
+autocmd filetype tex imap <buffer> <M-d>x _
+autocmd filetype tex imap <buffer> <M-d>e ^
+autocmd filetype tex imap <buffer> <M-d>u sum<c-g>
+autocmd filetype tex imap <buffer> <M-d>i dint<c-g>
 
-autocmd filetype tex imap <buffer> <D-e> mk<c-g>
+autocmd filetype tex imap <buffer> <M-e> mk<c-g>
 
-autocmd filetype tex imap <buffer> <D-d>m mk<c-g>
-autocmd filetype tex imap <buffer> <D-d>d dm<c-g>
-autocmd filetype tex imap <buffer> <D-d>y \oint
-autocmd filetype tex imap <buffer> <D-d>p part<c-g>
-autocmd filetype tex imap <buffer> <D-d>r \root
-autocmd filetype tex imap <buffer> <D-d>l lim<c-g>
-"autocmd filetype tex imap <buffer> <D-d>* \<c-g>
-
-
-autocmd filetype tex imap <buffer> <D-d>8 \infty
+autocmd filetype tex imap <buffer> <M-d>m mk<c-g>
+autocmd filetype tex imap <buffer> <M-d>d dm<c-g>
+autocmd filetype tex imap <buffer> <M-d>y \oint
+autocmd filetype tex imap <buffer> <M-d>p part<c-g>
+autocmd filetype tex imap <buffer> <M-d>r \root
+autocmd filetype tex imap <buffer> <M-d>l lim<c-g>
+"autocmd filetype tex imap <buffer> <M-d>* \<c-g>
 
 
-autocmd filetype tex imap <buffer> <D-d>h hat<c-g>
-autocmd filetype tex imap <buffer> <D-d>^ bar<c-g>
-autocmd filetype tex imap <buffer> <D-d>. **<c-g>
-autocmd filetype tex imap <buffer> <D-d>v \vec
-autocmd filetype tex imap <buffer> <D-d>_ \underbar
-
-autocmd filetype tex imap <buffer> <D-d>b \overline
-
-autocmd filetype tex imap <buffer> <D-d>( lr<c-g>
-autocmd filetype tex imap <buffer> <D-d>[ lr[<c-g>
-autocmd filetype tex imap <buffer> <D-d>{ lr{<c-g>
-autocmd filetype tex imap <buffer> <D-d>< lr<<c-g>
-autocmd filetype tex imap <buffer> <D-d><bar> lr<bar><c-g>
-
-autocmd filetype tex imap <buffer> <D-d>+ \pm
-autocmd filetype tex imap <buffer> <D-d>! \neq
-autocmd filetype tex imap <buffer> <D-b>a \alpha
-autocmd filetype tex imap <buffer> <D-b>b \beta
-autocmd filetype tex imap <buffer> <D-b>c \chi
-autocmd filetype tex imap <buffer> <D-b>d \delta
-autocmd filetype tex imap <buffer> <D-b>e \epsilon
-autocmd filetype tex imap <buffer> <D-b>f \phi
-autocmd filetype tex imap <buffer> <D-b>g \gamma
-autocmd filetype tex imap <buffer> <D-b>h \eta
-autocmd filetype tex imap <buffer> <D-b>i \iota
-autocmd filetype tex imap <buffer> <D-b>j \varphi
-autocmd filetype tex imap <buffer> <D-b>k \kappa
-autocmd filetype tex imap <buffer> <D-b>l \lambda
-autocmd filetype tex imap <buffer> <D-b>m \mu
-autocmd filetype tex imap <buffer> <D-b>n \nu
-autocmd filetype tex imap <buffer> <D-b>o \omega
-autocmd filetype tex imap <buffer> <D-b>p \pi
-autocmd filetype tex imap <buffer> <D-b>q \vartheta
-autocmd filetype tex imap <buffer> <D-b>r \rho
-autocmd filetype tex imap <buffer> <D-b>s \sigma
-autocmd filetype tex imap <buffer> <D-b>t \tau
-autocmd filetype tex imap <buffer> <D-b>u \upsilon
-autocmd filetype tex imap <buffer> <D-b>v \theta
-autocmd filetype tex imap <buffer> <D-b>w \omega
-autocmd filetype tex imap <buffer> <D-b>x \xi
-autocmd filetype tex imap <buffer> <D-b>y \psi
-autocmd filetype tex imap <buffer> <D-b>z \zeta
-autocmd filetype tex imap <buffer> <D-S-b>d \Delta
-autocmd filetype tex imap <buffer> <D-S-b>e \varepsilon
-autocmd filetype tex imap <buffer> <D-S-b>f \Phi
-autocmd filetype tex imap <buffer> <D-S-b>g \Gamma
-autocmd filetype tex imap <buffer> <D-S-b>i \iota
-autocmd filetype tex imap <buffer> <D-S-b>j \epsilon
-autocmd filetype tex imap <buffer> <D-S-b>l \Lambda
-autocmd filetype tex imap <buffer> <D-s-b>O \Omega
-autocmd filetype tex imap <buffer> <D-S-b>p \Pi
-autocmd filetype tex imap <buffer> <D-S-b>q \vartheta
-autocmd filetype tex imap <buffer> <D-S-b>r \varrho
-autocmd filetype tex imap <buffer> <D-S-b>s \Sigma
-autocmd filetype tex imap <buffer> <D-S-b>t \varsigma
-autocmd filetype tex imap <buffer> <D-S-b>v \Theta
-autocmd filetype tex imap <buffer> <D-S-b>w \Omega
-autocmd filetype tex imap <buffer> <D-S-b>x \Xi
-autocmd filetype tex imap <buffer> <D-S-b>y \Psi
-
-autocmd filetype tex nmap <buffer> <D-d> a<D-d>
-autocmd filetype tex nmap <buffer> <D-s-d> a<D-s-d>
-autocmd filetype tex nmap <buffer> <D-b> a<D-b>
-autocmd filetype tex nmap <buffer> <D-s-b> a<D-s-b>
+autocmd filetype tex imap <buffer> <M-d>8 \infty
 
 
-"autocmd filetype tex nmap <buffer> <D-p-0>		Part
-autocmd filetype tex nmap <buffer> <D-P>1 cha<c-g>
-autocmd filetype tex nmap <buffer> <D-P>2 sec<c-g>
-autocmd filetype tex nmap <buffer> <D-P>3 sub<c-g>
-autocmd filetype tex nmap <buffer> <D-P>4 ssub<c-g>
-autocmd filetype tex nmap <buffer> <D-P>5 par<c-g>
-autocmd filetype tex nmap <buffer> <D-P>6 subp<c-g>
+autocmd filetype tex imap <buffer> <M-d>h hat<c-g>
+autocmd filetype tex imap <buffer> <M-d>^ bar<c-g>
+autocmd filetype tex imap <buffer> <M-d>. **<c-g>
+autocmd filetype tex imap <buffer> <M-d>v \vec
+autocmd filetype tex imap <buffer> <M-d>_ \underbar
+
+autocmd filetype tex imap <buffer> <M-d>b \overline
+
+autocmd filetype tex imap <buffer> <M-d>( lr<c-g>
+autocmd filetype tex imap <buffer> <M-d>[ lr[<c-g>
+autocmd filetype tex imap <buffer> <M-d>{ lr{<c-g>
+autocmd filetype tex imap <buffer> <M-d>< lr<<c-g>
+autocmd filetype tex imap <buffer> <M-d><bar> lr<bar><c-g>
+
+autocmd filetype tex imap <buffer> <M-d>+ \pm
+autocmd filetype tex imap <buffer> <M-d>! \neq
+autocmd filetype tex imap <buffer> <M-b>a \alpha
+autocmd filetype tex imap <buffer> <M-b>b \beta
+autocmd filetype tex imap <buffer> <M-b>c \chi
+autocmd filetype tex imap <buffer> <M-b>d \delta
+autocmd filetype tex imap <buffer> <M-b>e \epsilon
+autocmd filetype tex imap <buffer> <M-b>f \phi
+autocmd filetype tex imap <buffer> <M-b>g \gamma
+autocmd filetype tex imap <buffer> <M-b>h \eta
+autocmd filetype tex imap <buffer> <M-b>i \iota
+autocmd filetype tex imap <buffer> <M-b>j \varphi
+autocmd filetype tex imap <buffer> <M-b>k \kappa
+autocmd filetype tex imap <buffer> <M-b>l \lambda
+autocmd filetype tex imap <buffer> <M-b>m \mu
+autocmd filetype tex imap <buffer> <M-b>n \nu
+autocmd filetype tex imap <buffer> <M-b>o \omega
+autocmd filetype tex imap <buffer> <M-b>p \pi
+autocmd filetype tex imap <buffer> <M-b>q \vartheta
+autocmd filetype tex imap <buffer> <M-b>r \rho
+autocmd filetype tex imap <buffer> <M-b>s \sigma
+autocmd filetype tex imap <buffer> <M-b>t \tau
+autocmd filetype tex imap <buffer> <M-b>u \upsilon
+autocmd filetype tex imap <buffer> <M-b>v \theta
+autocmd filetype tex imap <buffer> <M-b>w \omega
+autocmd filetype tex imap <buffer> <M-b>x \xi
+autocmd filetype tex imap <buffer> <M-b>y \psi
+autocmd filetype tex imap <buffer> <M-b>z \zeta
+autocmd filetype tex imap <buffer> <M-S-b>d \Delta
+autocmd filetype tex imap <buffer> <M-S-b>e \varepsilon
+autocmd filetype tex imap <buffer> <M-S-b>f \Phi
+autocmd filetype tex imap <buffer> <M-S-b>g \Gamma
+autocmd filetype tex imap <buffer> <M-S-b>i \iota
+autocmd filetype tex imap <buffer> <M-S-b>j \epsilon
+autocmd filetype tex imap <buffer> <M-S-b>l \Lambda
+autocmd filetype tex imap <buffer> <M-s-b>O \Omega
+autocmd filetype tex imap <buffer> <M-S-b>p \Pi
+autocmd filetype tex imap <buffer> <M-S-b>q \vartheta
+autocmd filetype tex imap <buffer> <M-S-b>r \varrho
+autocmd filetype tex imap <buffer> <M-S-b>s \Sigma
+autocmd filetype tex imap <buffer> <M-S-b>t \varsigma
+autocmd filetype tex imap <buffer> <M-S-b>v \Theta
+autocmd filetype tex imap <buffer> <M-S-b>w \Omega
+autocmd filetype tex imap <buffer> <M-S-b>x \Xi
+autocmd filetype tex imap <buffer> <M-S-b>y \Psi
+
+autocmd filetype tex nmap <buffer> <M-d> a<M-d>
+autocmd filetype tex nmap <buffer> <M-s-d> a<M-s-d>
+autocmd filetype tex nmap <buffer> <M-b> a<M-b>
+autocmd filetype tex nmap <buffer> <M-s-b> a<M-s-b>
+
+
+"autocmd filetype tex nmap <buffer> <M-p-0>		Part
+autocmd filetype tex nmap <buffer> <M-P>1 cha<c-g>
+autocmd filetype tex nmap <buffer> <M-P>2 sec<c-g>
+autocmd filetype tex nmap <buffer> <M-P>3 sub<c-g>
+autocmd filetype tex nmap <buffer> <M-P>4 ssub<c-g>
+autocmd filetype tex nmap <buffer> <M-P>5 par<c-g>
+autocmd filetype tex nmap <buffer> <M-P>6 subp<c-g>
 "autocmd filetype tex nmap <buffer> <d-s-p-0> part*<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-1> cha<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-2>	sec<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-3>	sub<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-4>	ssub<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-5>	par<c-g>
-autocmd filetype tex nmap <buffer> <D-s-p-6>	subp<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-1> cha<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-2>	sec<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-3>	sub<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-4>	ssub<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-5>	par<c-g>
+autocmd filetype tex nmap <buffer> <M-s-p-6>	subp<c-g>
 "\bind "M-p a"			"layout Abstract"
 "\bind "M-p S-A"			"layout Author"
 "\bind "M-p M-a"			"layout Address"
@@ -363,3 +363,17 @@ autocmd filetype tex nmap <buffer> <D-s-p-6>	subp<c-g>
 "autocmd filetype tex nmap <buffer> [m  <plug>(vimtex-[m)
 "autocmd filetype tex nmap <buffer> [M  <plug>(vimtex-[M)
 	
+"*<plug>(vimtex-ac)*   Commands
+"*<plug>(vimtex-ic)*
+"*<plug>(vimtex-ad)*   Delimiters
+"*<plug>(vimtex-id)*
+"*<plug>(vimtex-ae)*   Environments
+"*<plug>(vimtex-ie)*
+"*<plug>(vimtex-a$)*   Inline math
+"*<plug>(vimtex-i$)*
+"*<plug>(vimtex-aP)*   Sections
+"*<plug>(vimtex-iP)*
+"*<plug>(vimtex-am)*   Items
+"*<plug>(vimtex-im)*
+  "These are all text object mappings for the indicated types of objects , see
+  "|vimtex-text-objects| for more info.

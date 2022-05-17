@@ -462,7 +462,7 @@ nnoremap mb iimport ipdb;ipdb.set_trace()<ESC>
 nmap mC :call CopyPath()<CR>
 noremap mc :cd %:p:h<CR>
 nnoremap md :diffupdate<CR>
-nnoremap mf :!open %:p:h<CR>
+nnoremap mf :!start %:p:h<CR>
 nnoremap mF :exec '!open '.getcwd()<CR>
 nmap mF vaF<F2>
 
@@ -506,8 +506,15 @@ endfunction
 "remove indent
 "
 nnoremap mp o<esc>:s/[^ \t]//ge<CR>:call MPf()<CR>
-nnoremap <expr> ]p @+ =~ ".*\n$" ?  "]p==" : "o<C-R>+<ESC>"
-nnoremap <expr> ]P @+ =~ ".*\n$" ?  "]P==" : "O<C-R>+<ESC>"
+
+function! PasteFormat(x)
+	let l=@+
+	let l=len(split(l,"\n"))-1
+	return a:x."V".string(l).'j='
+endfunction
+
+nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : "o<C-R>+<ESC>"
+nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : "O<C-R>+<ESC>"
 
 "Move line to terminal
 nmap mz yy:T "
@@ -516,13 +523,6 @@ nmap mz yy:T "
 "nnoremap <silent> mp :call Putline("]p")<CR>
  
 
-"function! Putline(how)
-	 "let l:type = getregtype(v:register)
-	 "call setreg(getreg(v:register), "V")
-	 "execute 'normal! "' . v:register . a:how
-	 "call setreg(getreg(v:register), l:type)
- "endfunction 
-"norm \"+
  
 
 
@@ -756,11 +756,26 @@ nnoremap <leader>rd <c-L>
 
 "todo FZF
 nnoremap <leader>oc :copen<CR>
+function! VspIfNeed()
+    "let x = tabpagebuflist()
+    "if len(x)==1
+        "vsp
+    "endif
+    for k in getwininfo()
+        if k['winrow']==1 && k['wincol']>1
+            "look no further
+            let id=k['winid']
+            call win_gotoid(id)
+            return
+        endif
+    endfor
+    vsp
+endfunction
 "opens file
-nmap <leader>of :vsp<CR>ml<A-Bslash>
-nmap <leader>og :vsp<CR>:LeaderfFile<CR>
-nmap <leader>OF :vsp<CR>mm
-nmap <leader>mf :vsp<CR>mm
+nmap <leader>of :call VspIfNeed()<CR>ml<A-Bslash>
+nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
+nmap <leader>OF :call VspIfNeed()<CR>mm
+nmap <leader>mf :call VspIfNeed()<CR>mm
 "open python
 nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
@@ -964,7 +979,7 @@ nnoremap c "zc
 "vnoremap cc "zcc
 vnoremap c "zc
 
-"We want to keep the pasted text, while z is the precented text in the visual
+"We want to keep the pasted text, while z is the presented text in the visual
 "...
 vnoremap p :<C-U>let a=@*<CR>gvp:let @z=@"<CR>:let @*=a<CR>:let @"=a<CR>
 vnoremap c "zdi

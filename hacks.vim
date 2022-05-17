@@ -300,6 +300,8 @@ endfunction
 
 command! -nargs=1 -range GL <line1>,<line2>call GL(<f-args>)
 
+command! -nargs=1 P call RunPS(<f-args>) 
+command! -nargs=1 TP call TogglePS()
 
 "Matches
 "

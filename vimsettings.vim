@@ -5,16 +5,14 @@
 
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
+let g:pwmod=0
+let g:sh = &shell 
+let g:shf=&shellcmdflag
+let g:shr=&shellredir
+let g:shellpipe=&shellpipe
+let g:shq=&shellquote
+let g:shxq=&shellxquote
 
-func! UsePW()
-		let &shell = has('win32') ? 'powershell' : 'pwsh'
-		let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
-		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
-		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
-		set shellquote= shellxquote=
-    "set shellpipe=|
-    "set shellredir=>
-endfunction
 
 let g:ver=ver
 "allows ctrl-c I think
