@@ -8,6 +8,8 @@
 " some tips : remember commenter \Cc , remember <c-u>  and <M-Bslash> windows , remember \C
 " close NR 
 "
+" We have q for s , alt-t for nmap tl current line m and ctrl-t for t all
+" lines.
 "ctrl-x ctrl-k directory  (ctrl-v guess)
 " Search workspace symbols
 "nnoremap <silent> _s  :<C-u>CocList -I symbols<cr>
@@ -17,8 +19,8 @@
 "
 " TODO: use set for inserts.
 " ctrl-d ctrl-h ctrl-t for inside line search.
-" g; is a very nice command to iterate through changes. (g, older)
 "
+"Alt - q is the new macro recording ....
 " also 'I and `I made to work.
 " let us remember that ! is `
 " Gdiffsplit! for merge!!!!
@@ -38,6 +40,8 @@ exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
 "
 call plug#begin('~/.vim/plugged')
 "tpope/vim-eunuch.git best in linux env I guess...
+Plug 'justinmk/vim-sneak'
+Plug 'unblevable/quick-scope'
 Plug 'liuchengxu/vim-which-key'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting

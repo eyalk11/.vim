@@ -296,7 +296,7 @@ let g:EasyMotion_off_screen_search = 1
 "
 
 " Ultisnips
- " "let g:UltiSnipsJumpForwardTrigger = '<tab>'
+ " let g:UltiSnipsJumpForwardTrigger = '<tab>'
  "  "let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 "
  let g:UltiSnipsExpandTrigger = '<c-g>'
@@ -647,3 +647,39 @@ nmap <leader>ga :BookmarkAdd<CR>
     "\ ',': {},
     "\ })
 let g:neoterm_eof = "\r"
+"quickscope
+"
+"unblevable
+" Trigger a highlight only when pressing f and F.
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+nmap f <Plug>(QuickScopef)
+omap f <Plug>(QuickScopef)
+xmap f <Plug>(QuickScopef)
+
+nmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+
+"nmap F <Plug>(QuickScopeF)
+"omap F <Plug>(QuickScopeF)
+"xmap F <Plug>(QuickScopeF)
+
+"nmap <c-f> <Plug>(QuickScopef)
+"nmap T <Plug>(QuickScopeT)
+"omap T <Plug>(QuickScopeT)
+"xmap T <Plug>(QuickScopeT)
+
+"nmap T <Plug>(QuickScopeT)
+"omap T <Plug>(QuickScopeT)
+"xmap T <Plug>(QuickScopeT)
+
+" <M-t> is within mapping
+
+let g:qs_ignorecase=1
+
+highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+"sneak
+let g:sneak#s_next = 1
+let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
