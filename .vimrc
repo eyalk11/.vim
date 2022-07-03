@@ -39,6 +39,24 @@ exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
 "
 "
 call plug#begin('~/.vim/plugged')
+"Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
+" optional for icon support
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
+Plug 'ray-x/navigator.lua'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'stevearc/aerial.nvim'
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
@@ -80,7 +98,7 @@ Plug 'airblade/vim-gitgutter'
 "needed? yes, just a collection of snippets
 Plug 'honza/vim-snippets'
 "tab completion 
-Plug 'ervandew/supertab'
+"Plug 'ervandew/supertab'
 "we dont need it right now
 "Plug 'rafi/awesome-vim-colorschemes'
 "backward search
@@ -92,8 +110,8 @@ Plug 'tpope/vim-repeat'
 "Plug 'Shougo/neco-vim'
 "completion for vim
 "causes it to crash, vim syntax file
-Plug 'neoclide/coc-neco'
-Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+"Plug 'neoclide/coc-neco'
+"Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 
 Plug 'kassio/neoterm'
 
@@ -203,6 +221,7 @@ endif
 exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
 exe 'source' . " " . g:vimloc . "\\hacks.vim"
 exe 'source' . " " . g:vimloc . "\\helperfuncs.vim"
+exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
 
 "include math mappings
 if filereadable(" " . g:vimloc . "\\math.vim")

@@ -48,12 +48,12 @@ nnoremap <leader>' ``
 
 
 "recall command
-nmap ~ <c-a>c
+"nmap ~ <c-a>c
 noremap m? ?
 
 
-:nnoremap s :exec "normal i".nr2char(getchar())."\e"<CR>
-:nnoremap S :exec "normal a".nr2char(getchar())."\e"<CR>
+:nmap s :exec "normal i".nr2char(getchar())."\e"<CR>
+:nmap S :exec "normal a".nr2char(getchar())."\e"<CR>
 "inserts one char (or more with count)
 "nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
@@ -128,23 +128,6 @@ map _# :e #<CR>
 "nmap <M-[> <bar><UP><CR>
 
 nmap _t :exe "tabn ".g:lasttab<CR>
-"Coc _ mappings 
-nnoremap <silent> _a  :<C-u>CocList actions<cr>
-" Manage extensions
-nnoremap <silent> _e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> _c  :<C-u>CocList commands<cr>
-nnoremap <silent> _d  :<C-u>CocList diagnostics<cr>
-" Find symbol of current document
-nnoremap <silent> _o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> _s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> _j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> _k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-"nnoremap <silent> _p  :<C-u>CocListResume<CR>
 
 noremap _b :bnext<CR>
 noremap _B :bprev<CR>
@@ -206,6 +189,8 @@ imap <F13> <ESC>
 nnoremap <c-,> :Leaderf line --recall<CR>
 
 
+"nmap <C--> <Plug>Sneak_,
+"nmap <C-=> <Plug>Sneak_;
 nmap <C-=> <Plug>(easymotion-next)
 nmap <C--> <Plug>(easymotion-prev)
 nmap <c-_> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
@@ -236,11 +221,17 @@ endfunction
 "
 " in insert mode M is same line , and <c-.> . Use <c-.> 
 " in normal mode M is same line
-imap <M-f> <c-o><Plug>(easymotion-s2)
+imap <M-f> <c-o><Plug>Sneak_s
+imap ` <c-o><Plug>Sneak_s
 
-imap <c-.> <c-o><Plug>(easymotion-sl)
-imap <c-/> <c-o><Plug>(easymotion-s)
-imap <M-/> <c-o><Plug>(easymotion-s2)
+
+function! FF()
+    :call quick_scope#Wallhacks()
+    return "\<c-o>\<Plug>(easymotion-sl)"
+endfunction
+imap <expr> <c-.> FF()
+imap <c-/> <c-o><Plug>Sneak_s
+imap <M-/> <c-o><Plug>Sneak_S
 
 "nmap <M-/> <Plug>(easymotion-tl)
 "imap <M-t> <c-o>:call Teasy()<CR> 
@@ -253,6 +244,7 @@ omap <M-t> <Plug>(QuickScopet)
 
 nmap s <plug>Sneak_s
 nmap S <plug>Sneak_S
+nmap Z <plug>
 imap <c-t> <c-o><Plug>(easymotion-bd-t)
 
 "Logical, since in normal we have s and S
@@ -362,12 +354,16 @@ inoremap <c-f> <c-x><c-n>
 ""Greatness , completes
 "requests
 "return comple
+"Greatness , completes
 function! DoCz()
     if pumvisible() 
         if complete_info()['mode']=='keyword'
-            return complete_info()['selected'] ==-1 ? "\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>\<c-r>=SuperTab('p')\<CR>"
+            return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<Tab>\<S-Tab>"
+            "return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<tab>\<c-r>=SuperTab('p')\<CR>"
+            "return complete_info()['selected'] ==-1 ? "\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>\<c-r>=SuperTab('p')\<CR>"
         else 
-            return complete_info()['selected'] ==-1 ? "\<c-f>\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>"
+            return complete_info()['selected'] ==-1 ? "\<c-f>\<tab>" : "\<c-f>\<tab>"
+            "return complete_info()['selected'] ==-1 ? "\<c-f>\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>"
         endif 
     else 
         return "\<c-f>"
@@ -694,7 +690,7 @@ call MapR()
 
 nnoremap <silent> <C-a>c :call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m'} )<CR>
 "search only for the mapping key
-nnoremap <silent> <C-a>m :call fzf#run({'source': GetMappings(),'options': '-m -n 2'} )<CR>
+noremap <silent> <C-a>m :call fzf#run({'source': GetMappings(),'options': '-m -n 2'} )<CR>
 "search in mapping description as well
 nnoremap <silent> <C-a>M :call fzf#run({'source': GetMappings(),'options': '-m'} )<CR>
 nnoremap <leader><bar> <bar>
@@ -805,7 +801,10 @@ nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
 nmap <leader>OF :call VspIfNeed()<CR>mm
 nmap <leader>mf :call VspIfNeed()<CR>mm
 "open python
-nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
+"function! findbufjup
+    "o
+"endfunction
+nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
 nnoremap <leader>oi :call RecallInserts2()<CR>
@@ -972,8 +971,8 @@ function! InsertAfter(count) range
 	endfor 
 endfunction
 
-nmap ` i
-imap ` <ESC>
+"nmap ` i
+"imap ` <ESC>
 inoremap <c-]> `
 imap <c-`> <c-O>
 nmap <c-`> <esc>
@@ -1099,6 +1098,7 @@ runtime ftplugin/man.vim " adds Man command
 
 
 "COC
+:if 0
 
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gY <Plug>(coc-type-definition)
@@ -1121,6 +1121,24 @@ function! Show_documentation()
 endfunction
 
 nmap <BS> call Show_documentation()<CR>
+"Coc _ mappings 
+nnoremap <silent> _a  :<C-u>CocList actions<cr>
+" Manage extensions
+nnoremap <silent> _e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> _c  :<C-u>CocList commands<cr>
+nnoremap <silent> _d  :<C-u>CocList diagnostics<cr>
+" Find symbol of current document
+nnoremap <silent> _o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> _s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> _j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> _k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+"nnoremap <silent> _p  :<C-u>CocListResume<CR>
+:endif
 "map <silent> <C-c> <Plug>(coc-cursors-position)
 "nmap <silent> <C-d> <Plug>(coc-cursors-word)*
 
@@ -1285,19 +1303,31 @@ call popsikey#register('mZ', [
 
 "to call at the end
 function! DefineMapping()
-map <expr> ; repmo#LastKey(';') | sunmap ;
-"map <expr> <C-\> repmo#LastRevKey(',') worked
-nmap <expr> <C-\> repmo#LastRevKey(',')
-" Still repeat fFtT (now with counts):
-noremap <expr> f repmo#ZapKey('f',1)|sunmap f
-noremap <expr> F repmo#ZapKey('F',1) | nunmap F
-"snoremap <expr> t repmo#ZapKey('t',1)|sunmap t
-"snoremap <expr> T repmo#ZapKey('T',1)|sunmap T
-nnoremap <expr> <leader>T repmo#ZapKey('T',1)
-nnoremap <expr> <leader>t repmo#ZapKey('t',1)
-nnoremap <expr> <leader>t repmo#ZapKey('t',1)
 
-for keys in [[']E','[E'],[']a','[a'],[']e','[e'],[']h','[h'],['&','z&']]
+map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+
+map  <expr> ; repmo#LastKey('<Plug>Sneak_;')|sunmap ;
+map  <expr> <C-\> repmo#LastRevKey('<Plug>Sneak_,')
+
+map  <expr> <tab> repmo#ZapKey('<Plug>Sneak_s')
+"|ounmap s|sunmap s
+map  <expr> <S-tab> repmo#ZapKey('<Plug>Sneak_S')
+"|ounmap S|sunmap S
+omap <expr> z repmo#ZapKey('<Plug>Sneak_s')
+omap <expr> Z repmo#ZapKey('<Plug>Sneak_S')
+map  <expr> f repmo#ZapKey('<Plug>(QuickScopef)')|sunmap f
+map  <expr> F repmo#ZapKey('<Plug>cusF')
+"map  <expr> t repmo#ZapKey('<Plug>Sneak_t')|sunmap t
+"map  <expr> T repmo#ZapKey('<Plug>Sneak_T')|sunmap T
+
+"nmap f <Plug>(QuickScopef)
+"omap f <Plug>(QuickScopef)
+"xmap f <Plug>(QuickScopef)
+
+"xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+"omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+
+for keys in [[']E','[E'],[']a','[a'],[']d,[d'],[']e','[e'],[']h','[h'],['&','z&']]
     call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
@@ -1347,3 +1377,9 @@ EOF
     let com=substitute(getline("."),'^\s*"\(.\{-}\)$','\1','')
     echo printf("'%s','%s'", x,com)
 endfunction
+
+:nnoremap <Leader>pp :lua require'telescope.builtin'.lsp_workspace_symbols{}<CR>
+"Telescope
+nmap <leader>gf :Telescope git_files<CR>
+nnoremap <leader>gr <cmd>lua require('telescope.builtin').live_grep{ cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1] ,glob='*.py'}<cr>
+

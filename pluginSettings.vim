@@ -4,6 +4,14 @@
 """
 "
 
+if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'allowlist': ['python'],
+        \ })
+endif
 "packadd! syntax-vim-ex
 colorscheme onedark
 
@@ -652,13 +660,6 @@ let g:neoterm_eof = "\r"
 "unblevable
 " Trigger a highlight only when pressing f and F.
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-nmap f <Plug>(QuickScopef)
-omap f <Plug>(QuickScopef)
-xmap f <Plug>(QuickScopef)
-
-nmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
-xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
-omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 
 "nmap F <Plug>(QuickScopeF)
 "omap F <Plug>(QuickScopeF)
@@ -680,6 +681,7 @@ let g:qs_ignorecase=1
 highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
 highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
 "sneak
-let g:sneak#s_next = 1
+let g:sneak#s_next = 0
 let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
 let g:sneak#use_ic_scs = 1

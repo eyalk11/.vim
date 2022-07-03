@@ -2,7 +2,7 @@
 "Vim settings
 "includes autocmds and autocmds for file types and commands
 "Should be indepdenent of plugins!
-
+let g:python3_host_prog='C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\python.exe'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
 let g:pwmod=0
@@ -158,6 +158,7 @@ function! OnLoad()
     sleep 500ms
     "echom "onload"
     cd ~/.vim
+function
 ":profile start /Users/eyalkarni/ab.log
 ":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
 "call ToggleVerbose() 
@@ -171,9 +172,9 @@ function! OnLoad()
 	if g:on_ek_computer
 		let g:SessionFile = ($HOME."\\.vim\\session_file") 
 		if exists('g:GuiLoaded') || ( g:on_vimr) || exists(':GonvimWorkspaceNew')
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\.cs_workspaces")
+			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspaces")
 		else
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\.cs_workspacesCWD")
+			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspacesCWD")
         endif 
 		let g:overrideCWD=1
 	endif
@@ -258,7 +259,7 @@ function! OnLoad()
 		endif 
         set shell=cmd 
 
-        exec "!echo ". $NVIM_LISTEN_ADDRESS . " > c:\\temp\\listen.txt"
+        exec "!echo ". v:servername . " > c:\\temp\\listen.txt"
         "override
         nmap <D-f> <Plug>(easymotion-s2) 
 
