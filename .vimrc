@@ -1,5 +1,3 @@
-"=NETRNewTabdrop
-"
 "
 " By Eyal Karni
 "
@@ -24,6 +22,8 @@
 " also 'I and `I made to work.
 " let us remember that ! is `
 " Gdiffsplit! for merge!!!!
+let g:minimal = 0
+let g:onlyplug="'mg979/vim-visual-multi'"
 let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
@@ -31,16 +31,20 @@ let g:on_vimr= ( $VIM=~# ".*VimR.*")
 "g:vimloc is ~/.vim folder
 let g:vimloc=split(&packpath,',')[0]
 
-exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
-
+if g:minimal == 0
+    exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
+endif
 
 "let &shell='/usr/bin/bash --login'
 "source ~/.vim2/autoload/repmo.vim
 "
 "
+if g:minimal == 0
+
 call plug#begin('~/.vim/plugged')
 "Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 " optional for icon support
+"plug 'brettanomyces/nvim-terminus'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plug 'ray-x/navigator.lua'
@@ -165,6 +169,11 @@ Plug 'eiginn/netrw'
 Plug 'ipod825/vim-bookmark'
 Plug 'beeender/Comrade'
 call plug#end()
+else
+    call plug#begin('~/.vim/plugged')
+    exe "Plug ". g:onlyplug
+    call plug#end()
+endif
 "Plug 'ivanov/vim-ipython'
 "Plug 'vim-scripts/mru.vim'
 "Plug 'kchmck/vim-coffee-script'
@@ -217,7 +226,8 @@ endif
 " endif
 " Plug 'severin-lemaignan/vim-minimap'
 
-
+function! Runit() 
+    
 exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
 exe 'source' . " " . g:vimloc . "\\hacks.vim"
 exe 'source' . " " . g:vimloc . "\\helperfuncs.vim"
@@ -229,5 +239,9 @@ if filereadable(" " . g:vimloc . "\\math.vim")
 endif
 
 exe 'source' . " " . g:vimloc . "\\mappings.vim"
+endfunction
 
+if g:minimal==0
+    call Runit()
+endif 
 

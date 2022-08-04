@@ -49,8 +49,10 @@ function! FilterAll(str,del)
     exec ":r !cat % | " . a:str
 endfunction
 
+command! -nargs=* Filter call FilterAll(<f-args>) 
+
 function! FilterJson(del)
-call FilterAll("python -m json.tool", a:del)
+    call FilterAll("python -m json.tool", a:del)
 endfunction
 
 

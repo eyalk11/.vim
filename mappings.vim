@@ -47,6 +47,7 @@ nnoremap <leader>. `.
 nnoremap <leader>' ``
 
 
+
 "recall command
 "nmap ~ <c-a>c
 noremap m? ?
@@ -58,8 +59,7 @@ noremap m? ?
 "nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
 "nmap S :<C-U>call InsertAfter(v:count1)<CR>
-nmap q <Plug>(easymotion-s)
-nmap q <Plug>(easymotion-s)
+nnoremap q t
 "The <M-t> provides omni tl-search 
 
 nmap <M-f> <Plug>(easymotion-s2)
@@ -235,7 +235,7 @@ imap <M-/> <c-o><Plug>Sneak_S
 
 "nmap <M-/> <Plug>(easymotion-tl)
 "imap <M-t> <c-o>:call Teasy()<CR> 
-"nmap <M-t> <Plug>(easymotion-bd-tl)
+nmap <M-t> <Plug>(easymotion-bd-tl)
 imap <M-t> <c-o><Plug>(QuickScopet)
 nmap <M-t> <Plug>(QuickScopet)
 xmap <M-t> <Plug>(QuickScopet)
@@ -245,7 +245,7 @@ omap <M-t> <Plug>(QuickScopet)
 nmap s <plug>Sneak_s
 nmap S <plug>Sneak_S
 nmap Z <plug>
-imap <c-t> <c-o><Plug>(easymotion-bd-t)
+imap <c-t> <c-o>f
 
 "Logical, since in normal we have s and S
 imap <c-d> <c-o><Plug>(easymotion-bd-W)
@@ -1327,16 +1327,17 @@ map  <expr> F repmo#ZapKey('<Plug>cusF')
 "xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 
-for keys in [[']E','[E'],[']a','[a'],[']d,[d'],[']e','[e'],[']h','[h'],['&','z&']]
+for keys in [[']E','[E'],[']a','[a'],[']d,[d'],[']e','[e'],[']h','[h'],['&','z&'], ['<F4>','<F3>'],[']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c']]
     call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
+" ,['<M-K>','<A-J>']
 "
 "for keys in [['l','h'],['k','j'], ['[[', ']]'], ['[]', ']['], [']m', '[m'], [']M', '[M'], [']c', '[c'] ,  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<M-K>','<A-J>'],['{','}'],['(',')']]
 "Not to mess with vim-tex [']]','[[']
-for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'] , [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<M-K>','<A-J>'],['{','}'],['(',')']]
-    execute 'silent noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
-    execute 'silent noremap <expr> '.keys[1]." repmo#Key('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
+for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'],  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ],['{','}'],['(',')']]
+    execute 'silent noremap <expr> '.keys[0]." repmo#SelfKey('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
+    execute 'silent noremap <expr> '.keys[1]." repmo#SelfKey('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
     "execute 'noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."')|sunmap ".keys[0]
     "execute 'noremap <expr> '.keys[1]." repmo#Key('".keys[1]."', '".keys[0]."')|sunmap ".keys[1]
 endfor
@@ -1356,7 +1357,7 @@ vnoremap <C-F> "xy:call HandleCF()<CR>p
 "endendfunction
 nnoremap <silent> <leader> :WhichKey '\'<CR>
 nnoremap <silent> m :WhichKey 'm'<CR>
-g:which_key_vertical=1
+let g:which_key_vertical=1
 
 function! Ff()
     let x=getline(".")
