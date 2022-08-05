@@ -1,12 +1,16 @@
 require("nvim-lsp-installer").setup {}
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
+require("grammar-guard").init()
 require'lspconfig'.powershell_es.setup{}
+--require'lspconfig'.grammarly.setup{
+     --filetypes = { "markdown" }
+ --}
 require('telescope').setup{}
 --require('fzf-lua').setup{} 
 local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '_Q', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+--vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+--vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '_q', vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
@@ -89,6 +93,10 @@ cmp.setup({
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    {
+    name = "dictionary",
+    keyword_length = 2,
+    },
     { name = 'ultisnips' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
@@ -153,10 +161,14 @@ require("lspconfig").vimls.setup{
     capabilities = capabilities,
     on_attach = on_attach,
 }
+require'lspconfig'.sumneko_lua.setup{
+    capabilities = capabilities,
+    on_attach = on_attach,
+}    
 require("aerial").setup({
     on_attach = function(bufnr)
         -- Toggle the aerial window with <leader>a
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '_s', '<cmd>AerialToggle!<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '\\s', '<cmd>AerialToggle!<CR>', {})
         -- Jump forwards/backwards with '{' and '}'
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
@@ -165,7 +177,45 @@ require("aerial").setup({
         vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
     end
 })
-
+--require("lspconfig").grammar_guard.setup({capabilities = capabilities,
+--on_attach = on_attach,
+--workspace = {
+    --library = vim.api.nvim_get_runtime_file("", true),
+--},
+  --cmd = { 'C:\\Users\\ekarni\\AppData\\Local\\nvim-data\\lsp_servers\\ltex\\ltex-ls\\bin\\ltex-ls.bat' }, -- add this if you install ltex-ls yourself
+	--settings = {
+		--ltex = {
+			--enabled = { "latex", "tex", "bib", "markdown" },
+			--language = "en",
+			--diagnosticSeverity = "information",
+			--setenceCacheSize = 2000,
+			--additionalRules = {
+				--enablePickyRules = true,
+				--motherTongue = "en",
+			--},
+			--trace = { server = "verbose" },
+			--dictionary = {'c:\\temp\\words'},
+			--disabledRules = {},
+			--hiddenFalsePositives = {},
+		--},
+	--},
+--})
+require("cmp_dictionary").setup({
+		dic = {
+			["*"] = { "c:\\temp\\words" },
+			spelllang = {
+				en_us = "c:\\temp\\words",
+			},
+		},
+		-- The following are default values.
+		--exact = 2,
+		--first_case_insensitive = false,
+		--document = false,
+		--document_command = "wn %s -over",
+		--async = false, 
+		--capacity = 5,
+		--debug = false,
+	})
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 --require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
   --capabilities = capabilities

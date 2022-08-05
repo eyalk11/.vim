@@ -6,16 +6,16 @@ let g:lastWinName = ""
 function! SaveLastWindow()
 
 if &bt == '' || &bt == 'help' || &ft == 'netranger' "|| &bt == 'nofile'
-	let cur= expand( '<afile>' )
-	"let cur = expand('%:p')
+    let cur= expand( '<afile>' )
+    "let cur = expand('%:p')
 
-	if cur == g:lastWinName || cur ==""
-		return
-	endif 
+    if cur == g:lastWinName || cur ==""
+        return
+    endif 
 
-	call add(g:lastWindows,cur) 
+    call add(g:lastWindows,cur) 
 
-	let g:lastWinName=cur
+    let g:lastWinName=cur
 endif
 
 endfunction 
@@ -34,41 +34,44 @@ command! -nargs=0 LastWindow call LastWindow()
 
 "insert tracking
 function! LoadInsertsForBuf()
-	"echo 'loading inserts'
+    echo 'loading inserts'
 if exists('b:inserts')
-	if len(b:inserts)>0
-		"echo('exit')
-		return 
-	endif 
+    if len(b:inserts)>0
+        "echo('exit')
+        return 
+    endif 
 endif 
 py3 << EOF
 import vim
 import pickle
 try:
-	input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
-	inserts=pickle.load(input)
-	input.close()
+    assert len(inserts)>0
 except:
-    vim.command('echom "failed loading"')
-    inserts={}
+    try:
+        input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
+        inserts=pickle.load(input)
+        input.close()
+    except:
+        vim.command('echom "failed loading"')
+        inserts={}
 dic={}
 bufn=vim.eval('expand("%:p")')
 if bufn in inserts:
-	dic=inserts[bufn]
-	if type(dic)==dict:
-		if '' in dic:
-			dic.pop('')
-		else:
-			pass
-	else:
-		vim.command('echom "strange"')
+    dic=inserts[bufn]
+    if type(dic)==dict:
+        if '' in dic:
+            dic.pop('')
+        else:
+            pass
+    else:
+        vim.command('echom "strange"')
 EOF
 "echo 'loading inserts2'
-echom py3eval("dic") 
+"echom py3eval("dic") 
 let b:inserts = py3eval("dic")
 
 if type(b:inserts)!=4
-	let b:inserts={}
+    let b:inserts={}
 endif
 endfunction
 
@@ -88,97 +91,97 @@ function! SaveLastInsert()
 endfunction
 
 function! SaveLastCopy()
-	let reg= v:event['regname']
-	"echo v:event['regcontents']
-	if !exists("b:save_inserts")
-		let b:save_inserts=1
-	endif 
-	 if (b:save_inserts==0)
-		 return 
-	 endif 
-	call AddInsert(getreg(reg))
+    let reg= v:event['regname']
+    "echo v:event['regcontents']
+    if !exists("b:save_inserts")
+        let b:save_inserts=1
+    endif 
+     if (b:save_inserts==0)
+         return 
+     endif 
+    call AddInsert(getreg(reg))
 endfunction
 
 function! AddInsert(str)
-	if len(a:str)>1000
-		return
-	endif
-	if !exists('b:inserts')
-		let b:inserts={}
-		let b:lastinsert=''
-	endif
+    if len(a:str)>1000
+        return
+    endif
+    if !exists('b:inserts')
+        let b:inserts={}
+        let b:lastinsert=''
+    endif
 
-	for k in split(a:str,'\n')
-		call AddInsertInternal(k)
-	endfor 
+    for k in split(a:str,'\n')
+        call AddInsertInternal(k)
+    endfor 
 
 endfunction
 
 function! AddInsertInternal(str)
-	"for now
-	if len(b:inserts)>1000
-		"enters the start and removes from end
-		let n=keys(b:inserts) 
-		call remove(b:inserts,n[1000])
-	endif 
+    "for now
+    if len(b:inserts)>1000
+        "enters the start and removes from end
+        let n=keys(b:inserts) 
+        call remove(b:inserts,n[1000])
+    endif 
 
-	let ok=0
-	let stills=1  
-	let stindex=0
-	let str=""
-	let strt = substitute(a:str,"\<BS>",'\n','g')
-	for i in range(len(strt))
-		if match(strt[i],'\s')!=0
-			let stills=0
-		else 
-			if stills
-				"let stindex+=1 
-				continue
-			endif 
-		endif 
+    let ok=0
+    let stills=1  
+    let stindex=0
+    let str=""
+    let strt = substitute(a:str,"\<BS>",'\n','g')
+    for i in range(len(strt))
+        if match(strt[i],'\s')!=0
+            let stills=0
+        else 
+            if stills
+                "let stindex+=1 
+                continue
+            endif 
+        endif 
 
-		if match(strt[i],'\n')==0
-			if len(str)>0
-				let str=str[:-2]
-				continue
-			endif 
-		endif 
-		if match(strt[i],'\w')==0
-			let ok+=1
-		endif
-		if match(strt[i],'\p')==0
-			let str.=strt[i]
-		endif 
-	endfor
-	if ok<3
-		return
-	endif
-	let b:inserts[str]=localtime()
-endf	
+        if match(strt[i],'\n')==0
+            if len(str)>0
+                let str=str[:-2]
+                continue
+            endif 
+        endif 
+        if match(strt[i],'\w')==0
+            let ok+=1
+        endif
+        if match(strt[i],'\p')==0
+            let str.=strt[i]
+        endif 
+    endfor
+    if ok<3
+        return
+    endif
+    let b:inserts[str]=localtime()
+endf    
 
 function! RecallInserts2()
-	if !exists('b:inserts')
-		return
-	endif 
+    if !exists('b:inserts')
+        return
+    endif 
     let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
     :call fzf#run({'source': ls ,'sink':function('PInsert'),'options': '-m'})
 endfunction
 
 function! RecallInserts()
-	if !exists('b:inserts')
-		return
-	endif 
+    if !exists('b:inserts')
+        return
+    endif 
     let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
-	:call fzf#run({'source': ls,'sink':function('PInsert2'),'options': '-m'})
+    :call fzf#run({'source': ls,'sink':function('PInsert2'),'options': '-m'})
 endfunction
 
 function! GetAllInserts()
     let ls={}
     let lastbuf=bufnr('$')
     for i in range(lastbuf)
-		let bufn=bufname(i)
-		if bufn!=''
-			let t=getbufvar(i,'inserts')
+        let bufn=bufname(i)
+        if bufn!=''
+            let t=getbufvar(i,'inserts')
             if type(t)==4
                 let ls=extend(ls,t)
             endif
@@ -193,26 +196,26 @@ py3 << EOF
 import vim
 import pickle
 try:
-	input = open(vim.eval('g:vimloc')+'\\dirs.cache', 'rb')
-	dirs=pickle.load(input)
-	input.close()
+    input = open(vim.eval('g:vimloc')+'\\dirs.cache', 'rb')
+    dirs=pickle.load(input)
+    input.close()
 except:
-	dirs=[]
+    dirs=[]
 vim.command("let g:dirs = " + str(dirs).replace('\\\\','\\'))
 EOF
 endfunction
 
 function! SaveLastDir()
-	if !exists('g:dirs')
-		call LoadDir()
-		let g:lastdir=''
-	endif
+    if !exists('g:dirs')
+        call LoadDir()
+        let g:lastdir=''
+    endif
 
-	let reg=getcwd()
-	if reg==g:lastdir
-		return
-	endif
-	call add(g:dirs,reg)
+    let reg=getcwd()
+    if reg==g:lastdir
+        return
+    endif
+    call add(g:dirs,reg)
 py3 << EOF
 import vim
 import pickle
@@ -222,28 +225,28 @@ dirs=list(set(dirs))
 pickle.dump(dirs ,output)
 output.close()
 EOF
-	let g:lastdir=reg
+    let g:lastdir=reg
 endfunction
 
 
 function! SaveInsertsFunc(a)
-	py3 dic={}
-	py3 import os
-	let lastbuf=bufnr('$')
-	for i in range(lastbuf)
-		let bufn=bufname(i)
+    py3 inserts={}
+    py3 import os
+    let lastbuf=bufnr('$')
+    for i in range(lastbuf)
+        let bufn=bufname(i)
 
-		if bufn!=''
-			let t=getbufvar(i,'inserts')
-			py3 key=vim.eval('expand("#'+str(vim.eval('i'))+':p")')
-			py3 dic[key]=vim.eval('t')
-		endif
+        if bufn!=''
+            let t=getbufvar(i,'inserts')
+            py3 key=vim.eval('expand("#'+str(vim.eval('i'))+':p")')
+            py3 inserts[key]=vim.eval('t')
+        endif
 endfor
 py3 << EOF
 import vim
 import pickle
 output = open(vim.eval('g:vimloc')+'\\inserts.cache', 'wb')
-pickle.dump(dic ,output)
+pickle.dump(inserts ,output)
 output.close()
 EOF
 endfunction
@@ -266,16 +269,16 @@ function! RunPython2(match,run)
 PY << EOF
 import vim
 try:
-	match=vim.eval("a:match")
-	retval=eval(vim.eval("a:run"),globals())
+    match=vim.eval("a:match")
+    retval=eval(vim.eval("a:run"),globals())
 except Exception as e:
-	import traceback
-	exp=traceback.format_exc()
-	retval=None
-	try:
-		vim.command("echom pyxeval(\"exp\")")
-	except:
-		pass
+    import traceback
+    exp=traceback.format_exc()
+    retval=None
+    try:
+        vim.command("echom pyxeval(\"exp\")")
+    except:
+        pass
 
 if retval==None: retval=match
 #vim.command("let retInVim=\"" + str(retval).replace("\"","\\\"") + "\"")
@@ -291,27 +294,27 @@ try:
     match=vim.eval("a:match")
     exec(vim.eval("a:run"))
 except Exception as e:
-	import traceback
-	exp=traceback.format_exc()
-	try:
-		vim.command("echom \"" + str(exp).replace("\"","\\\"") + "\"")
-	except:
-		pass
+    import traceback
+    exp=traceback.format_exc()
+    try:
+        vim.command("echom \"" + str(exp).replace("\"","\\\"") + "\"")
+    except:
+        pass
 EOF
 return ""
 endfunction
 
 function! GL(arg) range
     let arg= substitute(a:arg,'\\/','REALSLASH','g')
-	let lst=matchlist(arg,'/\(.\{-\}\)/\(.\{-}\) \(.*\)$')
+    let lst=matchlist(arg,'/\(.\{-\}\)/\(.\{-}\) \(.*\)$')
     let lst[1]= substitute(lst[1],'REALSLASH','/','g')
     let lst[3]= substitute(lst[3],'REALSLASH','/','g')
-"	echo lst
-	if lst[2]==#"rpy"
-		exec a:firstline. "," . a:lastline . ":s\/" . lst[1] . "/\\=RunPython2(submatch(1),\"". escape(lst[3],"\"//") . "\")"
-	elseif lst[2]==#"py"
-		exec a:firstline. "," . a:lastline . ":s\/" . lst[1] . "/\\=submatch(0) . RunPython(submatch(1),\"". escape(lst[3],"\"//") . "\")"
-	endif
+"   echo lst
+    if lst[2]==#"rpy"
+        exec a:firstline. "," . a:lastline . ":s\/" . lst[1] . "/\\=RunPython2(submatch(1),\"". escape(lst[3],"\"//") . "\")"
+    elseif lst[2]==#"py"
+        exec a:firstline. "," . a:lastline . ":s\/" . lst[1] . "/\\=submatch(0) . RunPython(submatch(1),\"". escape(lst[3],"\"//") . "\")"
+    endif
 endfunction
 
 command! -nargs=1 -range GL <line1>,<line2>call GL(<f-args>)
@@ -330,31 +333,31 @@ command! -nargs=1 M call Matches('\c'.<f-args>)
 ca Y M
 
 function! Matches(pat)
-	let buffer=bufnr("") "current buffer number
-	let b:lines=[]
-	"the right way to escape!!
-	execute ":%g/\\V" . escape(a:pat,'/\?') . "/let b:lines+=[{'bufnr':" . 'buffer' . ", 'lnum':" . "line('.')" . ", 'text': escape(getline('.'),'\"')}]"
+    let buffer=bufnr("") "current buffer number
+    let b:lines=[]
+    "the right way to escape!!
+    execute ":%g/\\V" . escape(a:pat,'/\?') . "/let b:lines+=[{'bufnr':" . 'buffer' . ", 'lnum':" . "line('.')" . ", 'text': escape(getline('.'),'\"')}]"
     "call setloclist(0, [], ' ', {'items': b:lines})
     "call setloclist(0,b:lines)
-	call setqflist(b:lines)
-	copen
+    call setqflist(b:lines)
+    copen
 endfunction
 function! MatchesF(pat)
-	let buffer=bufnr("") "current buffer number
-	let b:lines=[]
-	"no escape!!
-	execute ":%g/" . a:pat . "/let b:lines+=[{'bufnr':" . 'buffer' . ", 'lnum':" . "line('.')" . ", 'text': escape(getline('.'),'\"')}]"
+    let buffer=bufnr("") "current buffer number
+    let b:lines=[]
+    "no escape!!
+    execute ":%g/" . a:pat . "/let b:lines+=[{'bufnr':" . 'buffer' . ", 'lnum':" . "line('.')" . ", 'text': escape(getline('.'),'\"')}]"
     "call setloclist(0, [], ' ', {'items': b:lines})
   "  call setloclist(0,b:lines)
-	"lopen
-	call setqflist(b:lines)
-	copen
+    "lopen
+    call setqflist(b:lines)
+    copen
 endfunction
 function! Matches2(a,...)
-	let where=get(a:,1,'**/*')
-	:set eventignore=all
+    let where=get(a:,1,'**/*')
+    :set eventignore=all
     execute ":vimgrep " . '/\V'.escape(a:a,'/\?') . "/j ". where
-	:set eventignore=
+    :set eventignore=
     copen
 endfunction
 
@@ -366,20 +369,20 @@ let g:special_insert = 0
 
 
 function! CheckSpecialInsert()
-	if g:special_insert
-		au monitor CursorHoldI * call feedkeys(':echo "Insert timed out"')
-	endif
+    if g:special_insert
+        au monitor CursorHoldI * call feedkeys(':echo "Insert timed out"')
+    endif
 endfunction
 
 function! StartSpecialInsert()
-	let g:special_insert=1
+    let g:special_insert=1
 endfunction
 
 function! EndSpecialInsert()
-	if g:special_insert
-		au! monitor CursorHoldI
-	endif
-	let g:special_insert=0
+    if g:special_insert
+        au! monitor CursorHoldI
+    endif
+    let g:special_insert=0
 endfunction
 
 
@@ -387,7 +390,7 @@ augroup monitor
     au!
     " when vim starts kick off the infinitely repeating calls to the monitor function
     au InsertEnter * call CheckSpecialInsert()
-	au InsertLeave * call EndSpecialInsert()    " when cursor moves in Insert mode update the last activity time
+    au InsertLeave * call EndSpecialInsert()    " when cursor moves in Insert mode update the last activity time
 augroup END
 
 
@@ -425,7 +428,7 @@ autocmd InsertLeave * execute 'normal! mM'
 "
 au ExitPre call StopTimerFunc() 
 function! StopTimerFunc()
-	call timer_stop(g:autosaveWS)
+    call timer_stop(g:autosaveWS)
 endfunction
 
 let g:last_copied=""
@@ -436,9 +439,9 @@ function! TimerFunc(a)
     let minbu=MinExec(':buffers')
     "echom minbu
     "echo "called"
-	"multiple instances of neovim cause trouble when tried to save. I verify
-	"that only in the neovim-qt (and make sure only 1 is opened), it will save
-	""exists('g:GuiLoaded') ||
+    "multiple instances of neovim cause trouble when tried to save. I verify
+    "that only in the neovim-qt (and make sure only 1 is opened), it will save
+    ""exists('g:GuiLoaded') ||
     "if g:init==0
         "!cp /Users/eyalkarni/vimpy3/.git/cs_workspaces /tmp/befrep 
         "echom "replacing"
@@ -459,15 +462,15 @@ function! TimerFunc(a)
     endif
 
         ":profile stop
-	"keep track of external clipboard using registers.
-	if g:last_copied!=@+ && @+!=@"
-		"from o to w
-		for i in range(char2nr('v'),char2nr('o'),-1)
-			exe "let @".nr2char(i+1)." = @". nr2char(i) 
-		endfor
-		let @o=@+
-		let g:last_copied=@+
-	endif
+    "keep track of external clipboard using registers.
+    if g:last_copied!=@+ && @+!=@"
+        "from o to w
+        for i in range(char2nr('v'),char2nr('o'),-1)
+            exe "let @".nr2char(i+1)." = @". nr2char(i) 
+        endfor
+        let @o=@+
+        let g:last_copied=@+
+    endif
 
 endfunction
 
@@ -489,12 +492,12 @@ function! SaveLastReg()
 endfunction 
 "
 function! Tailf()
-	while 1
-		e
-		normal G
-		redraw
-		sleep 1
-	endwhile
+    while 1
+        e
+        normal G
+        redraw
+        sleep 1
+    endwhile
 endfunction
 command! Tailf call Tailf()<CR>
 "TN
@@ -502,8 +505,8 @@ command! Tailf call Tailf()<CR>
 
 function! HandleTN(...)
 if a:000==['']
-		tabnew 
-		return 0
+        tabnew 
+        return 0
 endif 
 return 1
 endfunction

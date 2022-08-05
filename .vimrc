@@ -48,6 +48,7 @@ call plug#begin('~/.vim/plugged')
 "Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 " optional for icon support
 "plug 'brettanomyces/nvim-terminus'
+Plug 'brymer-meneses/grammar-guard.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plug 'ray-x/navigator.lua'
@@ -62,6 +63,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
+Plug 'uga-rosa/cmp-dictionary'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...

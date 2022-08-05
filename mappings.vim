@@ -53,13 +53,14 @@ nnoremap <leader>' ``
 noremap m? ?
 
 
-:nmap s :exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap S :exec "normal a".nr2char(getchar())."\e"<CR>
-"inserts one char (or more with count)
+:nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
+:nmap ! :exec "normal a".nr2char(getchar())."\e"<CR>
+
 "nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
 "nmap S :<C-U>call InsertAfter(v:count1)<CR>
-nnoremap q t
+"nnoremap q t
+
 "The <M-t> provides omni tl-search 
 
 nmap <M-f> <Plug>(easymotion-s2)
@@ -132,15 +133,15 @@ noremap _b :bnext<CR>
 noremap _B :bprev<CR>
 
 "Grammerous M- mappings
-imap <M-Down> <esc>
-imap <M-Up> <esc>
-imap <M-Left> <esc>
-imap <M-Right> <esc>
+"imap <M-Down> <esc>
+"imap <M-Up> <esc>
+"imap <M-Left> <esc>
+"imap <M-Right> <esc>
 
-nmap <M-Down> <Plug>(grammarous-move-to-next-error)	
-nmap <M-Up> <Plug>(grammarous-move-to-previous-error)
-nmap <M-Left> <Plug>(grammarous-open-info-window)	
-nmap <M-Right> <Plug>(grammarous-fixit)	
+"nmap <M-Down> <Plug>(grammarous-move-to-next-error)	
+"nmap <M-Up> <Plug>(grammarous-move-to-previous-error)
+"nmap <M-Left> <Plug>(grammarous-open-info-window)	
+"nmap <M-Right> <Plug>(grammarous-fixit)	
 
 
 "F keys
@@ -324,8 +325,10 @@ imap <c-a> <c-o><c-a>
 "x
 "
 
+"Insert mode actions
 
 
+imap <c-w> <c-o>db
 imap <M-Right> <c-o>W
 imap <M-Left> <c-o>B
 imap <M-Up> <c-h>
@@ -807,6 +810,11 @@ function! VspIfNeed()
     endfor
     vsp
 endfunction
+function! OnRight()
+    let k=getwininfo(win_getid())[0]
+    return (k['winrow']==1 && k['wincol']>1)
+endfunction 
+
 "opens file
 nmap <leader>of :call VspIfNeed()<CR>ml<M-Bslash>
 nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
@@ -1076,9 +1084,18 @@ function! IfTerm()
        call feedkeys('i') 
     endif
 endfunc 
-"move from and to terminal
-nnoremap <C-'> <C-w>l:call IfTerm()<CR>
-tnoremap <C-'> <C-\><C-n><C-w>h
+
+function! GoOther()
+    if OnRight()
+        call feedkeys("\<c-w>h")
+    else
+        call feedkeys("\<c-w>l")
+    endif
+endfunction
+    
+"move between two panels (left and right) 
+nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
+tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
 " terminal mappings
 if has('vim')
 	:tnoremap <C-V> <C-W>"+
@@ -1347,6 +1364,8 @@ map  <expr> F repmo#ZapKey('<Plug>cusF')
 
 "xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+nmap ]d :lua vim.diagnostic.goto_next()<CR>
+nmap [d :lua vim.diagnostic.goto_prev()<CR>
 
 for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"],[']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c']]
     call RepRemap(keys[0],keys[1])

@@ -1,4 +1,5 @@
 
+set dictionary=C:\temp\words
 "Vim settings
 "includes autocmds and autocmds for file types and commands
 "Should be indepdenent of plugins!
@@ -336,21 +337,21 @@ autocmd filetype vim let b:auto_save = 1
 
 
 
-    let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
-    let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
-    "autocmd! TermEnter * :startinsert
+let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
+let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
+"autocmd! TermEnter * :startinsert
 
-    "commands
-    "
-    command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert topleft split <args>
-    command! -nargs=*  -complete=help Help vert :help <args>
+"commands
+"
+command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert topleft split <args>
+command! -nargs=*  -complete=help Help vert :help <args>
 
-    " search
-    set noincsearch
-    :noh
-    set nohlsearch
+" search
+set noincsearch
+:noh
+set nohlsearch
 
-    augroup vimrc-noincsearch-highlight
-        autocmd!
-        autocmd CmdlineLeave / :set noincsearch | :noh
-    augroup END
+augroup vimrc-noincsearch-highlight
+    autocmd!
+    autocmd CmdlineLeave / :set noincsearch | :noh
+augroup END
