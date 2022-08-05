@@ -1,5 +1,6 @@
 require("nvim-lsp-installer").setup {}
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
+require'lspconfig'.powershell_es.setup{}
 require('telescope').setup{}
 --require('fzf-lua').setup{} 
 local opts = { noremap=true, silent=true }
