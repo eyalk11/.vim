@@ -12,7 +12,7 @@ if executable('pyls')
         \ 'allowlist': ['python'],
         \ })
 endif
-"packadd! syntax-vim-ex
+"packadd! syntax-vim-ex asdasd
 colorscheme onedark
 
 if or(or(has('python_dynamic'),has('python')),has('python3'))
@@ -685,6 +685,7 @@ let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#use_ic_scs = 1
-#vim terminal
+
+"vim terminal
 "let g:Terminal_PyVersion =3 
 "let g:Terminal_PyExe = g:python3_host_prog

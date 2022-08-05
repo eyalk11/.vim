@@ -157,8 +157,8 @@ nnoremap <S-F6> "xddkk"xp
 nnoremap <S-F7> "xyy"xp
 nnoremap <S-F8> "xdd"xp
 
-vmap <F3> :TREPLSendSelection<CR>
-nmap <F3> :TREPLSendLine<CR>
+vmap <F3> "xygv:TREPLSendSelection<CR>
+nmap <F3> :call AddInsert(getline('.'))<CR>:TREPLSendLine<CR>
 
 
 "nmap <F3>        <Plug>VimspectorStepOut
@@ -722,8 +722,8 @@ nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
 "nnoremap <silent> <C-a>G :call FZFOpen(':FzfRg! -e')<CR>
 nnoremap <silent> <C-a>C :call FZFOpen(':Commands')<CR>
 "nnoremap <silent> <C-a>l :call FZFOpen(':BLines')<CR>
-"c-l is lines in insert mode
-nnoremap <silent> <C-a>l :call fzf#vim#buffer_lines(sink=function('PInsert'))<CR>
+"c-l is lines in insert mode aaa
+nnoremap <silent> <C-a>l :call GetAllInserts()<CR>
 nnoremap <silent> <C-a>L m':LeaderfLineAll<CR>
 nnoremap <silent> <C-a>r :LeaderfRgRecall<CR>
 "files current dir
@@ -748,7 +748,7 @@ nnoremap <silent> <C-a><C-a> <C-a>
 "does diff of all files (could be vs version) 
 nnoremap <leader>Gs :Gstatus<CR>
 nnoremap <leader>Gc :Gcommit -v -q<CR>
-nnoremap <leader>Ga :Git add %<CR>
+nnoremap <leader>Ga :sil Git add %<CR>
 nnoremap <leader>Gt :Gcommit -v -q %<CR>
 nnoremap <leader>Gd :Gdiff<CR>
 nmap <leader>GD Git! diff<CR>
@@ -1317,6 +1317,7 @@ function! DefineMapping()
 
 map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 
+nmap <c-;> ;
 map  <expr> ; repmo#LastKey('<Plug>Sneak_;')|sunmap ;
 map  <expr> <C-\> repmo#LastRevKey('<Plug>Sneak_,')
 

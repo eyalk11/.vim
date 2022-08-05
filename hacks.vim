@@ -49,8 +49,9 @@ try:
 	inserts=pickle.load(input)
 	input.close()
 except:
-    vim.command('echom failed loading')
+    vim.command('echom "failed loading"')
     inserts={}
+dic={}
 bufn=vim.eval('expand("%:p")')
 if bufn in inserts:
 	dic=inserts[bufn]
@@ -60,13 +61,13 @@ if bufn in inserts:
 		else:
 			pass
 	else:
-		dic={}
-else:
-	dic={}
+		vim.command('echom "strange"')
 EOF
 "echo 'loading inserts2'
+echom py3eval("dic") 
 let b:inserts = py3eval("dic")
-if len(b:inserts)==0
+
+if type(b:inserts)!=4
 	let b:inserts={}
 endif
 endfunction
@@ -152,26 +153,40 @@ function! AddInsertInternal(str)
 	if ok<3
 		return
 	endif
-	"if match(a:str,'^[\x20-\x7E\x09\x0A]*$')==0
-	
-	"let t=a:str[stindex:]
-	let b:inserts[str]='a'
-
-	
+	let b:inserts[str]=localtime()
 endf	
+
 function! RecallInserts2()
 	if !exists('b:inserts')
 		return
 	endif 
-	:call fzf#run({'source': uniq(keys(b:inserts)),'sink':function('PInsert'),'options': '-m'})
+    let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
+    :call fzf#run({'source': ls ,'sink':function('PInsert'),'options': '-m'})
 endfunction
+
 function! RecallInserts()
 	if !exists('b:inserts')
 		return
 	endif 
-	:call fzf#run({'source': uniq(keys(b:inserts)),'sink':function('PInsert2'),'options': '-m'})
+    let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
+	:call fzf#run({'source': ls,'sink':function('PInsert2'),'options': '-m'})
 endfunction
 
+function! GetAllInserts()
+    let ls={}
+    let lastbuf=bufnr('$')
+    for i in range(lastbuf)
+		let bufn=bufname(i)
+		if bufn!=''
+			let t=getbufvar(i,'inserts')
+            if type(t)==4
+                let ls=extend(ls,t)
+            endif
+        endif
+    endfor
+    let ls=sort(keys(ls), {arg2, arg1 -> ls[arg1] - ls[arg2]})
+    :call fzf#run({'source': ls,'sink':function('PInsert2'),'options': '-m'})
+endfunction
 "dirs tracking
 function! LoadDir()
 py3 << EOF
