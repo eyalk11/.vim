@@ -128,7 +128,6 @@ map _# :e #<CR>
 "nmap <M-[> <bar><UP><CR>
 
 nmap _t :exe "tabn ".g:lasttab<CR>
-
 noremap _b :bnext<CR>
 noremap _B :bprev<CR>
 
@@ -159,7 +158,8 @@ nnoremap <S-F8> "xdd"xp
 
 vmap <F3> "xygv:TREPLSendSelection<CR>
 nmap <F3> :call AddInsert(getline('.'))<CR>:TREPLSendLine<CR>
-
+nmap <F4> :exec("Texec clear\r\n")<CR>:exec("Texec &" .expand("%:p") . "\r\n")<CR>
+nmap <F8> :exec("Texec clear\r\n")<CR>
 
 "nmap <F3>        <Plug>VimspectorStepOut
 "nmap <F4>        :call vimspector#Launch()<CR>
@@ -759,8 +759,9 @@ nnoremap <leader>Gw :Gwrite<CR>
 nnoremap <leader>Gl :silent! Glog<CR>
 "Git log current
 nnoremap <leader>GL :0GcLog<CR>
-nnoremap <leader>Gp :Ggrep<Space>
+nnoremap <leader>Gg :Ggrep<Space>
 nnoremap <leader>Gm :Gmove<Space>
+nnoremap <leader>Gp :Gpush<CR>
 nnoremap <leader>Gb :Git branch<Space>
 nnoremap <leader>Go :Git checkout<Space>
 nnoremap <leader>Gps :Dispatch! git push<CR>
@@ -1070,6 +1071,14 @@ vnoremap <Space> zf
 nmap <leader><c-t> vaw:Trans<CR>
 vmap <leader>t :Trans<CR>
 
+function! IfTerm()
+    if &bt=="terminal"
+       call feedkeys('i') 
+    endif
+endfunc 
+"move from and to terminal
+nnoremap <C-'> <C-w>l:call IfTerm()<CR>
+tnoremap <C-'> <C-\><C-n><C-w>h
 " terminal mappings
 if has('vim')
 	:tnoremap <C-V> <C-W>"+
