@@ -748,7 +748,7 @@ nnoremap <silent> <C-a><C-a> <C-a>
 "does diff of all files (could be vs version) 
 nnoremap <leader>Gs :Gstatus<CR>
 nnoremap <leader>Gc :Gcommit -v -q<CR>
-nnoremap <leader>Ga :Gcommit --amend<CR>
+nnoremap <leader>Ga :Git add %<CR>
 nnoremap <leader>Gt :Gcommit -v -q %<CR>
 nnoremap <leader>Gd :Gdiff<CR>
 nmap <leader>GD Git! diff<CR>
@@ -1338,7 +1338,7 @@ map  <expr> F repmo#ZapKey('<Plug>cusF')
 "xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 
-for keys in [[']E','[E'],[']a','[a'],[']d,[d'],[']e','[e'],[']h','[h'],['&','z&'], ['<F4>','<F3>'],[']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c']]
+for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"],[']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c']]
     call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
