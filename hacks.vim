@@ -45,11 +45,12 @@ py3 << EOF
 import vim
 import pickle
 try:
-	input = open(vim.eval('g:vimloc')+'/inserts.cache', 'rb')
+	input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
 	inserts=pickle.load(input)
 	input.close()
 except:
-	inserts={}
+    vim.command('echom failed loading')
+    inserts={}
 bufn=vim.eval('expand("%:p")')
 if bufn in inserts:
 	dic=inserts[bufn]
@@ -226,7 +227,7 @@ endfor
 py3 << EOF
 import vim
 import pickle
-output = open(vim.eval('g:vimloc')+'/inserts.cache', 'wb')
+output = open(vim.eval('g:vimloc')+'\\inserts.cache', 'wb')
 pickle.dump(dic ,output)
 output.close()
 EOF

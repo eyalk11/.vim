@@ -685,3 +685,6 @@ let g:sneak#s_next = 0
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#use_ic_scs = 1
+#vim terminal
+"let g:Terminal_PyVersion =3 
+"let g:Terminal_PyExe = g:python3_host_prog

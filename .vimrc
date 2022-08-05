@@ -21,9 +21,10 @@
 "Alt - q is the new macro recording ....
 " also 'I and `I made to work.
 " let us remember that ! is `
-" Gdiffsplit! for merge!!!!
+" Gdiffsplit! for merge!!!! onlyplg is minimal.
+
 let g:minimal = 0
-let g:onlyplug="'mg979/vim-visual-multi'"
+let g:onlyplug="'mg979/vim-visual-multi'" 
 let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
@@ -42,6 +43,8 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+"Plug 'tc50cal/vim-terminal'
+
 "Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 " optional for icon support
 "plug 'brettanomyces/nvim-terminus'
@@ -79,6 +82,7 @@ Plug 'benknoble/popsikey'
 Plug 'jacob-ogre/vim-syncr'
 Plug 'inkarkat/vim-SpellCheck'
 Plug 'echuraev/translate-shell.vim', { 'do': 'wget -O ~/.vim/trans git.io/trans && chmod +x ~/.vim/trans' }
+":VimscriptLastError finds last error
 Plug 'rbtnn/vim-vimscript_lasterror'
 "Plug 'mg979/vim-yanktools'
 Plug 'matze/vim-tex-fold' 

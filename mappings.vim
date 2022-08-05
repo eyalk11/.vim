@@ -157,15 +157,26 @@ nnoremap <S-F6> "xddkk"xp
 nnoremap <S-F7> "xyy"xp
 nnoremap <S-F8> "xdd"xp
 
+vmap <F3> :TREPLSendSelection<CR>
+nmap <F3> :TREPLSendLine<CR>
 
-nmap <F3>        <Plug>VimspectorStepOut
-nmap <F4>        :call vimspector#Launch()<CR>
-nmap <F6>         <Plug>VimspectorContinue
-nmap <F7>        <Plug>VimspectorStepInto
-nmap <F8>        <Plug>VimspectorStepOver
-nmap <F9>         <Plug>VimspectorToggleBreakpoint
-nmap <leader><F9> <Plug>VimspectorToggleConditionalBreakpoint
-nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+
+"nmap <F3>        <Plug>VimspectorStepOut
+"nmap <F4>        :call vimspector#Launch()<CR>
+"nmap <F6>         <Plug>VimspectorContinue
+"nmap <F7>        <Plug>VimspectorStepInto
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap <F8>        <Plug>VimspectorStepOver
+"nmap <F9>         <Plug>VimspectorToggleBreakpoint
+"nmap <leader><F9> <Plug>VimspectorToggleConditionalBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
+"nmap _<F9>         <Plug>VimspectorAddFunctionBreakpoint
 
 
 map <silent> <F5>         <Plug>(IPy-Run)

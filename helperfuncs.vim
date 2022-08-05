@@ -1,7 +1,6 @@
 func! GrepPy()
     call AddFiles("find . -iname '*.py' | grep -v __init__")
 endfunc
-
 func! AddFiles(grep)
 redir => tmp
    call RunPS('RunBash "' . a:grep . '"')
