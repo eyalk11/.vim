@@ -32,9 +32,9 @@ endfunction
 
 command! -nargs=0 LastWindow call LastWindow()
 
-"insert tracking
+"insert tracking aaaa
 function! LoadInsertsForBuf()
-    echo 'loading inserts'
+    "echo 'loading inserts'
 if exists('b:inserts')
     if len(b:inserts)>0
         "echo('exit')
@@ -50,10 +50,12 @@ except:
     try:
         input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
         inserts=pickle.load(input)
+        baseinserts=(inserts if type(inserts)==dict else {})
         input.close()
     except:
         vim.command('echom "failed loading"')
         inserts={}
+        baseinserts={}
 dic={}
 bufn=vim.eval('expand("%:p")')
 if bufn in inserts:
@@ -64,7 +66,8 @@ if bufn in inserts:
         else:
             pass
     else:
-        vim.command('echom "strange"')
+        pass
+        #vim.command('echom "strange"')
 EOF
 "echo 'loading inserts2'
 "echom py3eval("dic") 
@@ -230,15 +233,16 @@ endfunction
 
 
 function! SaveInsertsFunc(a)
-    py3 inserts={}
-    py3 import os
+    "we start with the original pickle. We then add the opened buffers.
+    py3 inserts=baseinserts
     let lastbuf=bufnr('$')
     for i in range(lastbuf)
         let bufn=bufname(i)
+        let bufpath= expand("#".i.":p")
 
         if bufn!=''
             let t=getbufvar(i,'inserts')
-            py3 key=vim.eval('expand("#'+str(vim.eval('i'))+':p")')
+            py3 key=vim.eval('bufpath')
             py3 inserts[key]=vim.eval('t')
         endif
 endfor
@@ -253,7 +257,7 @@ endfunction
 
 if has('nvim')
 :autocmd InsertLeave * call SaveLastInsert()
-:autocmd TextYankPost * call SaveLastCopy()
+":autocmd TextYankPost * call SaveLastCopy()
 :autocmd TextYankPost * call SaveLastReg()
 :autocmd BufRead * call LoadInsertsForBuf()
 ":autocmd BufNewFile if !exists('b:inserts') <bar> let b:inserts=[]  dsfsdf
@@ -324,14 +328,24 @@ command! -nargs=1 TP call TogglePS()
 
 "Matches
 "
-command! -nargs=* VG call Matches2(<f-args>)
+command! -nargs=* VG call Matches2(<q-args>)
 
-command! -nargs=1 MESC call MatchesF(<f-args>)
-command! -nargs=1 MC call Matches(<f-args>)
-command! -nargs=1 MW call Matches('\<'.<f-args>.'\>')
-command! -nargs=1 M call Matches('\c'.<f-args>)
+command! -nargs=1 MESC call MatchesF(<q-args>)
+command! -nargs=1 MC call Matches(<q-args>)
+command! -nargs=1 MW call Matches('\<'.<q-args>.'\>')
+command! -nargs=1 M call InMatches(<q-args>)
 ca Y M
 
+function! InMatches(pat)
+    let buffer=bufnr("") "current buffer number
+    let b:lines=[]
+    "the right way to escape!!
+    execute ":%g/\\V\\c" . escape(a:pat,'/\?') . "/let b:lines+=[{'bufnr':" . 'buffer' . ", 'lnum':" . "line('.')" . ", 'text': escape(getline('.'),'\"')}]"
+    "call setloclist(0, [], ' ', {'items': b:lines})
+    "call setloclist(0,b:lines)
+    call setqflist(b:lines)
+    copen
+endfunction
 function! Matches(pat)
     let buffer=bufnr("") "current buffer number
     let b:lines=[]

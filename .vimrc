@@ -1,6 +1,6 @@
 "
 " By Eyal Karni
-"
+" PYTHONPATH C:\Users\ekarni\AppData\Local\Programs\Python\Python39\Lib\site-packages
 ":let $PYTHONPATHCOC='/Users/eyalkarni/impacket/impacket;/usr/local/lib/python2.7/site-packages;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'
 " I will be applying some adaptations on my computer. That is only if the folder exists.
 " some tips : remember commenter \Cc , remember <c-u>  and <M-Bslash> windows , remember \C
@@ -24,7 +24,7 @@
 " Gdiffsplit! for merge!!!! onlyplg is minimal.
 
 let g:minimal = 0
-let g:onlyplug="'mg979/vim-visual-multi'" 
+let g:onlyplug='neovim/nvim-lspconfig' 
 let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
@@ -43,11 +43,13 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'kana/vim-arpeggio'
 "Plug 'tc50cal/vim-terminal'
 
 "Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 " optional for icon support
 "plug 'brettanomyces/nvim-terminus'
+Plug 'natecraddock/workspaces.nvim'
 Plug 'brymer-meneses/grammar-guard.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
@@ -56,6 +58,7 @@ Plug 'nvim-treesitter/nvim-treesitter-refactor'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'stevearc/aerial.nvim'
 Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
@@ -63,8 +66,9 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
+Plug 'ray-x/cmp-treesitter'
 Plug 'uga-rosa/cmp-dictionary'
-Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/nvim-cmp', { 'branch': 'main'}
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...
 Plug 'justinmk/vim-sneak'
@@ -99,7 +103,7 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'sjl/gundo.vim'
 
 Plug 'scrooloose/nerdcommenter'
-Plug 'rhysd/vim-grammarous'
+"Plug 'rhysd/vim-grammarous'
 Plug '907th/vim-auto-save'
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 "switch tabs
@@ -142,7 +146,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-fugitive' " Git
 Plug 'joshdick/onedark.vim'
-Plug 'dense-analysis/ale'
+"Plug 'dense-analysis/ale'
 "syntax highlight
 Plug 'slim-template/vim-slim'
 
@@ -178,6 +182,7 @@ call plug#end()
 else
     call plug#begin('~/.vim/plugged')
     exe "Plug ". g:onlyplug
+	Plug 'Houl/vim-repmo' "repeat moves
     call plug#end()
 endif
 "Plug 'ivanov/vim-ipython'
@@ -249,5 +254,8 @@ endfunction
 
 if g:minimal==0
     call Runit()
+else
+    exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
+	exe 'source' . " " . g:vimloc . "\\mappings.vim"
 endif 
 

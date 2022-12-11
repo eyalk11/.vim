@@ -32,10 +32,10 @@ func! TogglePS()
             let &shellquote=g:shq
             let &shellxquote=g:shxq
         else
-            let &shell = has('win32') ? 'powershell' : 'pwsh'
-            let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
-            let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
-            let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+            let &shell = executable('pwsh') ? 'powershell' : 'pwsh'
+            let &shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
+            let &shellredir = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+            let &shellpipe = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
             set shellquote= shellxquote=
         endif
         let g:pwmod= ! g:pwmod
@@ -59,6 +59,7 @@ function! ConvHex()
     let x=input('enter num:')
     exe "py3  print(hex(".x ."))"
 endfunction 
+
 function! ToggleVerbose()
     if !&verbose
         :!rm ~/.vim/verbose.log
@@ -315,7 +316,7 @@ endfunction
 function! MakeItFaster(adv)
 	if (a:adv)
 		:let g:airline_extensions = []
-		:CocDisable
+		":CocDisable
 		:ALEDisable
 		:NoMatchParen
 	:autocmd! InsertLeave *
@@ -326,6 +327,8 @@ function! MakeItFaster(adv)
 		"autocmd! FileWriteCmd *
 	"augroup END
 	endif
+    :autocmd! InsertLeave *
+    :autocmd! TextYankPost *
 	":GitGutterDisable
 	"autocmd! BufReadPre //*
 	":Fugitive?

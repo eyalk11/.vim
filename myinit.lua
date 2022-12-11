@@ -29,18 +29,25 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<c-k>', vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set('n', '_wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '_wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    ----vim.keymap.set('n', '_wl', function()
-        ----print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    ----end
-    ----, bufopts)
+    vim.keymap.set('n', '_wl', function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end
+    , bufopts)
     vim.keymap.set('n', '_D', vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set('n', 'gR', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', '_a', vim.lsp.buf.code_action, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    --vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
     vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
     ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
     ----vim.keymap.set('n','g0',require('navigator.symbols').document_symbols())
-    require("aerial").on_attach(client, bufnr)
+    --require("aerial").on_attach(client, bufnr)
+    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    --local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    local opts = { noremap=true, silent=true }
+
+    buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
 end
 
 local cmp = require'cmp'
@@ -169,17 +176,23 @@ require'lspconfig'.sumneko_lua.setup{
 
 vim.lsp.set_log_level("debug")
 
-require'lspconfig'.jedi_language_server.setup{
+require('lspconfig').pylsp.setup{
 capabilities = capabilities,
-   on_attach = on_attach,
-    init_options = {
-        jediSettings={
-        debug=true},
-        workspace = {
-             extraPaths = {'./src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input'}
-        }
-    }
+   on_attach = on_attach
 }
+--require'lspconfig'.jedi_language_server.setup{
+--capabilities = capabilities,
+   --on_attach = on_attach,
+   ----root_dir = function() return vim.loop.cwd() end,
+   --init_options = {
+        --jediSettings={
+        --debug=true},
+        --workspace = {
+            --environmentPath= 'C:\\Users\\ekarni\\compare-my-stocks\\venv\\Scripts\\python.exe',
+             --extraPaths ={'src\\compare_my_stocks','./src/compare_my_stocks','src/compare_my_stocks', './src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./gui','./engine','./input','src\\compare_my_stocks\\engine','src\\compare_my_stocks\\gui'}
+        --}
+    --}
+--}
 require("aerial").setup({
     on_attach = function(bufnr)
         -- Toggle the aerial window with <leader>a

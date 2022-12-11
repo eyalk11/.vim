@@ -160,7 +160,7 @@ let g:ctrlp_show_hidden = 1
 
 let g:plug_url_format = 'https://github.com/%s.git'
 
-
+"asdasdasd
 "autocompleting
 set wildmode=list:longest,list:full
 " File type patches
@@ -479,6 +479,12 @@ function! FZFOpen(command_str)
   endif
   exe 'normal! ' . a:command_str . "\<cr>"
 endfunction
+command! -bang -nargs=* FzfRgB
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>).' , 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
 
 command! -bang -nargs=* FzfRg
   \ call fzf#vim#grep(

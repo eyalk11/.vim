@@ -3,7 +3,11 @@ set dictionary=C:\temp\words
 "Vim settings
 "includes autocmds and autocmds for file types and commands
 "Should be indepdenent of plugins!
+let $LC_ALL="en_US.UTF-8"
+let $LANG="en_US.UTF-8"
 let g:python3_host_prog='C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\python.exe'
+let g:python_host_prog='C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\python.exe'
+let $PYENV_ROOT='C:\Users\ekarni\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
 let g:pwmod=0
@@ -150,7 +154,19 @@ endfunction
 au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
 au ExitPre * nested call timer_stop(g:autosaveWS)
+function! SetAltFone()
+    set guifont=JetBrains\ Mono\ Medium:h
+endfunction    
+function! SetFont()
+    if exists('g:GuiLoaded')
+        :GuiFont! Fira\ Code:h12
+    endif
+endfunction
 function! OnLoad()
+         :Arpeggio inoremap jk  <Esc>
+          :Arpeggio inoremap kl  <Esc>
+          :Arpeggio nnoremap jk i
+          :Arpeggio nnoremap kl i
     if exists('g:GuiLoaded')
         :GuiFont! Fira\ Code:h12
     endif
@@ -159,7 +175,6 @@ function! OnLoad()
     sleep 500ms
     "echom "onload"
     cd ~/.vim
-function
 ":profile start /Users/eyalkarni/ab.log
 ":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
 "call ToggleVerbose() 
@@ -307,7 +322,7 @@ endif
 :GitGutterEnable
 let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
 let g:autoreg=timer_start(2000,'GetLine',{'repeat':-1})
-let g:autosaveInserts = timer_start(20000,'SaveInsertsFunc',{'repeat':-1})
+let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
 "au! GonvimAu OptionSet
 set mouse=a
@@ -325,7 +340,8 @@ endfunction
 function! PyAS()
     autocmd filetype python let b:auto_save = 1
 endfunction
-command Pyauto call PyAS()<CR>
+
+command! Pyauto call PyAS()
 " autocmds for  file types
 autocmd filetype vim let b:auto_save = 1
 

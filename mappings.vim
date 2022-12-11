@@ -451,6 +451,7 @@ endfunction
 "com
 "completion by fuzzing of anything
 imap <c-'> <CMD>:call CompleteInf()<CR>
+cmap <c-'> <CMD>:call CompleteInf()<CR>
 imap <M-K> <plug>(fzf-complete-word)
 imap <M-k> <plug>(fzf-complete-word)
 "imap <M-F> <plug>(fzf-complete-path)
@@ -499,6 +500,9 @@ nmap [h <Plug>(GitGutterPrevHunk)
 nmap ]h <Plug>(GitGutterNextHunk)
 "map <expr><buffer> ]M repmo#Key('<plug>(PythonsenseEndOfPythonFunction)', '<plug>(PythonsenseEndOfPreviousPythonFunction)')|sunmap <buffer> ]M
 "map <expr><buffer> [M repmo#Key('<plug>(PythonsenseEndOfPreviousPythonFunction)', '<plug>(PythonsenseEndOfPythonFunction)')|sunmap <buffer> [M
+""" g mapping 
+"makesure we are powershell
+nmap gp :exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
 """ m mappings
 
 
@@ -653,6 +657,7 @@ nnoremap mr :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :se
 noremap x "_x
 "open command and search
 nnoremap m~ ~
+nnoremap mQ q:k
 nnoremap <leader>~ ~
 nnoremap <M-Space> q:i
 
@@ -711,9 +716,10 @@ nnoremap <leader><bar> <bar>
 "nnoremap <silent> <bar> :call FZFOpen(':Buffers')<CR>
 "<M-Bslash>
 "<M-Bslash>
+nmap m<bar> :LeaderfDisablePreview<CR><bar>
 nmap <M-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
 "nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
-nnoremap <silent> <bar> :let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
+nnoremap <silent> <bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
 nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
 
@@ -728,7 +734,8 @@ nnoremap <silent> <C-a>C :call FZFOpen(':Commands')<CR>
 "c-l is lines in insert mode aaa
 nnoremap <silent> <C-a>l :call GetAllInserts()<CR>
 nnoremap <silent> <C-a>L m':LeaderfLineAll<CR>
-nnoremap <silent> <C-a>r :LeaderfRgRecall<CR>
+nnoremap <silent> <C-a>r :Leaderf --recall<CR>
+nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
 "files current dir
 "nnoremap <silent> <C-a>f :call FZFOpen(':Files')<CR>
 "nnoremap <c-a>f :CtrlPCurWD<CR>
@@ -831,6 +838,7 @@ nnoremap <leader>oi :call RecallInserts2()<CR>
 nnoremap <leader>ol :lopen<CR>
 nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
 nmap <leader>om :TN ~/.vim/mappings.vim<CR>
+nmap <leader>on :TN ~/.vim/myinit.lua<CR>
 
 nnoremap <leader>oE :!
 
@@ -884,6 +892,7 @@ nnoremap <leader>ot :tabnew <bar> :call TermO()<CR>:call feedkeys("i")<CR>
 nmap <leader>tt :call TermOV(0)<CR>li
 nmap <leader>Tt :call TermOV(1)<CR>li
 nmap <leader>gt :call TermLOV()<CR>li
+nmap <leader>ge :VimscriptLastError<CR>
 
 nnoremap <leader>vL :TN ~/.vim/vimlog.log<CR>
 nmap <leader>vs         <Plug>VimspectorStop
@@ -1422,5 +1431,54 @@ endfunction
 :nnoremap <Leader>pp :lua require'telescope.builtin'.lsp_workspace_symbols{}<CR>
 "Telescope
 nmap <leader>gf :Telescope git_files<CR>
-nnoremap <leader>gr <cmd>lua require('telescope.builtin').live_grep{ cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1] ,glob='*.py'}<cr>
+"nnoremap <leader>gr <cmd>lua require('telescope.builtin').live_grep{ cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1] ,glob='*.py'}<cr>
 
+
+function! DoTag()
+    let top = systemlist("git rev-parse --show-toplevel")[0]
+    let tmp=getcwd()
+    :exe ':lcd '. top
+    if filereadable('.\tagsloc')
+        let t=readfile('tagsloc')[0]
+        :exe ':lcd ' . t
+    endif
+    :LeaderfTag
+    :exe ':lcd '.tmp
+endfunction
+
+function! GitF(onlypy)
+    let top = systemlist("git rev-parse --show-toplevel")[0]
+    let a=systemlist("git ls-files ". top . " --full-name" )
+
+    let a = (a:onlypy ? filter(a,{idx,val -> val =~ ".*py$"}): a)
+    
+    "py3 t=[os.path.join(vim.eval("top"),y) for y in vim.eval("a")]
+    "echo join(a,' --iglob ')mF
+    let tmp=getcwd()
+    :exe ':lcd '. top
+    :exec ":Leaderf rg " . " --iglob ". join(a,' --iglob ')
+    :exe ':lcd '.tmp
+endfunction
+
+nmap <leader>gr :call GitF(1)<CR>
+nmap <leader>gR :call GitF(0)<CR>
+nmap <leader>gs :call DoTag()<CR>
+
+"~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
+
+function! DoGF()
+    let f=expand('<cfile>')
+    let arr=split(f,':')
+    if len(arr)>1
+        if  filereadable(expandcmd(arr[0]))==0
+            echoerr "File not exists"
+            return
+        endif
+        :exe ':e '.arr[0]
+        :exe ':'.arr[1]
+    else
+       norm! gf 
+    endif
+endfunction
+
+nmap gf :call DoGF()<CR>
