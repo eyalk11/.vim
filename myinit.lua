@@ -1,11 +1,11 @@
 require("nvim-lsp-installer").setup {}
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
 require("grammar-guard").init()
-require'lspconfig'.powershell_es.setup{}
 --require'lspconfig'.grammarly.setup{
      --filetypes = { "markdown" }
  --}
-require('telescope').setup{}
+ require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
+     require('telescope').setup{}
 --require('fzf-lua').setup{} 
 local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '_Q', vim.diagnostic.open_float, opts)
@@ -40,7 +40,6 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
     ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
     ----vim.keymap.set('n','g0',require('navigator.symbols').document_symbols())
-    --require("aerial").on_attach(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
     --local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -177,8 +176,24 @@ require'lspconfig'.sumneko_lua.setup{
 vim.lsp.set_log_level("debug")
 
 require('lspconfig').pylsp.setup{
-capabilities = capabilities,
-   on_attach = on_attach
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings =
+    {
+         pylsp = {
+        plugins =
+        {
+            pycodestyle = {
+                enabled = false,
+                ignore = {'E225','E231'},
+            },
+            pydocstyle = {
+                enabled= false
+            },
+            pylint = { enabled = false }
+        }
+    }
+    }
 }
 --require'lspconfig'.jedi_language_server.setup{
 --capabilities = capabilities,
@@ -198,8 +213,8 @@ require("aerial").setup({
         -- Toggle the aerial window with <leader>a
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '\\s', '<cmd>AerialToggle!<CR>', {})
         -- Jump forwards/backwards with '{' and '}'
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '!', '<cmd>AerialPrev<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', '~', '<cmd>AerialNext<CR>', {})
         -- Jump up the tree with '[[' or ']]'
         vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
         vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
@@ -248,3 +263,7 @@ require("cmp_dictionary").setup({
 --require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
   --capabilities = capabilities
 --}
+require'lspconfig'.powershell_es.setup{
+    capabilities = capabilities,
+    on_attach = on_attach,
+}

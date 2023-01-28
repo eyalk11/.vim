@@ -39,8 +39,8 @@ nmap <c-7> <Plug>PrevQ
 nmap <c-5> z%
 "nmap <c-7> <Plug>PrevQ
 
-nnoremap ! `
-nnoremap !! ``
+"nnoremap ! `
+"nnoremap !! ``
 
 "the most command marks are in 
 nnoremap <leader>. `.
@@ -49,12 +49,12 @@ nnoremap <leader>' ``
 
 
 "recall command
-"nmap ~ <c-a>c
 noremap m? ?
 
 
 :nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap ! :exec "normal a".nr2char(getchar())."\e"<CR>
+":nmap ! :exec "normal a".nr2char(getchar())."\e"<CR>
+"qw inserts char after
 
 "nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
@@ -233,8 +233,8 @@ endfunction
 "
 " in insert mode M is same line , and <c-.> . Use <c-.> 
 " in normal mode M is same line
-imap <M-f> <c-o><Plug>Sneak_s
-imap ` <c-o><Plug>Sneak_s
+imap <M-f> <c-o><Plug>Lightspeed_s
+imap ` <c-o><Plug>Lightspeed_s
 
 
 function! FF()
@@ -242,8 +242,8 @@ function! FF()
     return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
 imap <expr> <c-.> FF()
-imap <c-/> <c-o><Plug>Sneak_s
-imap <M-/> <c-o><Plug>Sneak_S
+imap <c-/> <c-o><Plug>Lightspeed_s
+imap <M-/> <c-o><Plug>Lightspeed_S
 
 "nmap <M-/> <Plug>(easymotion-tl)
 "imap <M-t> <c-o>:call Teasy()<CR> 
@@ -253,9 +253,24 @@ nmap <M-t> <Plug>(QuickScopet)
 xmap <M-t> <Plug>(QuickScopet)
 omap <M-t> <Plug>(QuickScopet)
 "this is untill"
-
-nmap s <plug>Sneak_s
-nmap S <plug>Sneak_S
+map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+map <Plug>cusnf :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
+map <Plug>cusnF :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
+function! FFn()
+    :call quick_scope#Wallhacks()
+    return "\<Plug>Lightspeed_F"
+endfunction
+nmap <expr> f Ffn()
+nmap <expr> F FFn()
+function! Ffn()
+    :call quick_scope#Wallhacks()
+    return "\<Plug>Lightspeed_f"
+endfunction
+nmap F <Plug>cusnF
+nmap s <Plug>Lightspeed_s
+nmap S <Plug>Lightspeed_S
+"nmap s <plug>Sneak_s
+"nmap S <plug>Sneak_S
 nmap Z <plug>
 imap <c-t> <c-o>f
 
@@ -335,7 +350,9 @@ imap <M-Up> <c-h>
 imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
-imap <expr> <C-L>  pumvisible()? "<c-l>" : "<esc>:call RecallInserts()<CR>"
+inoremap <expr> <C-L>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
+
+
 "complete from dict 
 inoremap  <c-k> <c-x><c-k>
 "does chars 
@@ -554,6 +571,10 @@ endfunction
 "remove indent
 "
 nnoremap mp o<esc>:s/[^ \t]//ge<CR>:call MPf()<CR>
+imap <C-L> <c-o><cmd>norm mP<CR>
+
+
+
 
 function! PasteFormat(x)
     let l=@+
@@ -564,8 +585,6 @@ endfunction
 nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
 nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
 
-"Move linerto terminal
-nmap mz yy:T "
 
 
 "nnoremap <silent> mp :call Putline("]p")<CR>
@@ -618,7 +637,6 @@ function! SpecialFind(type)
 endfunction
 
 nnoremap M :set opfunc=SpecialFind<CR>g@
-nnoremap T :set opfunc=SpecialFindLeader<CR>g@
 "vmap T 
 nmap Mm Miw
 nmap MM MiW
@@ -656,7 +674,7 @@ nnoremap mr :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :se
 "don't use it to cut
 noremap x "_x
 "open command and search
-nnoremap m~ ~
+nmap m~ <c-a>c
 nnoremap mQ q:k
 nnoremap <leader>~ ~
 nnoremap <M-Space> q:i
@@ -784,10 +802,9 @@ map <silent> <leader>? <Plug>(IPy-WordObjInfo)
 noremap  <leader>od :exec ":vs " . getcwd()<CR>
 nnoremap <leader>em :call Exec("messages")<CR>
 "enable save
-nnoremap <leader>AS :let b:auto_save = !b:auto_save<CR>:echo "it is now locally". b:auto_save<CR>
+nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
 nnoremap <leader>si :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
-nmap     <leader>as :let g:disable_auto_save=!g:disable_auto_save<CR>:echo "Autosave is now ". !g:disable_auto_save<CR>
-"fgdfgd
+nmap     <leader>AS :AutoSaveToggle<CR>
 
 nnoremap <leader>do :diffoff<CR>
 nnoremap <leader>du :diffupdate<CR>
@@ -819,7 +836,7 @@ function! VspIfNeed()
 endfunction
 function! OnRight()
     let k=getwininfo(win_getid())[0]
-    return (k['winrow']==1 && k['wincol']>1)
+    return (k['wincol']!=1)
 endfunction 
 
 "opens file
@@ -834,7 +851,8 @@ nmap <leader>mf :call VspIfNeed()<CR>mm
 nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
-nnoremap <leader>oi :call RecallInserts2()<CR>
+nnoremap <leader>oi :call RecallInserts(0)<CR>
+nnoremap <leader>OI :call RecallInserts(1)<CR>
 nnoremap <leader>ol :lopen<CR>
 nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
 nmap <leader>om :TN ~/.vim/mappings.vim<CR>
@@ -1078,8 +1096,8 @@ vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
 "xy:call feedkeys("\<C-a>g" . @x)<CR> 
 vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 
-nnoremap <C-L> :call RegsToggle()<CR>
-vnoremap <C-L> <CMD>:call RegsToggle()<CR>
+nnoremap <C-K> :call RegsToggle()<CR>
+vnoremap <C-K> <CMD>:call RegsToggle()<CR>
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
 
@@ -1101,7 +1119,12 @@ function! GoOther()
         call feedkeys("\<c-w>l")
     endif
 endfunction
-    
+"Move line to terminal
+nmap mz my<CMD>:exec ":T ".  @" ."\r\n" <cr>
+vmap mz <CMD>:'<,'>g/./norm mz<CR>
+
+"nmap mz <CMD>:TREPLSendLine<CR>
+"vmap mz <CMD>:TREPLSendSelection<CR>
 "move between two panels (left and right) 
 nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
 tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
@@ -1168,23 +1191,26 @@ endfunction
 
 nmap <BS> call Show_documentation()<CR>
 "Coc _ mappings 
-nnoremap <silent> _a  :<C-u>CocList actions<cr>
-" Manage extensions
-nnoremap <silent> _e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> _c  :<C-u>CocList commands<cr>
-nnoremap <silent> _d  :<C-u>CocList diagnostics<cr>
-" Find symbol of current document
-nnoremap <silent> _o  :<C-u>CocList outline<cr>
+"nnoremap <silent> _a  :<C-u>CocList actions<cr>
+"" Manage extensions
+"nnoremap <silent> _e  :<C-u>CocList extensions<cr>
+"" Show commands
+"nnoremap <silent> _c  :<C-u>CocList commands<cr>
+"nnoremap <silent> _d  :<C-u>CocList diagnostics<cr>
+"" Find symbol of current document
+"nnoremap <silent> _o  :<C-u>CocList outline<cr>
 " Search workspace symbols
 nnoremap <silent> _s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent> _j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> _k  :<C-u>CocPrev<CR>
+"nnoremap <silent> _j  :<C-u>CocNext<CR>
+"" Do default action for previous item.
+"nnoremap <silent> _k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 "nnoremap <silent> _p  :<C-u>CocListResume<CR>
 :endif
+
+nnoremap <silent> _s  :Telescope lsp_workspace_symbols<CR>
+
 "map <silent> <C-c> <Plug>(coc-cursors-position)
 "nmap <silent> <C-d> <Plug>(coc-cursors-word)*
 
@@ -1341,29 +1367,45 @@ vmap	iF	<Plug>(textobj-function-i)
 "call popsikey#register('<leader>g', [
         "\ #{key: 'g', info: 'status', action: ":Gstatus\<CR>", flags: 'n'},
         "\ #{key: 'c', info: 'commit', action: ":Gcommit\<CR>", flags: 'n'},
+"n
+"
+"v
         "\ ],
         "\ {})
-call popsikey#register('mZ', [ 
-            \ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'},
-    \ {'key': 'c', 'info': 'commit', 'action': ":Gcommit\<CR>", 'flags': 'n'}], {})
+"call popsikey#register('mZ', [ 
+"            \ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'},
+"    \ {'key': 'c', 'info': 'commit', 'action': ":Gcommit\<CR>", 'flags': 'n'}], {})
 
 "to call at the end
 function! DefineMapping()
 
-map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+
 
 nmap <c-;> ;
-map  <expr> ; repmo#LastKey('<Plug>Sneak_;')|sunmap ;
-map  <expr> <C-\> repmo#LastRevKey('<Plug>Sneak_,')
+map  <expr> ; repmo#LastKey(';')|sunmap ;
+map  <expr> <C-\> repmo#LastRevKey(',')
 
-map  <expr> <tab> repmo#ZapKey('<Plug>Sneak_s')
+map  <expr> <tab> repmo#ZapKey('<Plug>Lightspeed_s')
 "|ounmap s|sunmap s
-map  <expr> <S-tab> repmo#ZapKey('<Plug>Sneak_S')
+map  <expr> <S-tab> repmo#ZapKey('<Plug>Lightspeed_S')
 "|ounmap S|sunmap S
-omap <expr> z repmo#ZapKey('<Plug>Sneak_s')
-omap <expr> Z repmo#ZapKey('<Plug>Sneak_S')
-map  <expr> f repmo#ZapKey('<Plug>(QuickScopef)')|sunmap f
-map  <expr> F repmo#ZapKey('<Plug>cusF')
+"omap <expr> z repmo#ZapKey('<Plug>Sneak_s')
+"omap <expr> Z repmo#ZapKey('<Plug>Sneak_S')
+"map  <expr> f repmo#ZapKey('<Plug>cusnf')|sunmap f
+"map  <expr> F repmo#ZapKey('<Plug>cusnF')
+
+nmap  } <Plug>Lightspeed_t
+nmap  { <Plug>Lightspeed_T
+nnoremap m] ]
+nnoremap g] ]
+nnoremap m] ]
+nnoremap g] ]
+"nmap  t  let g:init=1<CR>:w<CR>
+nmap  T  <Plug>spleader
+"nmap t :echo exists('g:lightspeed_active')<CR>
+
+nnoremap <Plug>spleader :set opfunc=SpecialFindLeader<CR>g@
+"nmap <esc> :call clever_f#_reset_all()<CR> 
 "map  <expr> t repmo#ZapKey('<Plug>Sneak_t')|sunmap t
 "map  <expr> T repmo#ZapKey('<Plug>Sneak_T')|sunmap T
 
@@ -1376,7 +1418,7 @@ map  <expr> F repmo#ZapKey('<Plug>cusF')
 nmap ]d :lua vim.diagnostic.goto_next()<CR>
 nmap [d :lua vim.diagnostic.goto_prev()<CR>
 
-for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"],[']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c']]
+for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'], ['~','!']]
     call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
@@ -1384,7 +1426,7 @@ endfor
 "
 "for keys in [['l','h'],['k','j'], ['[[', ']]'], ['[]', ']['], [']m', '[m'], [']M', '[M'], [']c', '[c'] ,  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<M-K>','<A-J>'],['{','}'],['(',')']]
 "Not to mess with vim-tex [']]','[[']
-for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'],  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ],['{','}'],['(',')']]
+for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'],  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ],['(',')']]
     execute 'silent noremap <expr> '.keys[0]." repmo#SelfKey('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
     execute 'silent noremap <expr> '.keys[1]." repmo#SelfKey('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
     "execute 'noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."')|sunmap ".keys[0]
@@ -1394,7 +1436,6 @@ endfunction
 
 :autocmd CmdwinEnter * noremap <buffer> <F2> <CR>q:
 :au BufWritePost * :let g:init=1
-call DefineMapping()
 
 "evals a function based on the current visual selection
 vnoremap F "xd"=HandleF()<CR>P
@@ -1463,6 +1504,7 @@ endfunction
 nmap <leader>gr :call GitF(1)<CR>
 nmap <leader>gR :call GitF(0)<CR>
 nmap <leader>gs :call DoTag()<CR>
+nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
 
 "~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
@@ -1482,3 +1524,14 @@ function! DoGF()
 endfunction
 
 nmap gf :call DoGF()<CR>
+
+nmap \] :e!<CR>
+nmap <leader>gv :cd c:\users\ekarni\.vim<CR>:Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
+"nmap {          <Plug>EnhancedJumpsOlder
+"nmap }          <Plug>EnhancedJumpsNewer
+"nmap g{         <Plug>EnhancedJumpsLocalOlder
+"nmap g}         <Plug>EnhancedJumpsLocalNewer
+"nmap <Leader>{  <Plug>EnhancedJumpsRemoteOlder
+"nmap <Leader>}  <Plug>EnhancedJumpsRemoteNewer
+nmap z; <Plug>EnhancedJumpsFarChangeOlder
+nmap z, <Plug>EnhancedJumpsFarChangeNewer

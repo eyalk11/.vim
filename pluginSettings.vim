@@ -695,3 +695,36 @@ let g:sneak#use_ic_scs = 1
 "vim terminal
 "let g:Terminal_PyVersion =3 
 "let g:Terminal_PyExe = g:python3_host_prog
+"
+"
+"let g:clever_f_ignore_case=1
+"let g:clever_f_not_overwrites_standard_mappings=1
+"let g:clever_f_timeout_ms=10000
+"let g:clever_f_chars_match_any_signs=';'
+"<Plug>(clever-f-f)                    *<Plug>(clever-f-f)*
+"<Plug>(clever-f-F)                    *<Plug>(clever-f-F)*
+"<Plug>(clever-f-t)                    *<Plug>(clever-f-t)*
+"<Plug>(clever-f-T)                    *<Plug>(clever-f-T)*
+
+"<Plug>(clever-f-repeat-back)          *<Plug>(clever-f-repeat-back)*
+
+
+"function! DisableT(a)
+    "silent! nunmap t 
+    "silent! nunmap T
+    "nmap t :w<CR>
+"endfunction
+"augroup lightspeed_active
+"autocmd!
+"autocmd User LightspeedEnter let g:lightspeed_active = 1  | nmap <nowait> t <esc>:call timer_pause(g:tm,1)<CR><Plug>Lightspeed_t | nmap T <esc><Plug>Lightspeed_T
+"autocmd User LightspeedLeave let g:tm=timer_start(10000,'DisableT',{'repeat':1})
+"augroup end
+"let g:lightspeed_last_motion = ''
+"augroup lightspeed_last_motion
+    "autocmd!
+    "autocmd User LightspeedEnter let g:lightspeed_last_motion = 'sx'
+    "autocmd User LightspeedEnter let g:lightspeed_last_motion = 'ft'
+"augroup end
+"map <expr> t g:lightspeed_last_motion == 'ft' ? "<Plug>Lightspeed_t" : "<Plug>Lightspeed_;_ft"
+"map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
+  let g:qs_highlight_on_keys = []

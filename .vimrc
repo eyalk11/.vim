@@ -43,7 +43,11 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'ggandor/lightspeed.nvim'
+"Plug 'rhysd/clever-f.vim'
+Plug 'craigemery/vim-autotag'
 Plug 'kana/vim-arpeggio'
+Plug 'sindrets/diffview.nvim'
 "Plug 'tc50cal/vim-terminal'
 
 "Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
@@ -79,12 +83,12 @@ Plug 'kamykn/popup-menu.nvim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'PeterRincker/vim-argumentative'
 "match inner blocks and z% 
-Plug 'andymass/vim-matchup'
+"Plug 'andymass/vim-matchup'
 "Plug 'scrooloose/nerdtree'
 "match strings 
 Plug 'airblade/vim-matchquote'
 "Plug 'ggvgc/vim-fuzzysearch'
-Plug 'benknoble/popsikey'
+"Plug 'benknoble/popsikey'
 Plug 'jacob-ogre/vim-syncr'
 Plug 'inkarkat/vim-SpellCheck'
 Plug 'echuraev/translate-shell.vim', { 'do': 'wget -O ~/.vim/trans git.io/trans && chmod +x ~/.vim/trans' }
@@ -101,6 +105,7 @@ Plug 'puremourning/vimspector'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'simnalamburt/vim-mundo'
 Plug 'sjl/gundo.vim'
+Plug 'PProvost/vim-ps1'
 
 Plug 'scrooloose/nerdcommenter'
 "Plug 'rhysd/vim-grammarous'
@@ -241,7 +246,6 @@ function! Runit()
     
 exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
 exe 'source' . " " . g:vimloc . "\\hacks.vim"
-exe 'source' . " " . g:vimloc . "\\helperfuncs.vim"
 exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
 
 "include math mappings

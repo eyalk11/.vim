@@ -30,7 +30,13 @@ command! -nargs=* -range PY <line1>,<line2>python3 <args>
 set noerrorbells visualbell t_vb=
 set noeb vb t_vb=
 autocmd GUIEnter * set visualbell t_vb=
-
+autocmd SessionLoadPost * windo filetype detect
+function! OnWinEnter()
+    if !&filetype
+        filetype detect
+    endif
+endfunction
+autocmd BufWinEnter * call OnWinEnter()
 "let g:yanktools_main_key = 'Z'
 ":20verbose
 "message log
@@ -163,10 +169,14 @@ function! SetFont()
     endif
 endfunction
 function! OnLoad()
-         :Arpeggio inoremap jk  <Esc>
-          :Arpeggio inoremap kl  <Esc>
-          :Arpeggio nnoremap jk i
-          :Arpeggio nnoremap kl i
+    call DefineMapping()
+    call LoadBaseInserts(0)
+    set ambiwidth=single
+    :silent Arpeggio inoremap jk  <Esc>
+    :silent   Arpeggio inoremap kl  <Esc>
+    :silent Arpeggio nnoremap jk i
+    :silent Arpeggio nnoremap kl i
+    :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
     if exists('g:GuiLoaded')
         :GuiFont! Fira\ Code:h12
     endif
@@ -321,7 +331,7 @@ endif
 	endif
 :GitGutterEnable
 let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
-let g:autoreg=timer_start(2000,'GetLine',{'repeat':-1})
+let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
 "au! GonvimAu OptionSet

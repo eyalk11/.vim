@@ -3,6 +3,7 @@
 let g:lastWindows= []
 let g:lastWinName = ""
 
+let g:max_inserts_for_file = []
 function! SaveLastWindow()
 
 if &bt == '' || &bt == 'help' || &ft == 'netranger' "|| &bt == 'nofile'
@@ -32,52 +33,69 @@ endfunction
 
 command! -nargs=0 LastWindow call LastWindow()
 
-"insert tracking aaaa
-function! LoadInsertsForBuf()
-    "echo 'loading inserts'
-if exists('b:inserts')
-    if len(b:inserts)>0
-        "echo('exit')
-        return 
-    endif 
-endif 
+function! LoadBaseInserts(pr)
 py3 << EOF
 import vim
 import pickle
+from collections import defaultdict
+import datetime
+import time
+maxtimespan=datetime.timedelta(days=5)
+bufslasttwentysec=defaultdict(lambda: 0)
+maxloadtime=3
+lastmin = 0 
 try:
-    assert len(inserts)>0
+    st = time.time()
+    input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
+    inserts=pickle.load(input)
+    endt= time.time()
+    loadtime=endt-st
+    dt=datetime.datetime.now()
+
+    if (loadtime> maxloadtime) or (vim.eval('a:pr')==1):
+        print('trimming loadtime is %s' % (loadtime))
+        n=0
+        for bufn,v in inserts.items():
+            for t,l in v[0]:
+                n+=1
+                if (dt-datetime.datetime.fromtimestamp(t))>maxtimespan:
+                    a,b=inserts[bufn][0].popleft() 
+                    inserts[bufn][1].remove(b)
+        print('total inserts is %s' % (n))
+
 except:
-    try:
-        input = open(vim.eval('g:vimloc')+'\\inserts.cache', 'rb')
-        inserts=pickle.load(input)
-        baseinserts=(inserts if type(inserts)==dict else {})
-        input.close()
-    except:
-        vim.command('echom "failed loading"')
-        inserts={}
-        baseinserts={}
-dic={}
-bufn=vim.eval('expand("%:p")')
-if bufn in inserts:
-    dic=inserts[bufn]
-    if type(dic)==dict:
-        if '' in dic:
-            dic.pop('')
-        else:
-            pass
-    else:
-        pass
-        #vim.command('echom "strange"')
+    import traceback
+    traceback.print_exc()
+    vim.command('echom "failed loading inserts"')
+    inserts={}
 EOF
-"echo 'loading inserts2'
-"echom py3eval("dic") 
-let b:inserts = py3eval("dic")
-
-if type(b:inserts)!=4
-    let b:inserts={}
-endif
 endfunction
-
+"insert tracking aaaa
+py3<<EOF
+import re
+def returninsertsforbufn(breaklines):
+    bufname=vim.eval("g:bufn")
+    if not bufname in inserts:
+        return {}
+    z=list(inserts[bufname][0])
+    if breaklines:
+        z=list(breakl(z))
+    z=filter(lambda x: filterinp(x[1]),z)
+    return {x:y for (y,x) in  z}
+def breakl(z):
+    for x in z:
+        ls=x[1].split('\n')
+        yield from zip([x[0]]*len(ls),ls)
+def filterinp(x):
+    if len(x)==0:
+        return False 
+    if re.match('^\s+$',x):
+        return False
+    return ( re.search('\w\w\w',x) and isascii(x) )
+def isascii(s):
+    """Check if the characters in string s are in ASCII, U+0-U+7F."""
+    return len(s) == len(s.encode(errors='ignore'))
+EOF
 function! SaveLastInsert()
     if !exists("b:save_inserts")
         let b:save_inserts=1
@@ -106,86 +124,81 @@ function! SaveLastCopy()
 endfunction
 
 function! AddInsert(str)
-    if len(a:str)>1000
+    if len(a:str)>5000
         return
     endif
-    if !exists('b:inserts')
-        let b:inserts={}
-        let b:lastinsert=''
-    endif
-
-    for k in split(a:str,'\n')
-        call AddInsertInternal(k)
-    endfor 
-
+    call AddInsertInternal(a:str)
 endfunction
-
 function! AddInsertInternal(str)
-    "for now
-    if len(b:inserts)>1000
-        "enters the start and removes from end
-        let n=keys(b:inserts) 
-        call remove(b:inserts,n[1000])
-    endif 
-
-    let ok=0
-    let stills=1  
-    let stindex=0
-    let str=""
-    let strt = substitute(a:str,"\<BS>",'\n','g')
-    for i in range(len(strt))
-        if match(strt[i],'\s')!=0
-            let stills=0
-        else 
-            if stills
-                "let stindex+=1 
-                continue
-            endif 
+py3 <<EOF
+bufn=vim.eval('expand("%:p")')
+import datetime
+dt= datetime.datetime.now()
+sec=dt.second
+if dt.minute != lastmin:
+    bufslasttwentysec= defaultdict(lambda: 0)
+    lastmin=dt.minute
+bufslasttwentysec[sec // 5 ]+=1
+toexit= ( bufslasttwentysec[sec // 5 ] > 100) #more than 20 in 5 sec slot
+EOF
+if py3eval('toexit')
+    if exists('g:restartinsertwatch')
+        if len(timer_info(g:restartinsertwatch))>0
+            return
         endif 
-
-        if match(strt[i],'\n')==0
-            if len(str)>0
-                let str=str[:-2]
-                continue
-            endif 
-        endif 
-        if match(strt[i],'\w')==0
-            let ok+=1
-        endif
-        if match(strt[i],'\p')==0
-            let str.=strt[i]
-        endif 
-    endfor
-    if ok<3
-        return
     endif
-    let b:inserts[str]=localtime()
-endf    
-
-function! RecallInserts2()
-    if !exists('b:inserts')
+    :autocmd! InsertLeave *
+    :autocmd! TextYankPost *
+    let g:restartinsertwatch=timer_start(20000,'StartO',{'repeat':1})
+    :echo 'pause inserts'
+    return
+endif
+let strt = substitute(a:str,"\<BS>",'\n','g')
+py3 insertfunc(vim.eval('strt'))
+endfunction
+function! CleanIns()
+    py3 inserts={}
+call SaveInsertsFunc('')
+endfunction 
+PY << EOF
+from collections import deque
+def insertfunc(mystr):
+    import re
+    if not filterinp(mystr):
         return
-    endif 
-    let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
+    bufn=vim.eval('expand("%:p")')
+    if bufn in inserts:
+        if len(inserts[bufn][0])>1000:
+            a,b=inserts[bufn][0].popleft() 
+            inserts[bufn][1].remove(b)
+    else:
+        inserts[bufn]=(deque(),set())
+    if mystr in inserts[bufn][1]:
+        return 
+    inserts[bufn][0].append((round(datetime.datetime.now().timestamp()) ,mystr))
+    inserts[bufn][1].add(mystr)
+EOF
+function! RecallInserts(break)
+    let g:bufn=fnamemodify(bufname('%'),":p")
+    if a:break 
+    let t=py3eval( 'returninsertsforbufn(1)')
+else 
+    
+    let t=py3eval( 'returninsertsforbufn(0)')
+endif
+    let ls=sort((keys(t)), {arg2, arg1 -> t[arg1] - t[arg2]})
     :call fzf#run({'source': ls ,'sink':function('PInsert'),'options': '-m'})
 endfunction
 
-function! RecallInserts()
-    if !exists('b:inserts')
-        return
-    endif 
-    let ls=sort((keys(b:inserts)), {arg2, arg1 -> b:inserts[arg1] - b:inserts[arg2]})
-    :call fzf#run({'source': ls,'sink':function('PInsert2'),'options': '-m'})
-endfunction
-
 function! GetAllInserts()
+    #not efficient but who cares
     let ls={}
     let lastbuf=bufnr('$')
     for i in range(lastbuf)
-        let bufn=bufname(i)
-        if bufn!=''
-            let t=getbufvar(i,'inserts')
-            if type(t)==4
+        let g:bufn=fnamemodify(bufname(i),":p")
+        if g:bufn!=''
+            let t=py3eval( 'returninsertsforbufn(0)')
+            if len(t)>0
                 let ls=extend(ls,t)
             endif
         endif
@@ -233,19 +246,6 @@ endfunction
 
 
 function! SaveInsertsFunc(a)
-    "we start with the original pickle. We then add the opened buffers.
-    py3 inserts=baseinserts
-    let lastbuf=bufnr('$')
-    for i in range(lastbuf)
-        let bufn=bufname(i)
-        let bufpath= expand("#".i.":p")
-
-        if bufn!=''
-            let t=getbufvar(i,'inserts')
-            py3 key=vim.eval('bufpath')
-            py3 inserts[key]=vim.eval('t')
-        endif
-endfor
 py3 << EOF
 import vim
 import pickle
@@ -255,15 +255,6 @@ output.close()
 EOF
 endfunction
 
-if has('nvim')
-:autocmd InsertLeave * call SaveLastInsert()
-":autocmd TextYankPost * call SaveLastCopy()
-:autocmd TextYankPost * call SaveLastReg()
-:autocmd BufRead * call LoadInsertsForBuf()
-":autocmd BufNewFile if !exists('b:inserts') <bar> let b:inserts=[]  dsfsdf
-
-:autocmd DirChanged * call SaveLastDir()
-endif
 
 
 "GL 
@@ -537,7 +528,9 @@ function! WhichTab(filename)
     " this is to make sure we don't leave the current page
     let currenttab = tabpagenr()
     let tab_arr = []
+    let tabnr_arr = []
     tabdo let tab_arr += tabpagebuflist()
+    tabdo let tabnr_arr += [tabpagenr()]
 
     " return to current page
     exec "tabnext ".currenttab
@@ -545,10 +538,10 @@ function! WhichTab(filename)
     " Start checking tab numbers for matches
     let i = 0
     for tnum in tab_arr
-        let i += 1
         if tnum == buffernumber
-            return i
+            return tabnr_arr[i]
         endif
+        let i += 1
     endfor
 
 endfunction
@@ -594,3 +587,520 @@ nnoremap <silent> "<c-r> :call fzf#run({
       \   'options': "+m",
       \   'down':    len(<sid>register_list()) + 2,
       \ })<CR>
+
+
+
+func! GrepPy()
+    call AddFiles("find . -iname '*.py' | grep -v __init__")
+endfunc
+func! AddFiles(grep)
+redir => tmp
+   call RunPS('RunBash "' . a:grep . '"')
+   redir END
+   for l in split(tmp,'\n')
+       if filereadable(l) 
+           exec ':e '.l
+        endif
+    endfor
+
+   "echo x
+endfunc
+func! RunPS(var)
+    if g:pwmod==0
+        call TogglePS()
+        exec 'silent! !Import-Module C:\Users\ekarni\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
+        call TogglePS()
+    else
+        exec 'silent! !Import-Module C:\Users\ekarni\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
+    endif
+endfunction 
+
+func! TogglePS()
+        if g:pwmod
+            let &shell= g:sh  
+            let &shellcmdflag=g:shf
+            let &shellredir=g:shr
+            let &shellpipe=g:shellpipe
+            let &shellquote=g:shq
+            let &shellxquote=g:shxq
+        else
+            let &shell = executable('pwsh') ? 'powershell' : 'pwsh'
+            let &shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
+            let &shellredir = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+            let &shellpipe = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+            set shellquote= shellxquote=
+        endif
+        let g:pwmod= ! g:pwmod
+endfunction
+
+function! FilterAll(str,del)
+    if a:del
+        exec ":%d"
+    endif
+    exec ":r !cat % | " . a:str
+endfunction
+
+command! -nargs=* Filter call FilterAll(<f-args>) 
+
+function! FilterJson(del)
+    call FilterAll("python -m json.tool", a:del)
+endfunction
+
+
+function! ConvHex()
+    let x=input('enter num:')
+    exe "py3  print(hex(".x ."))"
+endfunction 
+
+function! ToggleVerbose()
+    if !&verbose
+        :!rm ~/.vim/verbose.log
+        :!touch ~/.vim/verbose.log
+        set verbosefile=~/.vim/verbose.log
+        set verbose=15
+    else
+        set verbose=0
+        set verbosefile=
+    endif
+endfunction
+function! DebugIt(interval)
+    for i in range(1,line('$'), a:interval)
+        exe ":" . i
+        exe "normal! Oecho 'In ' . line('.')\<CR>"
+    endfor
+endfunction
+
+function! GetVisualSelection() abort
+  let [lineSelection, colSelection] = getpos('v')[1:2]
+  let [lineCursor, colCursor]       = getpos('.')[1:2]
+
+  " Swap line numbers if selection starts at cursor
+  let [lineStart, lineEnd]          = (lineSelection <= lineCursor) ? [lineSelection, lineCursor] : [lineCursor, lineSelection]
+
+  let lines = getline(lineStart, lineEnd)
+
+  let mode = mode()
+  if mode is# "\<C-v>"
+    let mode = 'v'
+    if lineStart < lineEnd
+      echoerr 'block-wise selection unsupported, assuming character-wise selection'
+    endif
+  endif
+  if mode is# 'v'
+    " Swap column numbers if selection starts at cursor
+    let [colStart, colEnd] = (colSelection <= colCursor) ? [colSelection, colCursor] : [colCursor, colSelection]
+    let lines[-1] = lines[-1][:colEnd - (&selection is# 'inclusive' ? 1 : 2)]
+    let lines[0]  = lines[0][colStart - 1:]
+  endif
+  " if mode is# 'V'
+
+  if &l:fileformat is# 'dos'
+    let ending = "\<CR>\<NL>"
+  elseif &l:fileformat is# 'mac'
+    let ending = "\<CR>"
+  else " if is# 'unix'
+    let ending = "\<NL>"
+  endif
+
+  return join(lines, ending)
+endfunction
+
+function! CloseAllBuffersButCurrent()
+    %bd
+    e#
+endfunction
+"Closes the other buffers but Nerdtree. Unless only 2 buffers left. In this
+"case, closes nerdtree.
+function! CloseAllWindowsButCurrent()
+    let tabnr= tabpagenr()
+    let tabinfo=gettabinfo(tabnr)
+    let windows=tabinfo[0]['windows']
+    let last2=(len(windows)==2)
+
+    for winid in windows
+        let curwin=winnr() "could change
+        let winnr=win_id2win(winid)
+        let ft= getbufvar(winbufnr(winnr), '&filetype')
+        if and(winnr!=curwin,or((ft!~'netranger'),last2))
+            execute ':'.winnr.'close!'
+        endif
+    endfor
+endfunction
+
+function! CloseAllNR()
+    let tabnr= tabpagenr()
+    let tabinfo=gettabinfo(tabnr)
+    let windows=tabinfo[0]['windows']
+    let last2=(len(windows)==2)
+    for winid in windows
+        let curwin=winnr() "could change
+        let winnr=win_id2win(winid)
+        let ft= getbufvar(winbufnr(winnr), '&filetype')
+        if (ft=~'netranger')
+            execute ':'.winnr.'q!'
+        endif
+    endfor
+endfunction
+
+function! Goprev()
+    exec 'redir @x | silent ls | redir END'
+    if match(@x,'"\[Location List\]"') >= 0
+            lprev
+    elseif match(@x,'"\[Quickfix List\]"') >= 0
+            cprev
+    else
+            exec 'echo "Neither Location or Quicklist found!"'
+    endif
+endfunction
+
+function! Gonext()
+    exec 'redir @x | silent ls | redir END'
+    if match(@x,'"\[Location List\]"') >= 0
+            lnext
+    elseif match(@x,'"\[Quickfix List\]"') >= 0
+            cnext
+    else
+            "exec 'echo "Neither Location or Quicklist found!"'
+            copen
+    endif
+endfunction
+
+"executes command, return lines as string
+function! MinExec(cmd)
+    redir => tmp
+    exec printf('silent %s',a:cmd)
+    redir END
+    return tmp
+endfunction
+
+"Remaps repeat pairs
+function! RepRemap(mapA,mapB)
+let varA=maparg(a:mapA,'n')
+let varB=maparg(a:mapB,'n')
+execute "nmap <expr> " . a:mapA . " repmo#Key('".varA ."', '". varB. "')"
+execute "nmap <expr> " . a:mapB . " repmo#Key('".varB ."', '". varA. "')"
+endfunction
+
+"executes command , opens in new tab all the lines. useful in cases of :map
+function! Exec(cmd)
+    redir @x
+    exec printf('silent %s',a:cmd)
+    redir END
+    tabnew
+    norm "xp
+endfunction
+
+
+
+function! PInsert2(item)
+    let @z=a:item
+    norm "zp
+    call feedkeys('a')
+endfunction
+
+function! PInsert(item)
+    let @z=a:item
+    norm "zp
+endfunction
+function! ExportC()
+python << EOF
+x=vim.eval("@x").replace('\n','').replace(" ","")
+if len(x)%2!=0:
+    print 'bad x'
+else:
+    st='unsigned char bytes[] ={'
+    st+=','.join(['0x'+x[i:i+2]  for i in xrange(0,len(x),2)])
+    st+='};'
+    vim.command("let sInVim = '%s'"% st)
+    vim.command("let @+=sInVim")
+EOF
+endfunction
+
+function! Search()
+    :M @x
+endfunction
+
+function! HandleCJ()
+    let func=input('type cmd to execute (calls execute funct). @x is match')
+    echo "\<CR>"
+    execute func
+endfunction
+
+function! HandleCH()
+    let func=input('type cmd to eval vim command (@x is arg)/ExportC()/Search())')
+    echo "\<CR>"
+    echo eval(func)
+endfunction
+
+
+function! HandleH()
+    let func=input('Enter "cmd" to eval vim cmd(@x is arg): 	')
+" echo "\<CR>"
+return eval(func)
+endfunction
+
+function! HandleCF()
+    let func=input('Enter python to execute(match is the input):	')
+echo "\<CR>"
+let retInVim=RunPython(@x,func)
+return retInVim
+endfunction
+
+
+function! HandleF()
+    let func=input("Enter python to eval(match is the input,@x is arg): ")
+    " echo "\<CR>"
+    let retInVim=RunPython2(@x,func)
+    return retInVim
+endfunction
+
+function! CopyPath()
+    let @+=expand('%:p')
+endfunction
+
+function! DisableKeys()
+    noremap <Up> <Nop>
+    noremap <Down> <Nop>
+    noremap <Left> <Nop>
+    noremap <Right> <Nop>
+endfunction
+"make new file
+function! Ff()
+exe 'norm "zy'
+:echo @z
+endfunction
+
+
+function! GetMappings()
+    let lines=MinExec('map')
+    let lines=split(lines,'\n')
+    return lines
+endfunction
+
+function! GetCommands()
+    let lines=[]
+    let nu=histnr("cmd")
+    for i in range(1,nu)
+        let lines+=[histget("cmd",i)]
+    endfor
+    return lines
+endfunction
+
+function! CdDir(item)
+    :exe "cd ".a:item
+endfunction
+
+function! HandleCommand(item)
+    call feedkeys("zq:")
+    call feedkeys("G?\\V".escape(a:item,'\/?')."\<CR>",'n')
+endfunction
+
+function! BH(item)
+    exe ":T " . a:item
+endfunction
+
+function! Wolfram()
+    :g/Out\[/d
+    :%s/In\[.*\]:=//g
+endfunction
+
+
+function! MakeItFaster(adv)
+    if (a:adv)
+        :let g:airline_extensions = []
+        ":CocDisable
+        :ALEDisable
+        :NoMatchParen
+    ":autocmd! InsertLeave *
+    ":autocmd! TextYankPost *
+    ":syntax disable
+    "augroup fugitive
+        "autocmd! BufWriteCmd *
+        "autocmd! FileWriteCmd *
+    "augroup END
+    endif
+    ":autocmd! InsertLeave *
+    ":autocmd! TextYankPost *
+    ":GitGutterDisable
+    "autocmd! BufReadPre //*
+    ":Fugitive?
+    ":autocmd! BufWritePre *
+    ":autocmd! BufWritePost *
+    ":autocmd! BufWrite *
+endfunction
+
+
+
+
+"to replace multiple lines in another windows copy to reg first 
+ function! Dorep()
+     let aa=split(getreg('c'),'\n')
+     for k in aa
+         exe "g/".k."/norm I\/\/U"
+     endfor 
+ endfunction 
+if g:on_ek_computer 
+"     source ~/vimpy3/secfunc.vim
+endif
+
+function! ReplaceRPC()
+%s/\[.\{-}in.\{-}\]//g
+%s/\[.\{-}out.\{-}\]//g
+endfunction 
+
+function! MakeJson(...)
+    if a:0 > 0
+     let override = a:1
+   else
+     let override = 0
+   end 
+PY << EOF
+import os
+import json
+uu=(not os.path.exists('.vimspector.json')) or vim.eval('override')
+if uu==1:
+    print('making')
+    dir=vim.eval('expand("%:h")')
+    prog= vim.eval('expand("%:p")')
+    name= vim.eval('expand("%:t")').replace('.py','')
+    data={
+      "configurations": {
+        "genhash: Launch": {
+          "adapter": "debugpy",
+          "configuration": {
+            "name": name+": Launch",
+            "type": "python",
+            "request": "launch",
+            "python": "/Users/ekarni/.pyenv/versions/3.8.5/bin/python3" ,
+            "cwd": dir,
+            "stopOnEntry": "true",
+            "console": "externalTerminal",
+            "debugOptions": [],
+            "justMyCode":"true",
+            "program": prog,
+            "args":[],
+            #"env" :
+            #            {"PYTHONPATH":"/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/"}
+          }
+        }
+      }
+    }
+    with open('.vimspector.json', 'w') as outfile:
+        json.dump(data, outfile,sort_keys=True,indent=4, separators=(',', ': '))
+else:
+    print('already exists')
+EOF
+endfunction
+
+function! MakeJson2(...)
+    if a:0 > 0
+     let override = a:1
+   else
+     let override = 0
+   end 
+PY << EOF
+import os
+import json
+uu=(not os.path.exists('.vimspector.json')) or vim.eval('override')
+if uu==1:
+    print('making')
+    dir=vim.eval('expand("%:h")')
+    prog= vim.eval('expand("%:p")')
+    name= vim.eval('expand("%:t")').replace('.py','')
+    data={
+      "configurations": {
+        "genhash: Launch": {
+          "adapter": "debugpy",
+          "configuration": {
+            "name": name+": Launch",
+            "type": "python",
+            "request": "launch",
+            "python": "/Users/ekarni/.pyenv/versions/2.7.18/bin/python2.7" ,
+            "cwd": dir,
+            "stopOnEntry": "true",
+            "console": "externalTerminal",
+            "debugOptions": [],
+            "justMyCode":"true",
+            "program": prog,
+            "args":[],
+            #"env" :
+            #            {"PYTHONPATH":"/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/"}
+          }
+        }
+      }
+    }
+    with open('.vimspector.json', 'w') as outfile:
+        json.dump(data, outfile,sort_keys=True,indent=4, separators=(',', ': '))
+else:
+    print('already exists')
+EOF
+endfunction
+
+function! SSHAgent()
+    :!eval "$(ssh-agent -s)"
+    :!ssh-add 
+endfunction 
+
+
+"function! STab_Or_Complete()
+  "if mode(1)=='ic'||mode(1)=='ix'
+    "return "\<C-P>"
+  "else
+    "return "\<S-Tab>"
+  "endif
+"endfunction
+
+"function! Tab_Or_Complete()
+  "if mode(1)=='ic'||mode(1)=='ix'
+    "return "\<C-N>"
+  "else
+    "return "\<Tab>"
+  "endif
+"endfunction
+func! ToggleHebrew()
+  if &rl
+    set norl
+    set keymap=
+  else
+    set rl
+    set keymap=hebrew
+  end
+endfunc
+
+func! FixCoc()
+    let g:WorkspaceFolders=[getcwd()]
+    CocRestart
+endfunc
+
+function! GetIt()
+    let x = getreg('+')
+    let x = substitute(x,'/mnt/c','c:','')
+    exec ':e '. x
+endfunction
+
+function! StartO(a)
+    :autocmd TextYankPost * call SaveLastCopy()
+    :autocmd InsertLeave * call SaveLastInsert()
+    :autocmd TextYankPost * call SaveLastReg()
+endfunction
+if has('nvim')
+":autocmd BufRead * call LoadInsertsForBuf()
+":autocmd BufNewFile if !exists('b:inserts') <bar> let b:inserts=[]
+:call StartO('')
+:autocmd DirChanged * call SaveLastDir()
+endif
+
+function! ReloadBuf()
+    :let x=expand('%:p')
+    :bd
+    :exe ':e '.x
+endfunction
+function! ReloadBufs()
+    :bufdo :e
+endfunction
+
+function! OnWinEnter()
+    if !&filetype
+        filetype detect
+    endif
+endfunction
