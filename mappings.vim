@@ -1,4 +1,3 @@
-
 "  Mappings!! of plugins as well
 "
 "
@@ -109,7 +108,7 @@ noremap _p :diffput<CR>
 nmap _u :LastWindow<CR>
 
 if g:on_ek_computer
-    nmap _U :call fzf#vim#cust_history(reverse(copy(g:lastWindows)))<CR>
+    nmap _U :Telescope my_last_windows<CR>
 endif
 nmap _. :cd ..<CR>
 nmap _- :cd -<CR>
@@ -235,7 +234,8 @@ endfunction
 " in normal mode M is same line
 imap <M-f> <c-o><Plug>Lightspeed_s
 imap ` <c-o><Plug>Lightspeed_s
-
+imap <silent><script><expr> <C-g> copilot#Accept("")
+let g:copilot_no_tab_map = v:true
 
 function! FF()
     :call quick_scope#Wallhacks()
@@ -584,7 +584,14 @@ endfunction
 
 nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
 nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
+"nnoremap <silent>]p <cmd>call Putline("]p")<CR>
 
+function! Putline(how)
+    let l:type = getregtype(v:register)
+    call setreg(getreg(v:register), "V")
+    execute 'normal! "' . v:register . a:how
+    call setreg(getreg(v:register), l:type)
+endfunction
 
 
 "nnoremap <silent> mp :call Putline("]p")<CR>
@@ -801,6 +808,8 @@ map <silent> <leader>? <Plug>(IPy-WordObjInfo)
 "
 noremap  <leader>od :exec ":vs " . getcwd()<CR>
 nnoremap <leader>em :call Exec("messages")<CR>
+nnoremap <leader>EM :call VspIfNeed()<CR>:enew<CR>:let @x=MinExec('messages')<CR>:norm "xp<CR>
+
 "enable save
 nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
 nnoremap <leader>si :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
@@ -825,7 +834,7 @@ function! VspIfNeed()
         "vsp
     "endif
     for k in getwininfo()
-        if k['winrow']==1 && k['wincol']>1
+        if k['winrow']<=2 && k['wincol']>1
             "look no further
             let id=k['winid']
             call win_gotoid(id)
@@ -1397,6 +1406,8 @@ map  <expr> <S-tab> repmo#ZapKey('<Plug>Lightspeed_S')
 nmap  } <Plug>Lightspeed_t
 nmap  { <Plug>Lightspeed_T
 nnoremap m] ]
+nnoremap m} }
+nnoremap m{ {
 nnoremap g] ]
 nnoremap m] ]
 nnoremap g] ]
@@ -1445,8 +1456,8 @@ vnoremap <C-F> "xy:call HandleCF()<CR>p
 "function! GetRegs()
     "call fzf#run({'source':":reg",'sink': function('PInsert')})<CR>
 "endendfunction
-nnoremap <silent> <leader> :WhichKey '\'<CR>
-nnoremap <silent> m :WhichKey 'm'<CR>
+"nnoremap <silent> <leader> :WhichKey '\'<CR>
+"nnoremap <silent> m :WhichKey 'm'<CR>
 let g:which_key_vertical=1
 
 function! Ff()
@@ -1487,6 +1498,20 @@ function! DoTag()
     :exe ':lcd '.tmp
 endfunction
 
+function! RunFiles(torun,onlypy)
+"be at the top of git
+        let top = systemlist("git rev-parse --show-toplevel")[0]
+        let a=systemlist("git ls-files ". top . " --full-name" )
+
+        let a = (a:onlypy ? filter(a,{idx,val -> val =~ ".*py$"}): a)
+        echo a
+        %argd
+        for item in a
+            echo item
+            exec ":argadd ".item
+        endfor
+        :exec argdo "source ".a:torun
+endfunction
 function! GitF(onlypy)
     let top = systemlist("git rev-parse --show-toplevel")[0]
     let a=systemlist("git ls-files ". top . " --full-name" )
@@ -1504,24 +1529,36 @@ endfunction
 nmap <leader>gr :call GitF(1)<CR>
 nmap <leader>gR :call GitF(0)<CR>
 nmap <leader>gs :call DoTag()<CR>
-nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
+"nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
 
 "~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
 function! DoGF()
     let f=expand('<cfile>')
+    let sec =expand('<cWORD>')
+    let line= substitute(sec,'^.*(\(.*\),.*):.*$','\1','')
     let arr=split(f,':')
+    if len(arr[0])==1
+        let arr=[arr[0].':'.arr[1]]+arr[2:]
+    endif
     if len(arr)>1
         if  filereadable(expandcmd(arr[0]))==0
-            echoerr "File not exists"
+            echoerr arr[0] . " File not exists"
             return
         endif
         :exe ':e '.arr[0]
-        :exe ':'.arr[1]
+ 
+        if arr[1] =~# '^\d\+$'
+            :exe ':'.arr[1]
+        endif
     else
-       norm! gf 
+       norm! gf
+       if line =~# '^\d\+$'
+            :exe ':'.line
+        endif 
     endif
 endfunction
+ 
 
 nmap gf :call DoGF()<CR>
 
