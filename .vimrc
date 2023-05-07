@@ -1,7 +1,7 @@
 "
 " By Eyal Karni
-" PYTHONPATH C:\Users\ekarni\AppData\Local\Programs\Python\Python39\Lib\site-packages
-":let $PYTHONPATHCOC='/Users/eyalkarni/impacket/impacket;/usr/local/lib/python2.7/site-packages;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'
+" PYTHONaATH C:\Users\ekarni\AppData\Local\Programs\Python\Python39\Lib\site-packages
+":let $PYTHONsATHCOC='/Users/eyalkarni/impacket/impacket;/usr/local/lib/python2.7/site-packages;/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'
 " I will be applying some adaptations on my computer. That is only if the folder exists.
 " some tips : remember commenter \Cc , remember <c-u>  and <M-Bslash> windows , remember \C
 " close NR 
@@ -28,6 +28,7 @@ let g:onlyplug='neovim/nvim-lspconfig'
 let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
+let g:no_spec_map=1
 "silent !pyenv global 2.7
 "g:vimloc is ~/.vim folder
 let g:vimloc=split(&packpath,',')[0]
@@ -43,6 +44,14 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+"Plug 'xiyaowong/transparent.nvim'
+Plug 'blblb/speech-to-text.nvim'
+Plug 'sbdchd/neoformat'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'jackMort/ChatGPT.nvim'
+"Plug 'kosayoda/nvim-lightbulb'
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'github/copilot.vim'
 Plug 'ggandor/lightspeed.nvim'
 "Plug 'rhysd/clever-f.vim'
 Plug 'craigemery/vim-autotag'
@@ -63,11 +72,11 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
-Plug 'stevearc/aerial.nvim'
+"Plug 'stevearc/aerial.nvim'
 Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
+"Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'ray-x/cmp-treesitter'
@@ -77,7 +86,8 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
-Plug 'liuchengxu/vim-which-key'
+"Plug 'liuchengxu/vim-which-key'
+Plug 'folke/which-key.nvim'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting
 Plug 'junegunn/vim-peekaboo'
@@ -89,9 +99,9 @@ Plug 'PeterRincker/vim-argumentative'
 Plug 'airblade/vim-matchquote'
 "Plug 'ggvgc/vim-fuzzysearch'
 "Plug 'benknoble/popsikey'
-Plug 'jacob-ogre/vim-syncr'
-Plug 'inkarkat/vim-SpellCheck'
-Plug 'echuraev/translate-shell.vim', { 'do': 'wget -O ~/.vim/trans git.io/trans && chmod +x ~/.vim/trans' }
+"Plug 'jacob-ogre/vim-syncr' RSYNC
+"Plug 'inkarkat/vim-SpellCheck'
+"Plug 'echuraev/translate-shell.vim', { 'do': 'wget -O ~/.vim/trans git.io/trans && chmod +x ~/.vim/trans' }
 ":VimscriptLastError finds last error
 Plug 'rbtnn/vim-vimscript_lasterror'
 "Plug 'mg979/vim-yanktools'
@@ -222,7 +232,7 @@ endif
 "Plug 'davidhalter/jedi-vim' " Python autocomplete
 Plug 'Houl/vim-repmo' "repeat moves
 "Plug 'sjl/gundo.vim'
-"Plug 'w0rp/ale' " lint
+Plug 'w0rp/ale' " lint
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
 "Plug 'powerman/vim-plugin-AnsiEsc'
@@ -243,6 +253,7 @@ endif
 " Plug 'severin-lemaignan/vim-minimap'
 
 function! Runit() 
+exe 'source' . " " . g:vimloc    . "\\secret.vim"
     
 exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
 exe 'source' . " " . g:vimloc . "\\hacks.vim"
@@ -262,4 +273,7 @@ else
     exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
 	exe 'source' . " " . g:vimloc . "\\mappings.vim"
 endif 
+if g:on_ek_computer 
+    "py3 exec(open('c:\\Users\\ekarni\\mypy\\voicerec.py','rt').read())
+endif
 

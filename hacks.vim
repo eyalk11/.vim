@@ -4,15 +4,21 @@ let g:lastWindows= []
 let g:lastWinName = ""
 
 let g:max_inserts_for_file = []
+function! GetLastWind()
+    return g:lastWindows
+endfunction
 function! SaveLastWindow()
 
 if &bt == '' || &bt == 'help' || &ft == 'netranger' "|| &bt == 'nofile'
-    let cur= expand( '<afile>' )
+    let cur= fnamemodify(bufname('%'),":p")
     "let cur = expand('%:p')
 
     if cur == g:lastWinName || cur ==""
         return
     endif 
+    if cur =~ 'term.*'
+        return
+    endif
 
     call add(g:lastWindows,cur) 
 
@@ -439,6 +445,7 @@ endfunction
 let g:last_copied=""
 let g:init=0
 function! TimerFunc(a)
+    :profile dump 
     "updates shada files to keep current commands
     wshada
     let minbu=MinExec(':buffers')
@@ -889,6 +896,10 @@ endfunction
 function! CdDir(item)
     :exe "cd ".a:item
 endfunction
+function! CdDirPlug(item)
+    :exe "cd ".a:item
+    norm mt
+endfunction
 
 function! HandleCommand(item)
     call feedkeys("zq:")
@@ -1103,4 +1114,12 @@ function! OnWinEnter()
     if !&filetype
         filetype detect
     endif
+endfunction
+
+function StartProfile()
+profile start ~\.vim\profile 
+profile func *
+endfunction 
+function ProfileStop()
+        profile stop
 endfunction

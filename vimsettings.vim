@@ -169,6 +169,9 @@ function! SetFont()
     endif
 endfunction
 function! OnLoad()
+    silent !copy ~\.vim\profile ~\.vim\profile2
+    silent !del ~\.vim\profile 
+    call StartProfile()
     call DefineMapping()
     call LoadBaseInserts(0)
     set ambiwidth=single
@@ -277,12 +280,12 @@ function! OnLoad()
 			endif
 		else
 			"~/nvimMACfiles/macmap042.vim
-            if g:on_ek_computer
-                nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo"<CR>
-
-                "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-            endif
 		endif 
+        if g:on_ek_computer
+            nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo"<CR>
+
+            "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
+        endif
         set shell=cmd 
 
         exec "!echo ". v:servername . " > c:\\temp\\listen.txt"
@@ -363,8 +366,8 @@ autocmd filetype vim let b:auto_save = 1
 
 
 
-let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
-let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
+"let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
+"let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
 "autocmd! TermEnter * :startinsert
 
 "commands

@@ -515,6 +515,9 @@ let g:nvim_ipy_perform_mappings=0
 "Multicursors
 "
 "
+let g:VM_maps = {}
+let g:VM_maps["Run Normal"] = '\['
+
 let g:VM_mouse_mappings=1
 
 "vimtex

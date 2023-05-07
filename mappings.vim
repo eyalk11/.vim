@@ -234,7 +234,8 @@ endfunction
 " in normal mode M is same line
 imap <M-f> <c-o><Plug>Lightspeed_s
 imap ` <c-o><Plug>Lightspeed_s
-imap <silent><script><expr> <C-g> copilot#Accept("")
+imap <silent><script><expr> <C-j> copilot#Accept("")
+imap <silent><script><expr> <C-g> copilot#Next()
 let g:copilot_no_tab_map = v:true
 
 function! FF()
@@ -275,8 +276,8 @@ nmap Z <plug>
 imap <c-t> <c-o>f
 
 "Logical, since in normal we have s and S
-imap <c-d> <c-o><Plug>(easymotion-bd-W)
-nmap <c-d> <Plug>(easymotion-bd-W)
+"imap <c-d> <c-o><Plug>(easymotion-bd-W)
+"nmap <c-d> <Plug>(easymotion-bd-W)
 "
 "beginning of words
 "
@@ -322,7 +323,7 @@ vmap <c-s> <Plug>(easymotion-s2)
 
 "search help , lift saving
 nmap <c-f> mH
-nmap <c-g> :call CocActionAsync("doHover")<cr>
+"nmap <c-g> :call CocActionAsync("doHover")<cr>
 
 nmap <C-e> mn-
 
@@ -771,7 +772,8 @@ nnoremap <silent> <C-a>F :exe ":LeaderfFile " . expand('%:p:h')<CR>
 nnoremap <silent> <C-a>h :call FZFOpen(':History')<CR>
 nmap <silent> <C-a>H :call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
 nnoremap <silent> <C-a>a :call FZFOpen(':Ag')<CR>
-nnoremap <silent> <C-a>d :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
+nnoremap <silent> <C-a>d :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
+nnoremap <silent> <C-a>D :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>w :call FZFOpen(':Windows')<CR>
 nnoremap <silent> <C-a>s :call FZFOpen(':Snippets')<CR>
 "use it to increase
@@ -801,6 +803,8 @@ nnoremap <leader>Gb :Git branch<Space>
 nnoremap <leader>Go :Git checkout<Space>
 nnoremap <leader>Gps :Dispatch! git push<CR>
 nnoremap <leader>Gpl :Dispatch! git pull<CR>
+nnoremap <leader>Grc :Git rebase --continue<CR>
+nnoremap <leader>Gra :Git rebase --abort<CR>
 
 
 map <silent> <leader>? <Plug>(IPy-WordObjInfo)
@@ -1513,17 +1517,20 @@ function! RunFiles(torun,onlypy)
         :exec argdo "source ".a:torun
 endfunction
 function! GitF(onlypy)
+    let tmp=getcwd()
+    :exe ":cd ". expand("%:p:h")
     let top = systemlist("git rev-parse --show-toplevel")[0]
-    let a=systemlist("git ls-files ". top . " --full-name" )
+    echo top
+    :exe ':cd '. top
+    let a=systemlist("git ls-files --full-name" )
 
     let a = (a:onlypy ? filter(a,{idx,val -> val =~ ".*py$"}): a)
+    echo a
     
     "py3 t=[os.path.join(vim.eval("top"),y) for y in vim.eval("a")]
     "echo join(a,' --iglob ')mF
-    let tmp=getcwd()
-    :exe ':lcd '. top
     :exec ":Leaderf rg " . " --iglob ". join(a,' --iglob ')
-    :exe ':lcd '.tmp
+    :exe ':cd '.tmp
 endfunction
 
 nmap <leader>gr :call GitF(1)<CR>
@@ -1572,3 +1579,21 @@ nmap <leader>gv :cd c:\users\ekarni\.vim<CR>:Leaderf rg --glob "*.vim" --glob "*
 "nmap <Leader>}  <Plug>EnhancedJumpsRemoteNewer
 nmap z; <Plug>EnhancedJumpsFarChangeOlder
 nmap z, <Plug>EnhancedJumpsFarChangeNewer
+
+command! -nargs=1 ReloadPackage :exe "cd c:/users/ekarni/.vim" <bar> lua require('funcs').reload_package(<f-args>)
+nmap <leader>pc :ChatGPT<CR>
+
+"function! GetVoice()
+    "return py3eval('recognize_voice()')
+"endfunction 
+nmap <c-L> :Voice<CR>
+
+imap <C-L> <C-R>=GetVoice()<CR>
+
+nmap <leader>rch <cmd>:%s#\(\.\.\.\)\?\(.*\)\(plugged\)#C:\\users\\ekarni\\.vim\\plugged#g<CR>:%s#\c\(\.\.\.\)\?\(.*\)\(chatgpt.nvim\)#C:\\Users\\ekarni\\.vim\\plugged\\ChatGPT.nvim#g<cr>
+function! MapCC()
+    if &buftype == ""
+        nmap <buffer> <c-c> <leader>pc<C-L> 
+    endif
+endfunction 
+autocmd FileType * call MapCC()

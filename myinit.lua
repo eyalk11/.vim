@@ -1,3 +1,10 @@
+
+local function locate( table, value )
+    for i = 1, #table do
+        if table[i] == value then return true end
+    end
+    return false
+end
 require("nvim-lsp-installer").setup {}
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
 require("grammar-guard").init()
@@ -37,7 +44,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gR', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     --vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
-    vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
+    --vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
     ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
     ----vim.keymap.set('n','g0',require('navigator.symbols').document_symbols())
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -45,8 +52,8 @@ local on_attach = function(client, bufnr)
 
     local opts = { noremap=true, silent=true }
 
-    buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
+    --buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    --buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
 end
 
 local cmp = require'cmp'
@@ -164,6 +171,11 @@ require('lspconfig')['rust_analyzer'].setup{
         ["rust-analyzer"] = {}
     }
 }
+require("lspconfig").yamlls.setup{
+    capabilities = capabilities,
+    on_attach = on_attach,
+}
+
 require("lspconfig").vimls.setup{
     capabilities = capabilities,
     on_attach = on_attach,
@@ -180,19 +192,19 @@ require('lspconfig').pylsp.setup{
     on_attach = on_attach,
     settings =
     {
-         pylsp = {
-        plugins =
-        {
-            pycodestyle = {
-                enabled = false,
-                ignore = {'E225','E231'},
-            },
-            pydocstyle = {
-                enabled= false
-            },
-            pylint = { enabled = false }
+        pylsp = {
+            plugins =
+            {
+                pycodestyle = {
+                    enabled = false,
+                    ignore = {'E225','E231'},
+                },
+                pydocstyle = {
+                    enabled= false
+                },
+                pylint = { enabled = false }
+            }
         }
-    }
     }
 }
 --require'lspconfig'.jedi_language_server.setup{
@@ -203,23 +215,42 @@ require('lspconfig').pylsp.setup{
         --jediSettings={
         --debug=true},
         --workspace = {
-            --environmentPath= 'C:\\Users\\ekarni\\compare-my-stocks\\venv\\Scripts\\python.exe',
-             --extraPaths ={'src\\compare_my_stocks','./src/compare_my_stocks','src/compare_my_stocks', './src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./gui','./engine','./input','src\\compare_my_stocks\\engine','src\\compare_my_stocks\\gui'}
+             --extrapaths=   {'./src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./src/compare_my_stocks'}
+             ----extraPaths ={'src/compare_my_stocks','c:/Users/ekarni/compare-my-stocks/src/compare_my_stocks'} --,'./src/compare_my_stocks','src/compare_my_stocks', './src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./gui','./engine','./input','src\\compare_my_stocks\\engine','src\\compare_my_stocks\\gui'
+             ----            environmentPath= 'C:\\Users\\ekarni\\compare-my-stocks\\venv\\Scripts\\python.exe',
         --}
     --}
 --}
-require("aerial").setup({
-    on_attach = function(bufnr)
-        -- Toggle the aerial window with <leader>a
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '\\s', '<cmd>AerialToggle!<CR>', {})
-        -- Jump forwards/backwards with '{' and '}'
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '!', '<cmd>AerialPrev<CR>', {})
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '~', '<cmd>AerialNext<CR>', {})
-        -- Jump up the tree with '[[' or ']]'
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
-    end
-})
+--require("aerial").setup({
+--open_automatic = function(bufnr)
+    
+    ----filter on file types in list 'python','lua' 
+    ----
+    ----
+
+    ---- filter based on file type
+    --local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+
+    --local your_list = { 'lua', 'python', 'markdown' }
+    
+
+  ---- Enforce a minimum line count
+  --return (locate(your_list,filetype)) and vim.api.nvim_buf_line_count(bufnr) < 1800
+--end
+--,
+
+
+    --on_attach = function(bufnr)
+        ---- Toggle the aerial window with <leader>a
+        --vim.api.nvim_buf_set_keymap(bufnr, 'n', '\\s', '<cmd>AerialToggle!<CR>', { })
+        ---- Jump forwards/backwards with '{' and '}'
+        --vim.api.nvim_buf_set_keymap(bufnr, 'n', '!', '<cmd>AerialPrev<CR>', {})
+        --vim.api.nvim_buf_set_keymap(bufnr, 'n', '~', '<cmd>AerialNext<CR>', {})
+        ---- Jump up the tree with '[[' or ']]'
+        --vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
+        --vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
+    --end
+--})
 --require("lspconfig").grammar_guard.setup({capabilities = capabilities,
 --on_attach = on_attach,
 --workspace = {
@@ -267,3 +298,73 @@ require'lspconfig'.powershell_es.setup{
     capabilities = capabilities,
     on_attach = on_attach,
 }
+ require("which-key").setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+    require("chatgpt").setup(
+    { 
+        chat = {
+            sessions_window={ 
+                buf_options = { 
+                    cinkeys= "chatgpt"
+                }            
+            }
+        },
+    popup_window = {
+        buf_options = {
+            cinkeys= "chatgpt"
+        }
+    },
+    settings_window = {
+        buf_options = {
+            cinkeys= "chatgpt"
+        }
+    },
+    popup_input = {
+     buf_options = {
+            cinkeys= "chatgpt"
+        }
+    },
+    log_file = "C:\\users\\ekarni\\chatgptn.log",
+}
+)
+
+
+
+local chatgpt = require("chatgpt")
+wk=require('which-key')
+wk.setup()
+wk.register({
+    p = {
+        name = "ChatGPT",
+        e = {
+            function()
+                chatgpt.edit_with_instructions()
+            end,
+            "Edit with instructions",
+        },
+    },
+}, {
+    prefix = "<leader>",
+    mode = "v",
+})
+--require("transparent").setup({
+    --groups = { -- table: default groups
+--},
+--extra_groups = {"NormalFloat"}, -- table: additional groups that should be cleared
+--exclude_groups = {}, -- table: groups you don't want to clear
+--})
+--[[{]]
+
+--[[edit_with_instructions = {]]
+    --[[diff = false,]]
+    --[[keymaps = {]]
+      --[[accept = "gy",]]
+      --[[toggle_diff = "gY",]]
+      --[[toggle_settings = "gG",]]
+      --[[cycle_windows = "gH",]]
+      --[[use_output_as_input = "gI",]]
+    --[[}]]
+  --[[}}]]
