@@ -173,7 +173,6 @@ function! OnLoad()
     silent !del ~\.vim\profile 
     call StartProfile()
     call DefineMapping()
-    call LoadBaseInserts(0)
     set ambiwidth=single
     :silent Arpeggio inoremap jk  <Esc>
     :silent   Arpeggio inoremap kl  <Esc>
@@ -282,7 +281,7 @@ function! OnLoad()
 			"~/nvimMACfiles/macmap042.vim
 		endif 
         if g:on_ek_computer
-            nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo"<CR>
+            nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo special"<CR>
 
             "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
         endif

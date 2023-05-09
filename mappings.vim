@@ -758,7 +758,7 @@ nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
 nnoremap <silent> <C-a>C :call FZFOpen(':Commands')<CR>
 "nnoremap <silent> <C-a>l :call FZFOpen(':BLines')<CR>
 "c-l is lines in insert mode aaa
-nnoremap <silent> <C-a>l :call GetAllInserts()<CR>
+nnoremap <silent> <C-a>l :call GetAllInsertsForCurrentBufs()<CR>
 nnoremap <silent> <C-a>L m':LeaderfLineAll<CR>
 nnoremap <silent> <C-a>r :Leaderf --recall<CR>
 nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
@@ -865,7 +865,7 @@ nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
 nnoremap <leader>oi :call RecallInserts(0)<CR>
-nnoremap <leader>OI :call RecallInserts(1)<CR>
+nnoremap <leader>OI :call GetAllInserts()<CR>
 nnoremap <leader>ol :lopen<CR>
 nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
 nmap <leader>om :TN ~/.vim/mappings.vim<CR>

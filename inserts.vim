@@ -2,8 +2,19 @@
 " Allows you to fetch the last 1000 inserts for any buffer using FZF
 "Need to fill let g:vimloc -  location to save inserts.cache
 "requires fzf.vim 
+
 " to use call EnableTrackInserts on .vimrc 
-"
+" Enable some of these mappings: 
+
+"Recall for current buffer 
+"nnoremap <leader>oi :call RecallInserts(0)<CR>
+"Recall for all buffers
+" nnoremap <leader>OI :call GetAllInserts()<CR>
+" Recall for current buffer in insert mode 
+"inoremap <expr> <C-L>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
+"Recall for open buffers
+"nnoremap <silent> <C-a>l :call GetAllInsertsForCurrentBufs()<CR>
+" 
 
 function! EnableTrackInserts()
     :autocmd TextYankPost * call SaveLastCopy()
