@@ -44,6 +44,7 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+"Plug 'sickill/vim-pasta'
 "Plug 'xiyaowong/transparent.nvim'
 Plug 'blblb/speech-to-text.nvim'
 Plug 'sbdchd/neoformat'
@@ -154,7 +155,7 @@ Plug 'bfredl/nvim-ipy'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'udalov/kotlin-vim'
-Plug 'vim-ctrlspace/vim-ctrlspace'
+"Plug 'vim-ctrlspace/vim-ctrlspace'
 " 
 Plug 'yegappan/mru'
 Plug 'ctrlpvim/ctrlp.vim'

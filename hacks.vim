@@ -273,7 +273,7 @@ endfunction
 let g:last_copied=""
 let g:init=0
 function! TimerFunc(a)
-    :profile dump 
+    ":profile dump 
     "updates shada files to keep current commands
     wshada
     let minbu=MinExec(':buffers')
@@ -294,7 +294,7 @@ function! TimerFunc(a)
     "Remember not to run in parallel
     if g:init==1
         if exists(':GonvimWorkspaceNew')==2 || exists('g:GuiLoaded')
-            :silent :CtrlSpaceSaveWorkspace default
+        ":silent :CtrlSpaceSaveWorkspace default
         endif
         "if g:init==0
         "let g:init=1
