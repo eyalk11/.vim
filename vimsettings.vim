@@ -281,7 +281,7 @@ function! OnLoad()
 			"~/nvimMACfiles/macmap042.vim
 		endif 
         if g:on_ek_computer
-            nmap <leader>rv :exec "norm mwd"<bar>:sleep 2<bar>:exec "!start powershell ResetNeo special"<CR>
+            nmap <leader>rv :exec "!start powershell ResetNeo"<CR>
 
             "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
         endif
@@ -383,3 +383,4 @@ augroup vimrc-noincsearch-highlight
     autocmd!
     autocmd CmdlineLeave / :set noincsearch | :noh
 augroup END
+

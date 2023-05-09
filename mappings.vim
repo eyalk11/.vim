@@ -343,7 +343,6 @@ imap <c-a> <c-o><c-a>
 
 "Insert mode actions
 
-
 imap <c-w> <c-o>db
 imap <M-Right> <c-o>W
 imap <M-Left> <c-o>B
@@ -351,13 +350,11 @@ imap <M-Up> <c-h>
 imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
-inoremap <expr> <C-L>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
+inoremap <expr> <C-K>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
 
 
-"complete from dict 
-inoremap  <c-k> <c-x><c-k>
 "does chars 
-inoremap <m-c-k> <c-k>
+inoremap <m-c-k> <c-x><c-k>
 inoremap <c-f> <c-x><c-n>
 "imap <c-z> <c-f><up><down>
 "imap <c-z> <c-r>=SuperTab('n')<CR>

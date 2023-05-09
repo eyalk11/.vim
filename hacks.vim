@@ -1,6 +1,6 @@
 "Last windows names
 exec 'source ' . g:vimloc . "/inserts.vim"
-call EnableTrackInserts()
+call EnableTrackInserts(0)
 let g:lastWindows= []
 let g:lastWinName = ""
 
