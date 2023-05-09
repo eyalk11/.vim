@@ -16,7 +16,7 @@
 "nnoremap <silent> <C-a>l :call GetAllInsertsForCurrentBufs()<CR>
 " 
 
-function! EnableTrackInserts()
+function! EnableTrackInserts(a)
     :autocmd TextYankPost * call SaveLastCopy()
     :autocmd InsertLeave * call SaveLastInsert()
     :au VimEnter * nested call LoadBaseInserts(0)
@@ -128,7 +128,7 @@ function! AddInsert(str)
 endfunction
 function! AddInsertInternal(str)
 py3 <<EOF
-bufn=vim.eval('expand("%:p")')
+bufn=vim.eval('GetBufName()')
 import datetime
 dt= datetime.datetime.now()
 sec=dt.second
@@ -151,7 +151,7 @@ if py3eval('toexit')
     return
 endif
 let strt = substitute(a:str,"\<BS>",'\n','g')
-py3 insertfunc(vim.eval('strt'))
+py3 insertfunc(vim.eval('strt'),bufn)
 endfunction
 function! CleanIns()
     py3 inserts={}
@@ -159,11 +159,10 @@ call SaveInsertsFunc('')
 endfunction 
 PY << EOF
 from collections import deque
-def insertfunc(mystr):
+def insertfunc(mystr,bufn):
     import re
     if not filterinp(mystr):
         return
-    bufn=vim.eval('expand("%:p")')
     if bufn in inserts:
         if len(inserts[bufn][0])>1000:
             a,b=inserts[bufn][0].popleft() 
@@ -176,7 +175,7 @@ def insertfunc(mystr):
     inserts[bufn][1].add(mystr)
 EOF
 function! RecallInserts(break)
-    let g:bufn=fnamemodify(bufname('%'),":p")
+    let g:bufn=GetBufName()
     if a:break 
     let t=py3eval( 'returninsertsforbufn(1)')
 else 
@@ -199,7 +198,7 @@ function! GetAllInsertsForCurrentBufs()
     let ls=[]
     let lastbuf=bufnr('$')
     for i in range(lastbuf)
-        let bufn=fnamemodify(bufname(i),":p")
+        let bufn=fnamemodify(bufname(i),":p") "should use GetBufName
         if bufn!=''
             call add(ls,bufn)
         endif
@@ -219,4 +218,15 @@ endfunction
 function! PInsert(item)
     let @z=a:item
     norm "zp
-endfunction
+endfunction 
+function GetBufName()
+    let t=expand("%:p")
+    if len(t)==0
+        if &cinkeys=="chatgpt"
+            let t="chatgpt"
+        else 
+            let t="unknown"
+        endif 
+    endif 
+    return t
+endfunction 
