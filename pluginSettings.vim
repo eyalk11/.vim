@@ -283,7 +283,7 @@ let g:CtrlSpaceSaveWorkspaceOnExit = 0
 
 let g:CtrlSpaceUseArrowsInTerm = 1
 
-call ctrlspace#init#Init()
+"call ctrlspace#init#Init()
 "change in ctrlspace
 let g:defRoot= g:vimloc
 
@@ -731,3 +731,5 @@ let g:sneak#use_ic_scs = 1
 "map <expr> t g:lightspeed_last_motion == 'ft' ? "<Plug>Lightspeed_t" : "<Plug>Lightspeed_;_ft"
 "map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
   let g:qs_highlight_on_keys = []
+
+ let g:EasyMotion_leader_key='\rs'

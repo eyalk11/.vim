@@ -192,7 +192,7 @@ function! OnLoad()
 "call ToggleVerbose() 
     "!cp /Users/eyalkarni/vimpy3/.git/cs_workspaces /tmp/onload 
 ". '~/vimpy3/'
-:exe ":silent CtrlSpaceAddProjectRoot ". g:vimloc
+":exe ":silent CtrlSpaceAddProjectRoot ". g:vimloc
 	if !has('nvim')
 		return
 	endif 
@@ -209,7 +209,7 @@ function! OnLoad()
 	
 	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
     if expand("%:p:t")=="special"
-        :CtrlSpaceLoadWorkspace default
+        ":CtrlSpaceLoadWorkspace default
     endif 
 	if argc()==0
 		"PY import vim
@@ -331,7 +331,7 @@ endif
 		call LoadDir()
 		let g:lastdir=''
 	endif
-:GitGutterEnable
+":GitGutterEnable
 let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':0})
 let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
@@ -384,3 +384,4 @@ augroup vimrc-noincsearch-highlight
     autocmd CmdlineLeave / :set noincsearch | :noh
 augroup END
 
+let g:no_spec_maps=1

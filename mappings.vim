@@ -88,7 +88,8 @@ nnoremap <leader>` `
 nnoremap m` `
 "nnoremap <leader>t t
 "we use m for multiple things as seconds leader
-noremap <leader>z m
+noremap <leader>Z m
+
 nnoremap <leader>F F
 "
 "end only until the end and not one more
@@ -232,8 +233,8 @@ endfunction
 "
 " in insert mode M is same line , and <c-.> . Use <c-.> 
 " in normal mode M is same line
-imap <M-f> <c-o><Plug>Lightspeed_s
-imap ` <c-o><Plug>Lightspeed_s
+"imap <M-f> <c-o><Plug>Lightspeed_s
+"imap ` <c-o><Plug>Lightspeed_s
 imap <silent><script><expr> <C-j> copilot#Accept("")
 imap <silent><script><expr> <C-g> copilot#Next()
 let g:copilot_no_tab_map = v:true
@@ -245,7 +246,12 @@ endfunction
 imap <expr> <c-.> FF()
 imap <c-/> <c-o><Plug>Lightspeed_s
 imap <M-/> <c-o><Plug>Lightspeed_S
+imap <c-]> <c-o><Plug>Lightspeed_s
+imap <c-[> <c-o><Plug>Lightspeed_S
 
+
+"imap <tab> <c-o><Plug>Lightspeed_s
+"imap <S-tab> <c-o><Plug>L`ightspeed_S
 "nmap <M-/> <Plug>(easymotion-tl)
 "imap <M-t> <c-o>:call Teasy()<CR> 
 nmap <M-t> <Plug>(easymotion-bd-tl)
@@ -614,10 +620,12 @@ nnoremap mss :s/\s\+/ /g<CR>
 nnoremap msl :%s/\s\+$//e<CR>
 nnoremap msl :%g/^\s*$/norm dd<CR>
 "open cur folder 
-noremap mt :call CloseAllNR()<CR>:sleep 200m<CR>:exec ":vert topleft split " . getcwd()<CR>
-noremap mT :call CloseAllNR()<CR>:sleep 200m<CR>:exe ":tabnew ".expand("%:p:h")<CR>
+"nmap mt :NvimTreeClose<CR>:echom ":NvimTreeOpen ".getcwd() <CR>:exec ":NvimTreeOpen ".escape(getcwd(),'\')<CR> 
+"noremap mt :call CloseAllNR()<CR>:sleep 200m<CR>:exec ":vert topleft split " . getcwd()<CR>
+"noremap mT :call CloseAllNR()<CR>:sleep 200m<CR>:exe ":tabnew ".expand("%:p:h")<CR>
 "open cur file's folder
-noremap MT :call CloseAllNR()<CR>:sleep 200m<CR>:exe ":vert topleft split ".expand("%:p:h")<CR>
+"mt is defined in lua
+noremap MT :exec "NvimTreeOpen ".expand("%:p:h")<CR>
 "noremap mt :NERDTreeFind<CR>
 
 nnoremap mu :UndotreeToggle<CR>
@@ -820,7 +828,26 @@ nnoremap <leader>do :diffoff<CR>
 nnoremap <leader>du :diffupdate<CR>
 nnoremap <leader>dt :diffthis<CR>
 
-nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
+
+
+
+
+
+
+function! DoRf()
+    let @+=expand("%:p")
+
+    norm \tt
+    call feedkeys("\<C-e>")
+    call feedkeys("\<C-v>\<CR>")
+    "exe "norm \<C-v>"
+
+endfunction
+
+
+
+au filetype py nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
+au filetype ps1 nmap <leader>rf  :call DoRf()<CR>
 map <silent> <leader>rb <Plug>(IPy-Interrupt)
 nmap <leader>rt <Plug>(IPy-Terminate)
 map <leader>rc <Plug>(IPy-RunCell)
@@ -829,6 +856,20 @@ nnoremap <leader>rd <c-L>
 
 "todo FZF
 nnoremap <leader>oc :copen<CR>
+function! CloseVspIfNeed()
+    "let x = tabpagebuflist()
+    "if len(x)==1
+    "vsp
+    "endif
+    for k in getwininfo()
+        if k['winrow']<=2 && k['wincol']>1
+            "look no further
+            let id=k['winid']
+            call win_gotoid(id)
+            :close
+        endif
+    endfor
+endfunction
 function! VspIfNeed()
     "let x = tabpagebuflist()
     "if len(x)==1
@@ -880,6 +921,7 @@ function! TermLOV()
 endfunction
 
 function! TermOV(use_file_dir)
+    call CloseVspIfNeed()
     let t=&shell
     let g:neoterm_shell = executable('pwsh') ? 'pwsh' : 'powershell'
     set shell=cmd.exe
@@ -947,7 +989,7 @@ noremap Q :close<CR>
 nnoremap <leader>q :tabo!<CR>:call CloseAllBuffersButCurrent()<CR>
 nnoremap <leader>Q :q!<CR>
 "closes other buffer same tab
-nnoremap <nowait> <leader>c :call CloseAllWindowsButCurrent()<CR>
+nnoremap <nowait> <leader>cHow to add subclass in decorator?<Plug>Lightspeed_S :call CloseAllWindowsButCurrent()<CR>
 nnoremap <nowait> <leader>C :call CloseAllNR()<CR>
  
 nnoremap ZB :call CloseAllBuffersButCurrent()<CR>
@@ -967,7 +1009,7 @@ nmap mj <leader>j
 nmap mk <leader>k
 nmap mh :wincmd h<CR>
 
-autocmd  FileType * nnoremap <nowait> <buffer> <leader>h :wincmd h<CR>
+"autocmd  FileType * nnoremap <nowait> <buffer> <leader>h :wincmd h<CR>
 
 "avabnnoremap2 <leader>s :exec "normal i".nr2chaar(getchar())."\e"<CR>
 function! InsertBefore(count) range
@@ -1030,7 +1072,7 @@ endfunction
 
 "nmap ` i
 "imap ` <ESC>
-inoremap <c-]> `
+"inoremap <c-]> `
 imap <c-`> <c-O>
 nmap <c-`> <esc>
 "duplicate in onload because of mapping
@@ -1590,7 +1632,10 @@ imap <C-L> <C-R>=GetVoice()<CR>
 nmap <leader>rch <cmd>:%s#\(\.\.\.\)\?\(.*\)\(plugged\)#C:\\users\\ekarni\\.vim\\plugged#g<CR>:%s#\c\(\.\.\.\)\?\(.*\)\(chatgpt.nvim\)#C:\\Users\\ekarni\\.vim\\plugged\\ChatGPT.nvim#g<cr>
 function! MapCC()
     if &buftype == ""
-        nmap <buffer> <c-c> <leader>pc<C-L> 
+        nmap <buffer> <c-x> <leader>pc<C-L> 
     endif
 endfunction 
 autocmd FileType * call MapCC()
+vmap \\v <Plug>(VM-Visual-Add)
+"%s/^.\{-}",".\{-}",".\{-}","\(.\{-}\)".*/\1
+nmap \\. :call Exec(expand('@:'))<CR>

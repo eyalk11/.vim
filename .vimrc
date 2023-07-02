@@ -44,6 +44,7 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'lambdalisue/fin.vim'
 "Plug 'sickill/vim-pasta'
 "Plug 'xiyaowong/transparent.nvim'
 Plug 'blblb/speech-to-text.nvim'
@@ -180,8 +181,12 @@ Plug 'vim-scripts/EnhancedJumps'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'jeetsukumaran/vim-indentwise'
 Plug  'mg979/vim-visual-multi'
-Plug 'ipod825/vim-netranger'
+"Plug 'ipod825/vim-netranger'
+    "Plug 'francoiscabrol/ranger.vim'
+    Plug 'rbgrouleff/bclose.vim'
 
+Plug 'nvim-tree/nvim-tree.lua'
+Plug 'nvim-tree/nvim-web-devicons'
 Plug 'jeetsukumaran/vim-pythonsense'
 if !has('nvim')
 	Plug 'powerline/powerline'

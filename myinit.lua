@@ -13,13 +13,42 @@ require("grammar-guard").init()
  --}
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
      require('telescope').setup{}
+
+local telescope=require('telescope')
+--- Absolute path of the current node's directory
+--- @return string|nil
+local function node_dir_path()
+local api =require('nvim-tree.api')
+local node = api.tree.get_node_under_cursor()
+  if not node then
+    return
+  end
+
+  if node.parent and node.type == "file" then
+    node = node.parent
+  end
+
+  return node.absolute_path
+end
+ local function find_files()
+     telescope.find_files({ search_dirs = { node_dir_path() } })
+ end
+
+ local function live_grep()
+     telescope.live_grep({ search_dirs = { node_dir_path() } })
+ end
+
 --require('fzf-lua').setup{} 
 local opts = { noremap=true, silent=true }
 vim.keymap.set('n', '_Q', vim.diagnostic.open_float, opts)
 --vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 --vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '_q', vim.diagnostic.setloclist, opts)
-
+local function opencwd ()
+    local api = require('nvim-tree.api')
+    api.tree.open({ path = vim.fn.getcwd() })
+end
+vim.keymap.set('n', 'mt' , opencwd ,opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -74,6 +103,7 @@ cmp.setup({
       -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
       -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
       vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+
     end,
   },
   window = {
@@ -95,14 +125,20 @@ cmp.setup({
       end
     end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function()
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
      if cmp.visible() then
         cmp.select_prev_item()
-     else
-         cmp.complete()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
      end
     end, { "i", "s" }),
-    ['<esc>'] = cmp.mapping.abort(),
+    ['<esc>'] = cmp.mapping(function(fallback)
+    if cmp.visible() then cmp.abort()
+    else vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
+    end 
+end ),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({
@@ -185,7 +221,7 @@ require'lspconfig'.sumneko_lua.setup{
     on_attach = on_attach,
 }    
 
-vim.lsp.set_log_level("debug")
+--vim.lsp.set_log_level("debug")
 
 require('lspconfig').pylsp.setup{
     capabilities = capabilities,
@@ -368,3 +404,82 @@ wk.register({
       --[[use_output_as_input = "gI",]]
     --[[}]]
   --[[}}]]
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require("nvim-tree").setup()
+
+
+  local function my_on_attach(bufnr)
+    local api = require('nvim-tree.api')
+
+      local function global_cd_node_path()
+        local node = api.tree.get_node_under_cursor()
+        print(node.absolute_path)
+
+        if vm.fn.filereadble(node.absolute_path) == 2 then 
+            local fil=node.absolute_path -- is dir
+        else 
+            local fil=vim.fn.fnamemodify(node.absolute_path,':h')
+        end
+
+        vim.api.nvim_command('cd ' .. fil  )
+      end
+
+    local function opts(desc)
+      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+
+    api.config.mappings.default_on_attach(bufnr)
+    vim.keymap.del('n', 'x', { buffer = bufnr })
+    vim.keymap.del('n', 'd', { buffer = bufnr })
+    vim.keymap.del('n', 'y', { buffer = bufnr })
+    vim.keymap.del('n', 'c', { buffer = bufnr })
+    -- override a default
+    vim.keymap.set('n', '<space>', api.node.open.edit,                       opts('Open'))
+    vim.keymap.set('n', 'zM', api.tree.collapse_all,                       opts('Collapse All'))
+    vim.keymap.set('n', 'zR', api.tree.expand_all,                       opts('Expand All'))
+    vim.keymap.set('n', 'X', api.fs.remove,                       opts('Del'))
+    vim.keymap.set('n', 'dd', api.fs.cut,                       opts('Cut'))
+    vim.keymap.set('n', 'yy',api.fs.copy.node , opts('Copy'))
+    vim.keymap.set('n', 'cn',api.fs.copy.filename , opts('Copy Name'))
+    vim.keymap.set('n', 'cd',global_cd_node_path , opts('Change Cwd'))
+    vim.keymap.set('n', '/',(function() vim.api.nvim_command('Fin -matcher=fuzzy') end) , opts('Find'))
+    vim.keymap.set('n', '<C-[>',api.tree.change_root_to_parent , opts('Goto Parent'))
+    vim.keymap.set('n', '<left>',api.tree.change_root_to_parent , opts('Goto Parent'))
+    vim.keymap.set('n', '<right>',api.tree.change_root_to_node , opts('Root to Node'))
+    vim.keymap.set('n', 'Mt' , (function() api.tree.change_root_to_node(); timer.performWithDelay(1000, function() vim.api.nvim_command('Fin -matcher=fuzzy') end , 0) end),opts('TT'))
+
+
+    vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
+
+    vim.keymap.set('n', 'f',        find_files,                         opts('Find Files'))
+    vim.keymap.set('n', 'g',        live_grep,                          opts('Live Grep'))
+    ---
+  end
+
+-- OR setup with some options
+require("nvim-tree").setup({
+on_attach = my_on_attach,
+  sort_by = "case_sensitive",
+  view = {
+    width = 30,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  --actions = { change_dir = { global = true }},
+  filters = {
+    dotfiles = false,
+    gitignore = false
+  },
+  live_filter = {
+      prefix = "[FILTER]: ",
+      always_show_folders = false,
+  },
+})
