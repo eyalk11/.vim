@@ -49,6 +49,8 @@ local function opencwd ()
     api.tree.open({ path = vim.fn.getcwd() })
 end
 vim.keymap.set('n', 'mt' , opencwd ,opts)
+vim.keymap.set('n', 'mt' , opencwd ,opts)
+vim.keymap.set('n','<esc>','<esc>',opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -222,6 +224,14 @@ require'lspconfig'.sumneko_lua.setup{
 }    
 
 --vim.lsp.set_log_level("debug")
+local root_files = {
+"pyproject.toml",
+"setup.py",
+"setup.cfg",
+"requirements.txt",
+"Pipfile",
+"pyrightconfig.json",
+}
 
 require('lspconfig').pylsp.setup{
     capabilities = capabilities,
@@ -238,25 +248,44 @@ require('lspconfig').pylsp.setup{
                 pydocstyle = {
                     enabled= false
                 },
-                pylint = { enabled = false }
-            }
+                pylint = { enabled = false },
+                rope = {enabled = true },
+                rope_auto_import = {enabled = true},
+                jedi_symbols = { enabled = true, all_scopes = true}
+            },
+            root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
         }
     }
 }
---require'lspconfig'.jedi_language_server.setup{
---capabilities = capabilities,
-   --on_attach = on_attach,
-   ----root_dir = function() return vim.loop.cwd() end,
-   --init_options = {
-        --jediSettings={
-        --debug=true},
-        --workspace = {
-             --extrapaths=   {'./src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./src/compare_my_stocks'}
-             ----extraPaths ={'src/compare_my_stocks','c:/Users/ekarni/compare-my-stocks/src/compare_my_stocks'} --,'./src/compare_my_stocks','src/compare_my_stocks', './src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./gui','./engine','./input','src\\compare_my_stocks\\engine','src\\compare_my_stocks\\gui'
-             ----            environmentPath= 'C:\\Users\\ekarni\\compare-my-stocks\\venv\\Scripts\\python.exe',
+--
+
+--vim.api.nvim_create_autocmd("FileType", {
+--pattern = "python",
+--callback = function()
+  --vim.lsp.start({
+--name = "jedi-language-server",
+--cmd= { 'C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9.6\\Scripts\\jedi-language-server.EXE', '-v', '--log-file','c:\\temp\\jedi-language-server.log'},
+ --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]),
+--config = { 
+    --capabilities = capabilities,
+       --on_attach = on_attach,
+       ----root_dir = function() return vim.loop.cwd() end,
+       --init_options = {
+            --jediSettings={
+            --debug=true},
+            --workspace = {
+                 --extrapaths=   {'./src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./src/compare_my_stocks'}
+                 ----extraPaths ={'src/compare_my_stocks','c:/Users/ekarni/compare-my-stocks/src/compare_my_stocks'} --,'./src/compare_my_stocks','src/compare_my_stocks', './src/compare_my_stocks/gui','./src/compare_my_stocks/engine','./src/compare_my_stocks/input','./gui','./engine','./input','src\\compare_my_stocks\\engine','src\\compare_my_stocks\\gui'
+                 ----            environmentPath= 'C:\\Users\\ekarni\\compare-my-stocks\\venv\\Scripts\\python.exe',
+            --}
         --}
     --}
---}
+
+
+ --} )end } )
+ 
+
+
 --require("aerial").setup({
 --open_automatic = function(bufnr)
     

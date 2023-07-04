@@ -44,6 +44,7 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'folke/trouble.nvim'
 Plug 'lambdalisue/fin.vim'
 "Plug 'sickill/vim-pasta'
 "Plug 'xiyaowong/transparent.nvim'
@@ -74,7 +75,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
-"Plug 'stevearc/aerial.nvim'
+Plug 'stevearc/aerial.nvim'
 Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -89,6 +90,7 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
 "Plug 'liuchengxu/vim-which-key'
+Plug 'folke/lazy.nvim'
 Plug 'folke/which-key.nvim'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting

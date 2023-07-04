@@ -244,10 +244,13 @@ function! FF()
     return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
 imap <expr> <c-.> FF()
+imap <expr> <c-'> FF()
 imap <c-/> <c-o><Plug>Lightspeed_s
 imap <M-/> <c-o><Plug>Lightspeed_S
 imap <c-]> <c-o><Plug>Lightspeed_s
+nmap <c-]> <c-o><Plug>Lightspeed_s
 imap <c-[> <c-o><Plug>Lightspeed_S
+nmap <c-[> <c-o><Plug>Lightspeed_S
 
 
 "imap <tab> <c-o><Plug>Lightspeed_s
@@ -260,26 +263,26 @@ nmap <M-t> <Plug>(QuickScopet)
 xmap <M-t> <Plug>(QuickScopet)
 omap <M-t> <Plug>(QuickScopet)
 "this is untill"
-map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
-map <Plug>cusnf :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
-map <Plug>cusnF :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
+"map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+"map <Plug>cusnf :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
+"map <Plug>cusnF :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
 function! FFn()
-    :call quick_scope#Wallhacks()
+    :call quick_scope#Wallhacks('t')
     return "\<Plug>Lightspeed_F"
 endfunction
 nmap <expr> f Ffn()
 nmap <expr> F FFn()
 function! Ffn()
-    :call quick_scope#Wallhacks()
+    :call quick_scope#Wallhacks('f')
     return "\<Plug>Lightspeed_f"
 endfunction
-nmap F <Plug>cusnF
+"nmap F <Plug>cusF
 nmap s <Plug>Lightspeed_s
 nmap S <Plug>Lightspeed_S
 "nmap s <plug>Sneak_s
 "nmap S <plug>Sneak_S
 nmap Z <plug>
-imap <c-t> <c-o>f
+imap <c-t> <c-o>F
 
 "Logical, since in normal we have s and S
 "imap <c-d> <c-o><Plug>(easymotion-bd-W)
@@ -471,8 +474,8 @@ function! CompleteInf()
 endfunction 
 "com
 "completion by fuzzing of anything
-imap <c-'> <CMD>:call CompleteInf()<CR>
-cmap <c-'> <CMD>:call CompleteInf()<CR>
+imap <c-.> <CMD>:call CompleteInf()<CR>
+cmap <c-.> <CMD>:call CompleteInf()<CR>
 imap <M-K> <plug>(fzf-complete-word)
 imap <M-k> <plug>(fzf-complete-word)
 "imap <M-F> <plug>(fzf-complete-path)
@@ -989,7 +992,7 @@ noremap Q :close<CR>
 nnoremap <leader>q :tabo!<CR>:call CloseAllBuffersButCurrent()<CR>
 nnoremap <leader>Q :q!<CR>
 "closes other buffer same tab
-nnoremap <nowait> <leader>cHow to add subclass in decorator?<Plug>Lightspeed_S :call CloseAllWindowsButCurrent()<CR>
+nnoremap <nowait> <leader>c :call CloseAllWindowsButCurrent()<CR>
 nnoremap <nowait> <leader>C :call CloseAllNR()<CR>
  
 nnoremap ZB :call CloseAllBuffersButCurrent()<CR>
@@ -1252,7 +1255,13 @@ nmap <BS> call Show_documentation()<CR>
 "" Find symbol of current document
 "nnoremap <silent> _o  :<C-u>CocList outline<cr>
 " Search workspace symbols
-nnoremap <silent> _s  :<C-u>CocList -I symbols<cr>
+nnoremap _d :Telescope diagnostics<CR>
+nmap _d :TroubleToggle<CR>
+nnoremap _o :Telescope lsp_document_symbols<CR>
+nnoremap _O :Telescope lsp_workspace_symbols<CR>
+nnoremap _r :Telescope lsp_references<CR>
+nnoremap _a :Telescope lsp_code_actions<CR>
+
 " Do default action for next item.
 "nnoremap <silent> _j  :<C-u>CocNext<CR>
 "" Do default action for previous item.
@@ -1326,7 +1335,7 @@ nmap <M-C-Q> :qa!
 "nnoremap , :BLines<CR>
 "nmap <c-,> :BLines<CR><C-P>
 "
-"let g:Lf_CommandMap = {'<C-K>': ['<Up>'], '<C-J>': ['<Down>']}
+"let g:Lf_CommandMp = {'<C-K>': ['<Up>'], '<C-J>': ['<Down>']}
 " I did the switch in code manager.py
 "
 ":inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
@@ -1446,8 +1455,8 @@ map  <expr> <S-tab> repmo#ZapKey('<Plug>Lightspeed_S')
 "map  <expr> f repmo#ZapKey('<Plug>cusnf')|sunmap f
 "map  <expr> F repmo#ZapKey('<Plug>cusnF')
 
-nmap  } <Plug>Lightspeed_t
-nmap  { <Plug>Lightspeed_T
+"nmap  } <Plug>Lightspeed_t
+"nmap  { <Plug>Lightspeed_T
 nnoremap m] ]
 nnoremap m} }
 nnoremap m{ {
@@ -1639,3 +1648,12 @@ autocmd FileType * call MapCC()
 vmap \\v <Plug>(VM-Visual-Add)
 "%s/^.\{-}",".\{-}",".\{-}","\(.\{-}\)".*/\1
 nmap \\. :call Exec(expand('@:'))<CR>
+"call nvim_input('ea<BS><tab>')<CR>:call timerstart(1,"call nvim_input('<tab><c-y>')")<CR>
+"
+"
+nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <leader>xr <cmd>TroubleToggle lsp_references<cr>
+
+"
