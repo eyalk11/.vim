@@ -947,3 +947,25 @@ endfunction
 function ProfileStop()
         profile stop
 endfunction
+
+function! ExecuteCommandOnQuickfixLines(command,pattern)
+    lua vim.diagnostic.setqflist()
+    let quickfix_list = getqflist()
+    " Iterate over each entry in the quickfix list
+    for entry in quickfix_list
+        " Get the file name and line number of the entry
+        let linenumber = entry['lnum']
+        let message = entry['text']
+        if message =~ a:pattern 
+            exec a:command 
+        endif 
+#            then delete line 
+
+
+        " Open the file and move to the specified line
+        "execute 'edit ' . filename
+        "execute linenumber
+        " Execute the desired command on the line
+        "execute 'normal! ' . a:command
+    endfor
+endfunction

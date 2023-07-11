@@ -248,9 +248,10 @@ imap <expr> <c-'> FF()
 imap <c-/> <c-o><Plug>Lightspeed_s
 imap <M-/> <c-o><Plug>Lightspeed_S
 imap <c-]> <c-o><Plug>Lightspeed_s
-nmap <c-]> <c-o><Plug>Lightspeed_s
+nmap <c-]> <Plug>Lightspeed_s
+nnoremap m<c-]> <c-]>
 imap <c-[> <c-o><Plug>Lightspeed_S
-nmap <c-[> <c-o><Plug>Lightspeed_S
+nmap <c-[> <Plug>Lightspeed_S
 
 
 "imap <tab> <c-o><Plug>Lightspeed_s
@@ -824,7 +825,7 @@ nnoremap <leader>EM :call VspIfNeed()<CR>:enew<CR>:let @x=MinExec('messages')<CR
 
 "enable save
 nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
-nnoremap <leader>si :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
+nnoremap <leader>SI :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
 nmap     <leader>AS :AutoSaveToggle<CR>
 
 nnoremap <leader>do :diffoff<CR>
@@ -974,16 +975,16 @@ nmap <leader>vp         <Plug>VimspectorPause
 nmap <leader>vl        :call vimspector#Launch()<CR>
 nmap <leader>vr        :call vimspector#Reset()<CR>
 "sets python 2/3
-nmap <leader>S2 :let $PYTHONPATH='/Users/eyalkarni/utils/jmpacket:/Users/eyalkarni/utils:/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'<CR>
-nmap <leader>S3 :let $PYTHONPATH='/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/'<CR>
+"nmap <leader>S2 :let $PYTHONPATH='/Users/eyalkarni/utils/jmpacket:/Users/eyalkarni/utils:/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages'<CR>
+"nmap <leader>S3 :let $PYTHONPATH='/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/'<CR>
 "TODO:: to add site-packages
-nmap <leader>s3  :call coc#config('python', {'jediEnabled': v:true, 'pythonPath': '/Users/eyalkarni/.pyenv/shims/python'})<CR>:CocRestart<CR>
-nmap <leader>s2  :call coc#config('python', {'jediEnabled': v:true, 'pythonPath': '/Library/Frameworks/Python.framework/Versions/2.7/bin/python'})<CR>:CocRestart<CR>
+"nmap <leader>s3  :call coc#config('python', {'jediEnabled': v:true, 'pythonPath': '/Users/eyalkarni/.pyenv/shims/python'})<CR>:CocRestart<CR>
+"nmap <leader>s2  :call coc#config('python', {'jediEnabled': v:true, 'pythonPath': '/Library/Frameworks/Python.framework/Versions/2.7/bin/python'})<CR>:CocRestart<CR>
 "
 
 "start TeX
-nmap <leader>st :set filetype=tex<CR>:w<CR>itemplate<TAB>a<esc>:VimtexToggleMain<CR>
-nmap <leader>so :let tt=expand('%:t')<CR>:VimtexCompileOutput<CR>:exe ":MC ". tt . ":"<CR>
+"nmap <leader>st :set filetype=tex<CR>:w<CR>itemplate<TAB>a<esc>:VimtexToggleMain<CR>
+"nmap <leader>so :let tt=expand('%:t')<CR>:VimtexCompileOutput<CR>:exe ":MC ". tt . ":"<CR>
 
 "nnoremap <leader>c :only<CR>
 ""closes other tabs
@@ -1655,5 +1656,6 @@ nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
 nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
 nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
 nnoremap <leader>xr <cmd>TroubleToggle lsp_references<cr>
+nmap <nowait> <leader>s :Navbuddy<CR>
 
 "

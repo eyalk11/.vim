@@ -6,6 +6,13 @@ local function locate( table, value )
     return false
 end
 require("nvim-lsp-installer").setup {}
+local navbuddy = require("nvim-navbuddy")
+local actions = require("nvim-navbuddy.actions")
+navbuddy.setup {
+    lsp = {
+    auto_attach = true}}
+
+--require("symbols-outline").setup()
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
 require("grammar-guard").init()
 --require'lspconfig'.grammarly.setup{
@@ -191,11 +198,11 @@ local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
 }
-require('lspconfig')['pyright'].setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-    flags = lsp_flags,
-}
+--require('lspconfig')['pyright'].setup{
+    --capabilities = capabilities,
+    --on_attach = on_attach,
+    --flags = lsp_flags,
+--}
 require('lspconfig')['tsserver'].setup{
     capabilities = capabilities,
     on_attach = on_attach,
@@ -251,7 +258,7 @@ require('lspconfig').pylsp.setup{
                 pylint = { enabled = false },
                 rope = {enabled = true },
                 rope_auto_import = {enabled = true},
-                jedi_symbols = { enabled = true, all_scopes = true}
+                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true}
             },
             root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
         }

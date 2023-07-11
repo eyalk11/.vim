@@ -44,6 +44,10 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'SmiteshP/nvim-navic'
+Plug 'numToStr/Comment.nvim'        " Optional
+Plug 'SmiteshP/nvim-navbuddy'
+"Plug 'simrat39/symbols-outline.nvim'
 Plug 'folke/trouble.nvim'
 Plug 'lambdalisue/fin.vim'
 "Plug 'sickill/vim-pasta'
