@@ -969,3 +969,6 @@ function! ExecuteCommandOnQuickfixLines(command,pattern)
         "execute 'normal! ' . a:command
     endfor
 endfunction
+function! IsRegular()
+    return (&ma==1) && (bufname("%")!='' || (&filetype!="TelescopePrompt"))
+endfunction

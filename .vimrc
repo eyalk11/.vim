@@ -22,6 +22,7 @@
 " also 'I and `I made to work.
 " let us remember that ! is `
 " Gdiffsplit! for merge!!!! onlyplg is minimal.
+let $HOME=expand('~')
 
 let g:minimal = 0
 let g:onlyplug='neovim/nvim-lspconfig' 
@@ -44,12 +45,14 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 Plug 'SmiteshP/nvim-navic'
 Plug 'numToStr/Comment.nvim'        " Optional
 Plug 'SmiteshP/nvim-navbuddy'
 "Plug 'simrat39/symbols-outline.nvim'
 Plug 'folke/trouble.nvim'
 Plug 'lambdalisue/fin.vim'
+Plug 'relastle/vim-nayvy'
 "Plug 'sickill/vim-pasta'
 "Plug 'xiyaowong/transparent.nvim'
 Plug 'blblb/speech-to-text.nvim'
@@ -247,7 +250,7 @@ Plug 'Houl/vim-repmo' "repeat moves
 Plug 'w0rp/ale' " lint
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
-"Plug 'powerman/vim-plugin-AnsiEsc'
+Plug 'powerman/vim-plugin-AnsiEsc'
 "Plug 'iamcco/vim-language-server'
 "Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 "Plug 'vim-jp/syntax-vim-ex'

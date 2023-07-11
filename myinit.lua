@@ -19,7 +19,32 @@ require("grammar-guard").init()
      --filetypes = { "markdown" }
  --}
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
-     require('telescope').setup{}
+
+local telescope = require("telescope")
+local lga_actions = require("telescope-live-grep-args.actions")
+local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
+
+telescope.setup {
+  extensions = {
+    live_grep_args = {
+        postfix = "",
+        quote = false,
+      auto_quoting = false, -- enable/disable auto-quoting
+      -- define mappings, e.g.
+      mappings = { -- extend mappings
+        i = {
+          --["<C-y>"] = lga_actions.quote_prompt(),
+          --["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+        },
+      },
+      -- ... also accepts theme settings, for example:
+      -- theme = "dropdown", -- use dropdown theme
+      -- theme = { }, -- use own theme spec
+      -- layout_config = { mirror=true }, -- mirror preview pane
+    }
+  }
+}
+
 
 local telescope=require('telescope')
 --- Absolute path of the current node's directory
@@ -81,6 +106,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '_D', vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set('n', 'gR', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    vim.keymap.set("v", "<c-y>", live_grep_args_shortcuts.grep_visual_selection)
     --vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
     --vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
     ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
@@ -90,8 +116,8 @@ local on_attach = function(client, bufnr)
 
     local opts = { noremap=true, silent=true }
 
-    --buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    --buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
+    buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
 end
 
 local cmp = require'cmp'
@@ -448,8 +474,11 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 -- empty setup using defaults
-require("nvim-tree").setup()
-
+local function grep_at_current_tree_node()
+    local node = require('nvim-tree.lib').get_node_at_cursor()
+    if not node then return end
+    require('telescope.builtin').live_grep({search_dirs = {node.absolute_path}})
+end
 
   local function my_on_attach(bufnr)
     local api = require('nvim-tree.api')
@@ -496,6 +525,7 @@ require("nvim-tree").setup()
 
     vim.keymap.set('n', 'f',        find_files,                         opts('Find Files'))
     vim.keymap.set('n', 'g',        live_grep,                          opts('Live Grep'))
+    vim.keymap.set('n', '<Leader>gr' , grep_at_current_tree_node , opts('Grep at current'))
     ---
   end
 

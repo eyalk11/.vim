@@ -1,5 +1,3 @@
-"  Mappings!! of plugins as well
-"
 "
 
 
@@ -247,11 +245,11 @@ imap <expr> <c-.> FF()
 imap <expr> <c-'> FF()
 imap <c-/> <c-o><Plug>Lightspeed_s
 imap <M-/> <c-o><Plug>Lightspeed_S
-imap <c-]> <c-o><Plug>Lightspeed_s
-nmap <c-]> <Plug>Lightspeed_s
-nnoremap m<c-]> <c-]>
-imap <c-[> <c-o><Plug>Lightspeed_S
-nmap <c-[> <Plug>Lightspeed_S
+autocmd FileType * inoremap <expr> <c-]> IsRegular() ? "<c-o><Plug>Lightspeed_s" : "<c-]>"
+autocmd FileType * nnoremap <expr> <c-]> IsRegular() ? "<Plug>Lightspeed_s" : "<c-]>"
+autocmd FileType * nnoremap <expr>  m<c-]> <c-]>
+autocmd FileType * inoremap <expr> <c-[> IsRegular() ? "<c-o><Plug>Lightspeed_S" : "<c-[>"
+autocmd FileType * nnoremap <expr> <c-[> IsRegular() ? "<Plug>Lightspeed_S" : "<c-[>"
 
 
 "imap <tab> <c-o><Plug>Lightspeed_s
@@ -437,13 +435,14 @@ nmap <M-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
 let g:neoterm_automap_keys="<plug>(aaaa)"
 
 "imappings!!
-"c-t c-d c-h same as bef
+"c-t c-d c-h <Plug>(easymotion-hlsearch)<Plug>(easymotion-hlsearch)same as bef
 
 
 "imap <c-.> <c-o>.
 
-"loofor 2 chars already S "imap <c-s> <c-o><Plug>(easymotion-sn)
-" to handle bug of sear
+"loofor 2 chars already S 
+"imap <expr> <c-s> "<c-o><Plug>(easymotion-sn)"
+" to <Plug>(easymotion-hlsearch)handle bug of sear
 
 "needed to be in onload
 "imap <M-a> <c-x><c-o>
@@ -758,7 +757,8 @@ nnoremap <silent> <bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow 
 nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
 
-nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
+"nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
+nnoremap <silent> <C-a>g :Telescope live_grep<CR>
 "nnoremap <silent> <C-a>g :call FZFOpen(':FzfRg!')<CR>
 nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
 
@@ -774,7 +774,8 @@ nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
 "files current dir
 "nnoremap <silent> <C-a>f :call FZFOpen(':Files')<CR>
 "nnoremap <c-a>f :CtrlPCurWD<CR>
-nnoremap <silent> <C-a>f :exe ":LeaderfFile ".getcwd()<CR>
+"nnoremap <silent> <C-a>f :exe ":LeaderfFile ".getcwd()<CR>
+nnoremap <c-a>f :Telescope find_files<CR>
 "files current file
 "66444
 nnoremap <silent> <C-a>F :exe ":LeaderfFile " . expand('%:p:h')<CR>
@@ -1148,9 +1149,10 @@ vnoremap H "xy:call HandleH()<CR>
 vnoremap <C-H> "xy:call HandleCH()<CR>
 vnoremap <C-J> "xy:call HandleCJ()<CR>
 "look in files for a match
-vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
+"vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
+
 "xy:call feedkeys("\<C-a>g" . @x)<CR> 
-vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
+"vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 
 nnoremap <C-K> :call RegsToggle()<CR>
 vnoremap <C-K> <CMD>:call RegsToggle()<CR>
@@ -1256,12 +1258,6 @@ nmap <BS> call Show_documentation()<CR>
 "" Find symbol of current document
 "nnoremap <silent> _o  :<C-u>CocList outline<cr>
 " Search workspace symbols
-nnoremap _d :Telescope diagnostics<CR>
-nmap _d :TroubleToggle<CR>
-nnoremap _o :Telescope lsp_document_symbols<CR>
-nnoremap _O :Telescope lsp_workspace_symbols<CR>
-nnoremap _r :Telescope lsp_references<CR>
-nnoremap _a :Telescope lsp_code_actions<CR>
 
 " Do default action for next item.
 "nnoremap <silent> _j  :<C-u>CocNext<CR>
@@ -1270,6 +1266,14 @@ nnoremap _a :Telescope lsp_code_actions<CR>
 " Resume latest coc list
 "nnoremap <silent> _p  :<C-u>CocListResume<CR>
 :endif
+
+nnoremap _d :Telescope diagnostics<CR>
+nmap _d :TroubleToggle<CR>
+nnoremap _o :Telescope lsp_document_symbols<CR>
+nnoremap _O :Telescope lsp_workspace_symbols<CR>
+nnoremap _r :Telescope lsp_references<CR>
+nnoremap _a :Telescope lsp_code_actions<CR>
+nmap <nowait> <leader>s :Navbuddy<CR>
 
 nnoremap <silent> _s  :Telescope lsp_workspace_symbols<CR>
 
@@ -1656,6 +1660,6 @@ nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
 nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
 nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
 nnoremap <leader>xr <cmd>TroubleToggle lsp_references<cr>
-nmap <nowait> <leader>s :Navbuddy<CR>
 
-"
+nmap _i :NayvyImports<CR>
+nmap _I :NayvyImportsFZF<CR>
