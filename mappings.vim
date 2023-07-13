@@ -793,22 +793,28 @@ nnoremap <silent> <C-a><C-a> <C-a>
   " current file's2 directory
   "
 "does diff of all files (could be vs version) 
-nnoremap <leader>Gs :Gstatus<CR>
-nnoremap <leader>Gc :Gcommit -v -q<CR>
+nmap <leader>g2 :diffget \\2<CR>
+nmap <leader>g3 :diffget \\3<CR>
+nnoremap <leader>Gs :Gdiff --staged<CR>
+nnoremap <leader>Gc :Git commit -v -q<CR>
+nnoremap <leader>GC :Git commit --amend --no-verify<CR>
 nnoremap <leader>Ga :sil Git add %<CR>
-nnoremap <leader>Gt :Gcommit -v -q %<CR>
-nnoremap <leader>Gd :Gdiff<CR>
+nnoremap <leader>Gt :Git commit -v -q %<CR>
+nnoremap <leader>Gd :Gvdiffsplit<CR>
+
+nnoremap <leader>GD :Gvdiffsplit!<CR>
 nmap <leader>GD Git! diff<CR>
 nnoremap <leader>Ge :Gedit<CR>
 nnoremap <leader>Gr :Gread<CR>
 nnoremap <leader>Gw :Gwrite<CR>
+nnoremap <leader>Gmo Git merge --strategy-option ours origin/master<CR>
+nnoremap <leader>Gmt Git merge --strategy-option theirs origin/master<CR>
 "Git log all commits
 nnoremap <leader>Gl :silent! Glog<CR>
 "Git log current
 nnoremap <leader>GL :0GcLog<CR>
-nnoremap <leader>Gg :Ggrep<Space>
-nnoremap <leader>Gm :Gmove<Space>
-nnoremap <leader>Gp :Gpush<CR>
+nnoremap <leader>Gg :Git grep<Space>
+nnoremap <leader>Gp :Git push<CR>
 nnoremap <leader>Gb :Git branch<Space>
 nnoremap <leader>Go :Git checkout<Space>
 nnoremap <leader>Gps :Dispatch! git push<CR>
