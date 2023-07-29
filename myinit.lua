@@ -10,7 +10,9 @@ local navbuddy = require("nvim-navbuddy")
 local actions = require("nvim-navbuddy.actions")
 navbuddy.setup {
     lsp = {
-    auto_attach = true}}
+    auto_attach = true},
+window = { size = "85%"}
+}
 
 --require("symbols-outline").setup()
 --require('navigator').setup({  default_mapping = false, lsp_installer = true})
@@ -80,6 +82,9 @@ local function opencwd ()
     local api = require('nvim-tree.api')
     api.tree.open({ path = vim.fn.getcwd() })
 end
+local function format () 
+    vim.lsp.buf.format({ timeout_ms = 2000 })
+end     
 vim.keymap.set('n', 'mt' , opencwd ,opts)
 vim.keymap.set('n', 'mt' , opencwd ,opts)
 vim.keymap.set('n','<esc>','<esc>',opts)
@@ -96,7 +101,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', '<BS>', vim.lsp.buf.hover, bufopts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', '<c-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '_k', vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set('n', '_wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '_wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '_wl', function()
@@ -107,6 +112,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gR', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set("v", "<c-y>", live_grep_args_shortcuts.grep_visual_selection)
+    vim.keymap.set('n', '_f' , format , bufopts)
     --vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
     --vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
     ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
@@ -224,11 +230,6 @@ local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
 }
---require('lspconfig')['pyright'].setup{
-    --capabilities = capabilities,
-    --on_attach = on_attach,
-    --flags = lsp_flags,
---}
 require('lspconfig')['tsserver'].setup{
     capabilities = capabilities,
     on_attach = on_attach,
@@ -284,12 +285,22 @@ require('lspconfig').pylsp.setup{
                 pylint = { enabled = false },
                 rope = {enabled = true },
                 rope_auto_import = {enabled = true},
-                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true}
+                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true},
+                jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
             },
             root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
         }
     }
 }
+require('lspconfig')['pyright'].setup{
+    capabilities = capabilities,
+    on_attach = on_attach,
+    flags = lsp_flags,
+    root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
+    --verboseOutput = true
+    --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
+}
+
 --
 
 --vim.api.nvim_create_autocmd("FileType", {
@@ -372,6 +383,28 @@ require('lspconfig').pylsp.setup{
 		--},
 	--},
 --})
+require('refactoring').setup({})
+--
+local null_ls = require("null-ls")
+
+null_ls.setup({
+    sources = {
+        null_ls.builtins.code_actions.refactoring,
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.diagnostics.mypy.with({
+            diagnostics_postprocess = function(diagnostic)
+                diagnostic.severity =  vim.diagnostic.severity["WARN"]
+            end,
+        }),
+
+         null_ls.builtins.formatting.isort, 
+          null_ls.builtins.formatting.black,
+        null_ls.builtins.completion.spell,
+    },
+})
+--require('lint').linters_by_ft = {
+--py = {'black','mypy','isort',}
+--}
 require("cmp_dictionary").setup({
 		dic = {
 			["*"] = { "c:\\temp\\words" },
@@ -487,7 +520,7 @@ end
         local node = api.tree.get_node_under_cursor()
         print(node.absolute_path)
 
-        if vm.fn.filereadble(node.absolute_path) == 2 then 
+        if vim.fn.filereadable(node.absolute_path) == 2 then 
             local fil=node.absolute_path -- is dir
         else 
             local fil=vim.fn.fnamemodify(node.absolute_path,':h')
@@ -549,3 +582,6 @@ on_attach = my_on_attach,
       always_show_folders = false,
   },
 })
+
+require('telescope').load_extension('git_grep')
+

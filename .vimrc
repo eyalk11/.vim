@@ -45,6 +45,15 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
+
+Plug 'davvid/telescope-git-grep.nvim'
+"Plug 'python-rope/ropevim'
+Plug 'ThePrimeagen/refactoring.nvim'
+Plug 'AndrewRadev/sideways.vim'
+Plug 'jose-elias-alvarez/null-ls.nvim'
+"Plug 'mfussenegger/nvim-lint'
+"Plug 'ludovicchabant/vim-gutentags'
 Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 Plug 'SmiteshP/nvim-navic'
 Plug 'numToStr/Comment.nvim'        " Optional

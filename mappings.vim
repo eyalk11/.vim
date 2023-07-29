@@ -418,18 +418,14 @@ imap <S-CR> <c-o>
 "nmap <silent> <M-K> <Plug>(ale_next_wrap)
 "nmap <silent> <M-k> <Plug>(ale_next_wrap) a\n/
 
-if g:on_windows 
     imap <M-g> <Plug>(IPy-Complete)
     nmap <M-k> <Plug>(IPy-WordObjInfo) 
     nmap <M-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
-else
-    nmap <M-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
-    imap <M-g> <Plug>(IPy-Complete)
-    nmap <M-k> <Plug>(IPy-WordObjInfo) 
-endif
+    command PyRun -complete=custom,IPyCompleteForInput call IPyRun(<f-args>)
 "nmap <M-r> :call IPyRun(input('enter python: '))<CR>
-nmap <M-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
-nmap <M-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
+"nmap <M-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
+"nmap <M-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
+nmap <M-i> <leader>of
 
 
 let g:neoterm_automap_keys="<plug>(aaaa)"
@@ -542,12 +538,12 @@ nmap mF vaF<F2>
 
 "go to the current selection in rg"xy:call feedkeys("\<C-a>g" . @x)<CR>
 
-vmap mg <C-Y>
+"vmap mg <C-Y>
 
 "exact 
 vnoremap mge "xy:exe ":FzfRg -e" . @x<CR>
 "current folder lookup word
-nmap mg viWmg
+"nmap mg viWmg
 "current file lookup word
 nmap MG viWY
 nnoremap MH :Help 
@@ -792,7 +788,24 @@ nnoremap <silent> <C-a><C-a> <C-a>
   " open FZF in
   " current file's2 directory
   "
+nmap \w :set wrap<CR>
+
+function! GitDir()
+let top = systemlist("git rev-parse --show-toplevel")[0]
+return top . "/.git"
+endfunction
+
 "does diff of all files (could be vs version) 
+function! GCWDComplete(A, L, P) abort
+return fugitive#Complete(a:A, a:L, a:P, {'git_dir': GitDir()})
+endfunction
+
+command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'git_dir': GitDir() })
+
+nmap mg :GCWD<CR>
+nmap MG :unlet b:git_dir<CR>:G<CR>
+
+
 nmap <leader>g2 :diffget \\2<CR>
 nmap <leader>g3 :diffget \\3<CR>
 nnoremap <leader>Gs :Gdiff --staged<CR>
@@ -1103,6 +1116,7 @@ nnoremap X "zdi
 noremap <leader>D D
 "delete without effect of clipboard
 command! -range D <line1>,<line2>d z
+cabbrev FW silent! w!
 "delete without leaving trace
 vnoremap D "zd
 nnoremap DD "zdd
@@ -1158,10 +1172,12 @@ vnoremap <C-J> "xy:call HandleCJ()<CR>
 "vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
 
 "xy:call feedkeys("\<C-a>g" . @x)<CR> 
-"vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
+vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 
-nnoremap <C-K> :call RegsToggle()<CR>
-vnoremap <C-K> <CMD>:call RegsToggle()<CR>
+"nnoremap <C-K> :call RegsToggle()<CR>
+"vnoremap <C-K> <CMD>:call RegsToggle()<CR>
+nnoremap <c-k> <CMD>:ChatGPT<CR>
+nmap <leader>pC :ChatGPT<CR>:Voice<CR>
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
 
@@ -1668,4 +1684,10 @@ nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
 nnoremap <leader>xr <cmd>TroubleToggle lsp_references<cr>
 
 nmap _i :NayvyImports<CR>
-nmap _I :NayvyImportsFZF<CR>
+nmap _I :NayvyImportFZF<CR>
+
+
+nnoremap <expr><silent> <LocalLeader>ro  nvim_exec('MagmaEvaluateOperator', v:true)
+nnoremap <silent>       <LocalLeader>rr :MagmaEvaluateLine<CR>
+xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
+nnoremap <silent>       <LocalLeader>rc :MagmaReevaluateCell<CR>

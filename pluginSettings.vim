@@ -420,9 +420,30 @@ call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 "
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
-command LeaderfTogglePreview let g:Lf_PreviewInPopup = !g:Lf_PreviewInPopup 
-command LeaderfEnablePreview let g:Lf_PreviewInPopup = 1
-command LeaderfDisablePreview let g:Lf_PreviewInPopup = 0
+"command LeaderfTogglePreview let g:Lf_PreviewInPopup = !g:Lf_PreviewInPopup 
+command! LeaderfEnablePreview let g:Lf_PreviewResult = {
+			\ 'File': 1,
+			\ 'Buffer': 1,
+			\ 'Mru': 0,
+			\ 'Tag': 0,
+			\ 'BufTag': 1,
+			\ 'Function': 1,
+			\ 'Line': 1,
+			\ 'Colorscheme': 0,
+			\ 'Rg' : 1
+			\}
+
+command LeaderfDisablePreview let g:Lf_PreviewResult = {
+\ 'File': 0,
+\ 'Buffer': 0,
+\ 'Mru': 0,
+\ 'Tag': 0,
+\ 'BufTag': 0,
+\ 'Function': 0,
+\ 'Line': 0,
+\ 'Colorscheme': 0,
+\ 'Rg' : 0
+\}
 
 let g:Lf_DevIconsFont = "DroidSansMono Nerd Font Mono"
 
@@ -438,6 +459,7 @@ let g:Lf_PreviewResult = {
 			\ 'Colorscheme': 0,
 			\ 'Rg' : 1
 			\}
+let g:Lf_PopupPreviewPosition='top'
 "When you go to normal mode , doing I inserts the line
 "call win_execute(%d, "exec 'norm! %yy'")""" % (self._preview_winid, line_nr))
 			"\'Line':[['I','"zyy:exec g:Lf_py "lineExplManager.quit()"<CR>"zp']],
@@ -733,3 +755,5 @@ let g:sneak#use_ic_scs = 1
   let g:qs_highlight_on_keys = []
 
  let g:EasyMotion_leader_key='\rs'
+
+
