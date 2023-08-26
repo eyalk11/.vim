@@ -358,29 +358,11 @@ function! WhichTab(filename)
         return 0
     endif
     let buffernumber = bufnr(buffername)
+    exec ':'.buffernumber . 'bufdo norm \<nop>'
 
-    " tabdo will loop through pages and leave you on the last one;
-    " this is to make sure we don't leave the current page
-    let currenttab = tabpagenr()
-    let tab_arr = []
-    let tabnr_arr = []
-    tabdo let tab_arr += tabpagebuflist()
-    tabdo let tabnr_arr += [tabpagenr()]
-
-    " return to current page
-    exec "tabnext ".currenttab
-
-    " Start checking tab numbers for matches
-    let i = 0
-    for tnum in tab_arr
-        if tnum == buffernumber
-            return tabnr_arr[i]
-        endif
-        let i += 1
-    endfor
 
 endfunction
-command! -nargs=* -complete=file TN if HandleTN(<q-args>) <bar>  :let tab=WhichTab(<f-args>) <bar> if tab==0 <bar> :tabnew <args> <bar> :else <bar> :exe  'norm '.tab.'gt' <bar> endif <bar> endif
+command! -nargs=* -complete=file TN if HandleTN(<q-args>) <bar>  :let tab=WhichTab(<f-args>) <bar> if tab==0 <bar> :tabnew <args> <bar>  endif <bar> endif
 
 
 "" change window local working directory

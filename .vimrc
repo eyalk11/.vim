@@ -45,6 +45,11 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+
+Plug 'dyng/ctrlsf.vim'
+
+Plug 'lkhphuc/jupyter-kernel.nvim'
 Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'davvid/telescope-git-grep.nvim'

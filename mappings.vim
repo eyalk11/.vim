@@ -234,7 +234,7 @@ endfunction
 "imap <M-f> <c-o><Plug>Lightspeed_s
 "imap ` <c-o><Plug>Lightspeed_s
 imap <silent><script><expr> <C-j> copilot#Accept("")
-imap <silent><script><expr> <C-g> copilot#Next()
+imap <silent><script><expr> <M-j> copilot#Next()
 let g:copilot_no_tab_map = v:true
 
 function! FF()
@@ -476,8 +476,8 @@ imap <M-K> <plug>(fzf-complete-word)
 imap <M-k> <plug>(fzf-complete-word)
 "imap <M-F> <plug>(fzf-complete-path)
 "imap <M-f> <plug>(fzf-complete-path)
-imap <M-J> <plug>(fzf-complete-file-ag)
-imap <M-j> <plug>(fzf-complete-file-ag)
+"imap <M-J> <plug>(fzf-complete-file-ag)
+"imap <M-j> <plug>(fzf-complete-file-ag)
 imap <M-L> <plug>(fzf-complete-line)
 imap <M-l> <plug>(fzf-complete-line)
 
@@ -753,10 +753,11 @@ nnoremap <silent> <bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow 
 nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
 
-"nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
-nnoremap <silent> <C-a>g :Telescope live_grep<CR>
+nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
+"nnoremap <silent> <C-a>g :Telescope live_grep<CR>
+nnoremap <silent> <C-a>G :lua require('git_grep').live_grep( {additional_args = { "--","*.py"}} )<CR>
 "nnoremap <silent> <C-a>g :call FZFOpen(':FzfRg!')<CR>
-nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
+"nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
 
 "for exact
 "nnoremap <silent> <C-a>G :call FZFOpen(':FzfRg! -e')<CR>
@@ -806,8 +807,8 @@ nmap mg :GCWD<CR>
 nmap MG :unlet b:git_dir<CR>:G<CR>
 
 
-nmap <leader>g2 :diffget \\2<CR>
-nmap <leader>g3 :diffget \\3<CR>
+map <leader>g2 :diffget \\2<CR>
+map <leader>g3 :diffget \\3<CR>
 nnoremap <leader>Gs :Gdiff --staged<CR>
 nnoremap <leader>Gc :Git commit -v -q<CR>
 nnoremap <leader>GC :Git commit --amend --no-verify<CR>
@@ -1591,7 +1592,7 @@ function! RunFiles(torun,onlypy)
         endfor
         :exec argdo "source ".a:torun
 endfunction
-function! GitF(onlypy)
+function! GitF(regfilter)
     let tmp=getcwd()
     :exe ":cd ". expand("%:p:h")
     let top = systemlist("git rev-parse --show-toplevel")[0]
@@ -1599,16 +1600,18 @@ function! GitF(onlypy)
     :exe ':cd '. top
     let a=systemlist("git ls-files --full-name" )
 
-    let a = (a:onlypy ? filter(a,{idx,val -> val =~ ".*py$"}): a)
-    echo a
+    let a = (a:regfilter ? filter(a,{idx,val -> val =~ a:regfilter}): a)
+    :call writefile(a,'c:\temp\filelist.txt')
     
     "py3 t=[os.path.join(vim.eval("top"),y) for y in vim.eval("a")]
     "echo join(a,' --iglob ')mF
-    :exec ":Leaderf rg " . " --iglob ". join(a,' --iglob ')
+    :exec ":Leaderf rg " . ' --filelist c:\temp\filelist.txt --live'
     :exe ':cd '.tmp
 endfunction
 
-nmap <leader>gr :call GitF(1)<CR>
+command! -nargs=1 LfGitExt :call GitF(".*\.". <f-args> ."$" )<CR>
+command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
+nmap <leader>gr :call GitF(".*py$")<CR>
 nmap <leader>gR :call GitF(0)<CR>
 nmap <leader>gs :call DoTag()<CR>
 "nmap <leader>gs :Telescope lsp_workspace_symbols<CR>

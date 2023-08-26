@@ -479,7 +479,7 @@ let g:Lf_CommandMap = {'<C-k>':['<C-h>'], '<C-j>':['<C-l>'], '<Down>': ['<C-j>',
 
 let g:Lf_MruMaxFiles=100000
 let g:Lf_ShowHidden  = 1
-let g:Lf_MaxCount = 50000
+let g:Lf_MaxCount = 0
 let g:Lf_PreviewInPopup =0
 
 let g:Lf_PopupHeight =0.5
@@ -756,4 +756,5 @@ let g:sneak#use_ic_scs = 1
 
  let g:EasyMotion_leader_key='\rs'
 
-
+let g:ctrlsf_backend = 'rg'
+let g:Lf_Rg='C:\ProgramData\chocolatey\bin\rg.EXE'

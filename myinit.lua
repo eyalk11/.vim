@@ -27,6 +27,16 @@ local lga_actions = require("telescope-live-grep-args.actions")
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 
 telescope.setup {
+        defaults = {
+            mappings = {
+                i = {
+                    ["<esc>"] = actions.close,
+                    ["<c-i>"] = actions.to_fuzzy_refine
+                },
+            },
+        }
+    ,
+
   extensions = {
     live_grep_args = {
         postfix = "",
@@ -47,8 +57,11 @@ telescope.setup {
   }
 }
 
+vim.keymap.set('n','<esc>','<esc>',opts)
+vim.keymap.set('i','<esc>','<esc>',opts)
 
 local telescope=require('telescope')
+local actions = require("telescope.actions")
 --- Absolute path of the current node's directory
 --- @return string|nil
 local function node_dir_path()
@@ -87,7 +100,6 @@ local function format ()
 end     
 vim.keymap.set('n', 'mt' , opencwd ,opts)
 vim.keymap.set('n', 'mt' , opencwd ,opts)
-vim.keymap.set('n','<esc>','<esc>',opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -466,7 +478,7 @@ require'lspconfig'.powershell_es.setup{
 
 local chatgpt = require("chatgpt")
 wk=require('which-key')
-wk.setup()
+wk.setup({plugins = {presets = { operators = false  }}})
 wk.register({
     p = {
         name = "ChatGPT",
@@ -584,4 +596,14 @@ on_attach = my_on_attach,
 })
 
 require('telescope').load_extension('git_grep')
+--require('telescope').load_extension('fzf') 
+--function fuzzyFindFiles()
+  --builtin.grep_string({
+    --path_display = { 'smart' },
+    --only_sort_text = true,
+    --word_match = "-w",
+    --search = '',
+  --})
+--end
 
+vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})
