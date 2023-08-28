@@ -758,3 +758,4 @@ let g:sneak#use_ic_scs = 1
 
 let g:ctrlsf_backend = 'rg'
 let g:Lf_Rg='C:\ProgramData\chocolatey\bin\rg.EXE'
+let g:neoformat_enabled_powershell=['PowerShellBeautifier']

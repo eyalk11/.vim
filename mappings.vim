@@ -574,7 +574,9 @@ endfunction
 "remove indent
 "
 nnoremap mp o<esc>:s/[^ \t]//ge<CR>:call MPf()<CR>
-imap <C-L> <c-o><cmd>norm mP<CR>
+imap <C-i> <c-o><cmd>norm mP<CR>
+
+
 
 
 
@@ -871,7 +873,7 @@ endfunction
 
 
 
-au filetype py nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
+au filetype python nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
 au filetype ps1 nmap <leader>rf  :call DoRf()<CR>
 map <silent> <leader>rb <Plug>(IPy-Interrupt)
 nmap <leader>rt <Plug>(IPy-Terminate)
@@ -924,7 +926,7 @@ nmap <leader>mf :call VspIfNeed()<CR>mm
 "function! findbufjup
     "o
 "endfunction
-nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\\]") .'buffer'<CR><c-w>k
+nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
 nmap <leader>upd \ttupama
 
 nnoremap <leader>oi :call RecallInserts(0)<CR>
@@ -1203,6 +1205,7 @@ endfunction
 "Move line to terminal
 nmap mz my<CMD>:exec ":T ".  @" ."\r\n" <cr>
 vmap mz <CMD>:'<,'>g/./norm mz<CR>
+nmap <c-F5> mz
 
 "nmap mz <CMD>:TREPLSendLine<CR>
 "vmap mz <CMD>:TREPLSendSelection<CR>
@@ -1609,8 +1612,17 @@ function! GitF(regfilter)
     :exe ':cd '.tmp
 endfunction
 
+command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
 command! -nargs=1 LfGitExt :call GitF(".*\.". <f-args> ."$" )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
+
+:com! -nargs=1 -bang -complete=customlist,EditFileComplete
+        \ EditFile edit<bang> <args>
+:fun! EditFileComplete(A,L,P)
+:    return split(glob(expand("%:p:h").'\*'.a:A. "*"), "\n")
+:endfun
+
+
 nmap <leader>gr :call GitF(".*py$")<CR>
 nmap <leader>gR :call GitF(0)<CR>
 nmap <leader>gs :call DoTag()<CR>
