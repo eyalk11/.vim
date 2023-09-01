@@ -1625,7 +1625,7 @@ command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete
         \ EditFile edit<bang> <args>
 :fun! EditFileComplete(A,L,P)
-:    return split(glob(expand("%:p:h").'\*'.a:A. "*"), "\n")
+:    return split(glob(expand("%:p:h").'\*'.(len(a:A)>1 ? a:A . "*" : '')), "\n")
 :endfun
 
 
