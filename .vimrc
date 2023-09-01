@@ -45,6 +45,7 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'piersolenski/wtf.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
 
 Plug 'dyng/ctrlsf.vim'
@@ -91,8 +92,8 @@ Plug 'brymer-meneses/grammar-guard.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plug 'ray-x/navigator.lua'
-Plug 'nvim-treesitter/nvim-treesitter-refactor'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+"Plug 'nvim-treesitter/nvim-treesitter-refactor'
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
@@ -103,7 +104,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 "Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'ray-x/cmp-treesitter'
+"Plug 'ray-x/cmp-treesitter'
 Plug 'uga-rosa/cmp-dictionary'
 Plug 'hrsh7th/nvim-cmp', { 'branch': 'main'}
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'

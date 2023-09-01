@@ -77,11 +77,15 @@ local node = api.tree.get_node_under_cursor()
 
   return node.absolute_path
 end
+
  local function find_files()
+     local telescope=require('telescope')
+
      telescope.find_files({ search_dirs = { node_dir_path() } })
  end
 
  local function live_grep()
+     local telescope=require('telescope')
      telescope.live_grep({ search_dirs = { node_dir_path() } })
  end
 
@@ -93,7 +97,9 @@ vim.keymap.set('n', '_Q', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '_q', vim.diagnostic.setloclist, opts)
 local function opencwd ()
     local api = require('nvim-tree.api')
+    local pathb= vim.fn.getcwd() 
     api.tree.open({ path = vim.fn.getcwd() })
+    api.tree.change_root(pathb) --in case 
 end
 local function format () 
     vim.lsp.buf.format({ timeout_ms = 2000 })
@@ -531,11 +537,12 @@ end
       local function global_cd_node_path()
         local node = api.tree.get_node_under_cursor()
         print(node.absolute_path)
+        local fil = "aaa"
 
         if vim.fn.filereadable(node.absolute_path) == 2 then 
-            local fil=node.absolute_path -- is dir
+            fil=node.absolute_path -- is dir
         else 
-            local fil=vim.fn.fnamemodify(node.absolute_path,':h')
+            fil=vim.fn.fnamemodify(node.absolute_path,':h')
         end
 
         vim.api.nvim_command('cd ' .. fil  )
@@ -569,7 +576,7 @@ end
     vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
 
     vim.keymap.set('n', 'f',        find_files,                         opts('Find Files'))
-    vim.keymap.set('n', 'g',        live_grep,                          opts('Live Grep'))
+    --vim.keymap.set('n', 'g',        live_grep,                          opts('Live Grep'))
     vim.keymap.set('n', '<Leader>gr' , grep_at_current_tree_node , opts('Grep at current'))
     ---
   end
@@ -605,5 +612,6 @@ require('telescope').load_extension('git_grep')
     --search = '',
   --})
 --end
+require("wtf").setup()
 
-vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})
+--vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})

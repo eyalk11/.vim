@@ -620,6 +620,8 @@ nnoremap mss :s/\s\+/ /g<CR>
 "remove empty lines
 nnoremap msl :%s/\s\+$//e<CR>
 nnoremap msl :%g/^\s*$/norm dd<CR>
+"remove trailing spaces
+nnoremap msc :%s/^\(.\{-\}\)[ ]*$/\1<CR>
 "open cur folder 
 "nmap mt :NvimTreeClose<CR>:echom ":NvimTreeOpen ".getcwd() <CR>:exec ":NvimTreeOpen ".escape(getcwd(),'\')<CR> 
 "noremap mt :call CloseAllNR()<CR>:sleep 200m<CR>:exec ":vert topleft split " . getcwd()<CR>
@@ -1212,7 +1214,9 @@ nmap <c-F5> mz
 "move between two panels (left and right) 
 nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
 tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
-" terminal mappings
+
+" terminal mappings !
+
 if has('vim')
 	:tnoremap <C-V> <C-W>"+
 	:tnoremap <C-l> <C-W>N
@@ -1227,6 +1231,8 @@ else
 	:tnoremap <C-l> <C-\><c-N>
 	:tnoremap <C-d> cd <C-\><c-N>"=getcwd()<CR>pi<CR>
 	:tnoremap <C-e> cd <C-\><c-N>"=expand("#:p:h")<CR>pi<CR>
+    "set path of terminal to current cwd
+    :tnoremap <C-t> <c-\><c-N>^w:exec 'cd '. expand('<cfile>')<CR>i
 	"quits
 	:tmap <C-q> <C-l>Q
 	" copy line from $
@@ -1706,3 +1712,10 @@ nnoremap <expr><silent> <LocalLeader>ro  nvim_exec('MagmaEvaluateOperator', v:tr
 nnoremap <silent>       <LocalLeader>rr :MagmaEvaluateLine<CR>
 xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <LocalLeader>rc :MagmaReevaluateCell<CR>
+nmap gw :Wtf<CR>
+
+function! StashME()
+ let stash = input('Enter name: ')
+exec "!Git stash push -m \"". stash . '" --keep-index '. expand('%') 
+endfunction 
+nmap <leader>GS :call StashME()<CR>
