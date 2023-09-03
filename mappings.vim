@@ -209,9 +209,9 @@ nmap <c-_> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
 
 "Ctrlspace 
 "let g:CtrlSpaceDefaultMappingKey = ''
-nmap <C-b> :CtrlSpace w<CR>
+"nmap <C-b> :CtrlSpace w<CR>
 "windows on tab
-nmap <c-U> <c-b>w
+"nmap <c-U> <c-b>w
 
 "if ($TERM=="xterm-256color")
 	""only on nvim
@@ -359,6 +359,7 @@ imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
 inoremap <expr> <C-K>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
+inoremap <expr> <C-j>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
 
 
 "does chars 
@@ -777,6 +778,7 @@ nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
 "nnoremap <c-a>f :CtrlPCurWD<CR>
 "nnoremap <silent> <C-a>f :exe ":LeaderfFile ".getcwd()<CR>
 nnoremap <c-a>f :Telescope find_files<CR>
+nnoremap <c-a>j :Telescope jumplist<CR>
 "files current file
 "66444
 nnoremap <silent> <C-a>F :exe ":LeaderfFile " . expand('%:p:h')<CR>
@@ -833,12 +835,13 @@ nnoremap <leader>Gl :silent! Glog<CR>
 nnoremap <leader>GL :0GcLog<CR>
 nnoremap <leader>Gg :Git grep<Space>
 nnoremap <leader>Gp :Git push<CR>
+nnoremap <leader>Gu :git push upstream<CR>
+nnoremap <leader>GU :git push -f upstream<CR>
+nnoremap <leader>GP :Git push --force<CR>
 nnoremap <leader>Gb :Git branch<Space>
 nnoremap <leader>Go :Git checkout<Space>
-nnoremap <leader>Gps :Dispatch! git push<CR>
-nnoremap <leader>Gpl :Dispatch! git pull<CR>
-nnoremap <leader>Grc :Git rebase --continue<CR>
-nnoremap <leader>Gra :Git rebase --abort<CR>
+"nnoremap <leader>Grc :Git rebase --continue<CR>
+"nnoremap <leader>Gra :Git rebase --abort<CR>
 
 
 map <silent> <leader>? <Plug>(IPy-WordObjInfo)
@@ -1608,8 +1611,9 @@ function! GitF(regfilter)
     echo top
     :exe ':cd '. top
     let a=systemlist("git ls-files --full-name" )
-
-    let a = (a:regfilter ? filter(a,{idx,val -> val =~ a:regfilter}): a)
+    :if len(a:regfilter)>0
+    let a = filter(a,{idx,val -> (val =~ a:regfilter)})
+    :endif 
     :call writefile(a,'c:\temp\filelist.txt')
     
     "py3 t=[os.path.join(vim.eval("top"),y) for y in vim.eval("a")]
@@ -1621,7 +1625,7 @@ endfunction
 command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
 command! -nargs=1 LfGitExt :call GitF(".*\.". <f-args> ."$" )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
-
+"Edit file in the same folder
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete
         \ EditFile edit<bang> <args>
 :fun! EditFileComplete(A,L,P)
@@ -1630,7 +1634,7 @@ command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
 
 
 nmap <leader>gr :call GitF(".*py$")<CR>
-nmap <leader>gR :call GitF(0)<CR>
+nmap <leader>gR :call GitF("")<CR>
 nmap <leader>gs :call DoTag()<CR>
 "nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
 
@@ -1716,6 +1720,7 @@ nmap gw :Wtf<CR>
 
 function! StashME()
  let stash = input('Enter name: ')
-exec "!Git stash push -m \"". stash . '" --keep-index '. expand('%') 
+exec "!git stash push -m \"". stash . '" --keep-index '. expand('%') 
 endfunction 
 nmap <leader>GS :call StashME()<CR>
+nmap <leader>gp :exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>

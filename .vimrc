@@ -45,6 +45,9 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+" Vim Script
+Plug 'ahmedkhalf/project.nvim'
+
 Plug 'piersolenski/wtf.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
 
@@ -92,8 +95,8 @@ Plug 'brymer-meneses/grammar-guard.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plug 'ray-x/navigator.lua'
-"Plug 'nvim-treesitter/nvim-treesitter-refactor'
-"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'

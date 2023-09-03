@@ -169,6 +169,7 @@ function! SetFont()
     endif
 endfunction
 function! OnLoad()
+    call PyAS()
     silent !copy ~\.vim\profile ~\.vim\profile2
     silent !del ~\.vim\profile 
     "call StartProfile()
@@ -351,6 +352,7 @@ endfunction
 "endfunction
 function! PyAS()
     autocmd filetype python let b:auto_save = 1
+    autocmd filetype ps1 let b:auto_save = 1
 endfunction
 
 command! Pyauto call PyAS()

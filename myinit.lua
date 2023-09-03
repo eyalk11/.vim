@@ -600,9 +600,12 @@ on_attach = my_on_attach,
       prefix = "[FILTER]: ",
       always_show_folders = false,
   },
+  actions = {
+      change_dir = { global = true} }  
 })
 
 require('telescope').load_extension('git_grep')
+require('telescope').load_extension('projects')
 --require('telescope').load_extension('fzf') 
 --function fuzzyFindFiles()
   --builtin.grep_string({
@@ -613,5 +616,10 @@ require('telescope').load_extension('git_grep')
   --})
 --end
 require("wtf").setup()
+require("project_nvim").setup {
+-- your configuration comes here
+-- or leave it empty to use the default settings
+-- refer to the configuration section below
+}
 
 --vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})
