@@ -119,7 +119,7 @@ Plug 'folke/lazy.nvim'
 Plug 'folke/which-key.nvim'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting
-Plug 'junegunn/vim-peekaboo'
+"Plug 'junegunn/vim-peekaboo'
 Plug 'PeterRincker/vim-argumentative'
 "match inner blocks and z% 
 "Plug 'andymass/vim-matchup'

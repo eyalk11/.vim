@@ -280,7 +280,6 @@ nmap s <Plug>Lightspeed_s
 nmap S <Plug>Lightspeed_S
 "nmap s <plug>Sneak_s
 "nmap S <plug>Sneak_S
-nmap Z <plug>
 imap <c-t> <c-o>F
 
 "Logical, since in normal we have s and S
