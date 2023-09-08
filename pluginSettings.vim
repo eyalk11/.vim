@@ -763,3 +763,5 @@ let g:neoformat_enabled_powershell=['PowerShellBeautifier']
 
 let g:peekaboo_ins_prefix = 0
 
+let g:airline_extensions = ['branch', 'fugitiveline']
+

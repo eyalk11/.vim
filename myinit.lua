@@ -599,10 +599,7 @@ on_attach = my_on_attach,
   live_filter = {
       prefix = "[FILTER]: ",
       always_show_folders = false,
-  },
-  actions = {
-      change_dir = { global = true} }  
-})
+  }})
 
 require('telescope').load_extension('git_grep')
 require('telescope').load_extension('projects')
