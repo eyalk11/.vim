@@ -5,7 +5,18 @@ local function locate( table, value )
     end
     return false
 end
-require("nvim-lsp-installer").setup {}
+require("mason").setup()
+require("mason-lspconfig").setup()
+local nlspsettings = require("nlspsettings")
+
+nlspsettings.setup({
+  config_home = vim.fn.stdpath('config') .. '/nlsp-settings',
+  local_settings_dir = ".nlsp-settings",
+  local_settings_root_markers_fallback = { '.git' },
+  append_default_schemas = true,
+  loader = 'json'
+})
+--require("nvim-lsp-installer").setup {}
 local navbuddy = require("nvim-navbuddy")
 local actions = require("nvim-navbuddy.actions")
 navbuddy.setup {
@@ -21,6 +32,9 @@ require("grammar-guard").init()
      --filetypes = { "markdown" }
  --}
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
+ require("nvim-lightbulb").setup({
+ autocmd = { enabled = true }
+})
 
 local telescope = require("telescope")
 local lga_actions = require("telescope-live-grep-args.actions")
@@ -270,10 +284,12 @@ require("lspconfig").vimls.setup{
     capabilities = capabilities,
     on_attach = on_attach,
 }
-require'lspconfig'.sumneko_lua.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-}    
+require("lspconfig").jsonls.setup{}
+
+--require'lspconfig'.sumneko_lua.setup{
+    --capabilities = capabilities,
+    --on_attach = on_attach,
+--}    
 
 --vim.lsp.set_log_level("debug")
 local root_files = {
@@ -305,8 +321,8 @@ require('lspconfig').pylsp.setup{
                 rope_auto_import = {enabled = true},
                 jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true},
                 jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
-            },
-            root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
+            }
+            --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
         }
     }
 }
@@ -314,7 +330,7 @@ require('lspconfig')['pyright'].setup{
     capabilities = capabilities,
     on_attach = on_attach,
     flags = lsp_flags,
-    root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
+    --root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
     --verboseOutput = true
     --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
 }
@@ -409,12 +425,12 @@ null_ls.setup({
     sources = {
         null_ls.builtins.code_actions.refactoring,
         null_ls.builtins.formatting.stylua,
-        null_ls.builtins.diagnostics.mypy.with({
-            diagnostics_postprocess = function(diagnostic)
-                diagnostic.severity =  vim.diagnostic.severity["WARN"]
-            end,
-        }),
-
+        --[[null_ls.builtins.diagnostics.mypy.with({]]
+            --[[diagnostics_postprocess = function(diagnostic)]]
+                --[[diagnostic.severity =  vim.diagnostic.severity["WARN"]]
+            --[[end,]]
+        --[[}]]
+        --[[),]]
          null_ls.builtins.formatting.isort, 
           null_ls.builtins.formatting.black,
         null_ls.builtins.completion.spell,

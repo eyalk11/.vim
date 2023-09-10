@@ -1605,22 +1605,30 @@ function! GitF(regfilter)
     let tmp=getcwd()
     :exe ":cd ". expand("%:p:h")
     let top = systemlist("git rev-parse --show-toplevel")[0]
-    echo top
+    "echo top
     :exe ':cd '. top
     let a=systemlist("git ls-files --full-name" )
     :if len(a:regfilter)>0
     let a = filter(a,{idx,val -> (val =~ a:regfilter)})
+    let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
     :endif 
+    ":echo a
     :call writefile(a,'c:\temp\filelist.txt')
+    try
+        echohl Question
+        let pattern = input("Search pattern: ")
+        let pattern = escape(pattern,'"')
+    finally
+        echohl None
+    endtry
     
-    "py3 t=[os.path.join(vim.eval("top"),y) for y in vim.eval("a")]
-    "echo join(a,' --iglob ')mF
-    :exec ":Leaderf rg " . ' --filelist c:\temp\filelist.txt --live'
     :exe ':cd '.tmp
+    exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+
 endfunction
 
 command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
-command! -nargs=1 LfGitExt :call GitF(".*\.". <f-args> ."$" )<CR>
+command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$" )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
 "Edit file in the same folder
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete

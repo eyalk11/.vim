@@ -45,6 +45,11 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'tamago324/nlsp-settings.nvim'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+
+
 " Vim Script
 Plug 'ahmedkhalf/project.nvim'
 
@@ -77,7 +82,7 @@ Plug 'blblb/speech-to-text.nvim'
 Plug 'sbdchd/neoformat'
 Plug 'MunifTanjim/nui.nvim'
 Plug 'jackMort/ChatGPT.nvim'
-"Plug 'kosayoda/nvim-lightbulb'
+Plug 'kosayoda/nvim-lightbulb'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'github/copilot.vim'
 Plug 'ggandor/lightspeed.nvim'
@@ -101,7 +106,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'stevearc/aerial.nvim'
-Plug 'williamboman/nvim-lsp-installer'
+"Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 "Plug 'hrsh7th/cmp-buffer'
