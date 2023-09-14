@@ -308,6 +308,8 @@ function! TimerFunc(a)
         for i in range(char2nr('v'),char2nr('o'),-1)
             exe "let @".nr2char(i+1)." = @". nr2char(i) 
         endfor
+call AddInsert(getreg("@+"))
+
         let @o=@+
         let g:last_copied=@+
     endif
@@ -315,6 +317,9 @@ function! TimerFunc(a)
 endfunction
 
 function! SaveLastReg()
+        if (exists("b:save_inserts")==0)
+            return
+        endif
     if (b:save_inserts==0)
         return
     endif
@@ -954,3 +959,12 @@ endfunction
 function! IsRegular()
     return (&ma==1) && (bufname("%")!='' || (&filetype!="TelescopePrompt"))
 endfunction
+
+function! CreateList() range
+'<,'>s/^\(.*\)$/"\1",
+norm x
+norm gvgJ
+norm x
+endfunction
+command! -range CL <line1>,<line2>call CreateList()
+

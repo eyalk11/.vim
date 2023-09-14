@@ -1722,6 +1722,7 @@ nnoremap <silent>       <LocalLeader>rr :MagmaEvaluateLine<CR>
 xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <LocalLeader>rc :MagmaReevaluateCell<CR>
 nmap gw :Wtf<CR>
+nmap <leader>ms <Plug>(GitGutterStageHunk)
 
 function! StashME()
  let stash = input('Enter name: ')
