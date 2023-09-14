@@ -733,9 +733,10 @@ endfunction
 
 function! MakeItFaster(adv)
     if (a:adv)
+        au! autotag
         :let g:airline_extensions = []
         ":CocDisable
-        :ALEDisable
+        ":ALEDisable
         :NoMatchParen
     ":autocmd! InsertLeave *
     ":autocmd! TextYankPost *

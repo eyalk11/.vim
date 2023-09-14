@@ -355,8 +355,9 @@ imap <M-Up> <c-h>
 imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
-inoremap <expr> <C-K>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
-inoremap <expr> <C-j>  pumvisible()? "<c-l>" : "<c-o>:call RecallInserts(0)<CR>"
+inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o>:call RecallInserts(0)<CR>"
+"inoremap <expr> <C-b>  pumvisible()? "<c-b>" : "<c-o>:call RecallInserts(0)<CR>"
+imap <c-b> <c-o>:call RecallInserts(0)<CR>
 
 
 "does chars 
@@ -1177,7 +1178,6 @@ vnoremap <C-J> "xy:call HandleCJ()<CR>
 "vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
 
 "xy:call feedkeys("\<C-a>g" . @x)<CR> 
-vnoremap <C-Y> "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 
 "nnoremap <C-K> :call RegsToggle()<CR>
 "vnoremap <C-K> <CMD>:call RegsToggle()<CR>
@@ -1601,9 +1601,12 @@ function! RunFiles(torun,onlypy)
         endfor
         :exec argdo "source ".a:torun
 endfunction
-function! GitF(regfilter)
+function! GitF(regfilter,curfile) 
+    if (a:curfile)
+
     let tmp=getcwd()
     :exe ":cd ". expand("%:p:h")
+endif 
     let top = systemlist("git rev-parse --show-toplevel")[0]
     "echo top
     :exe ':cd '. top
@@ -1621,15 +1624,17 @@ function! GitF(regfilter)
     finally
         echohl None
     endtry
+    if (a:curfile)
     
     :exe ':cd '.tmp
+endif 
     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
 
 endfunction
 
 command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
-command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$" )<CR>
-command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
+command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$",0 )<CR>
+command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
 "Edit file in the same folder
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete
         \ EditFile edit<bang> <args>
@@ -1637,9 +1642,15 @@ command! -nargs=1 LfGitGen :call GitF(<f-args>)<CR>
 :    return split(glob(expand("%:p:h").'\*'.(len(a:A)>1 ? a:A . "*" : '')), "\n")
 :endfun
 
+vnoremap <leader>GR "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
+vnoremap <C-Y> "xy:call feedkeys( ":LfGitGen .*\<lt>CR>". @x . "\<lt>CR>")<CR>
+vnoremap <leader>gr "xy:call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
-nmap <leader>gr :call GitF(".*py$")<CR>
-nmap <leader>gR :call GitF("")<CR>
+nmap <leader>gr :call GitF(".*py$",0)<CR>
+nmap <leader>gR :call GitF("",0)<CR>
+nmap <leader>Gr :call GitF(".*py$",1)<CR>
+nmap <leader>GR :call GitF("",1)<CR>
+
 nmap <leader>gs :call DoTag()<CR>
 "nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
 
@@ -1730,3 +1741,4 @@ exec "!git stash push -m \"". stash . '" --keep-index '. expand('%')
 endfunction 
 nmap <leader>GS :call StashME()<CR>
 nmap <leader>gp :exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
+"vimgrep /special=/ `git ls-files`
