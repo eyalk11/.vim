@@ -68,8 +68,19 @@ telescope.setup {
       -- theme = { }, -- use own theme spec
       -- layout_config = { mirror=true }, -- mirror preview pane
     }
-  }
-}
+  },
+   layout_config = { vertical = {
+  width = function(_, max_columns)
+  local percentage = 0.5
+  local max = 70
+  return math.min(math.floor(percentage * max_columns), max)
+end,
+height = function(_, _, max_lines)
+  local percentage = 0.5
+  local min = 70
+  return math.max(math.floor(percentage * max_lines), min)
+end
+} }}
 
 vim.keymap.set('n','<esc>','<esc>',opts)
 vim.keymap.set('i','<esc>','<esc>',opts)
@@ -214,19 +225,22 @@ cmp.setup({
 end ),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
+  sources = cmp.config.sources(
+{
     {
     name = "dictionary",
     keyword_length = 2,
+    priority=0.1
     },
-    { name = 'ultisnips' }, -- For vsnip users.
+    { name = 'buffer', priority = 1 },
+
+    { name = 'ultisnips', priority= 3 }, -- For vsnip users.
+    { name = 'nvim_lsp' , priority = 100}
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
-  }, {
-    { name = 'buffer' },
-  })
+})
+
 })
 
 -- Set configuration for specific filetype.
@@ -257,7 +271,8 @@ cmp.setup.cmdline(':', {
 })
 
 -- Setup lspconfig.
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- cmp_nvim_lsp.
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
@@ -328,11 +343,29 @@ require('lspconfig').pylsp.setup{
 }
 require('lspconfig')['pyright'].setup{
     capabilities = capabilities,
-    on_attach = on_attach,
+    on_attach =  function(client)
+        client.server_capabilities.completionProvider = false
+        on_attach(client)
+    end,
     flags = lsp_flags,
+    settings = {
+        		python = {
+        			analysis = {
+        				autoSearchPaths = true,
+        				useLibraryCodeForTypes = true,
+        				diagnosticMode = "openFilesOnly",
+        				logLevel = "Trace",
+        			},
+        		},
+        	}
     --root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
     --verboseOutput = true
     --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
+}
+require'lspconfig'.lua_ls.setup {
+capabilities = capabilities,
+on_attach = on_attach,
+flags = lsp_flags
 }
 
 --
@@ -341,7 +374,7 @@ require('lspconfig')['pyright'].setup{
 --pattern = "python",
 --callback = function()
   --vim.lsp.start({
---name = "jedi-language-server",
+--name
 --cmd= { 'C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9.6\\Scripts\\jedi-language-server.EXE', '-v', '--log-file','c:\\temp\\jedi-language-server.log'},
  --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]),
 --config = { 
@@ -540,6 +573,28 @@ vim.g.loaded_netrwPlugin = 1
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
 
+local SORT_METHODS = {
+"name",
+"modification_time",
+"extension",
+}
+local sort_current = 1
+
+local cycle_sort = function()
+    local api = require('nvim-tree.api')
+if sort_current >= #SORT_METHODS then
+  sort_current = 1
+else
+  sort_current = sort_current + 1
+end
+print(SORT_METHODS[sort_current])
+    api.tree.reload()
+end
+
+local sort_by = function()
+    return SORT_METHODS[sort_current]
+end
+
 -- empty setup using defaults
 local function grep_at_current_tree_node()
     local node = require('nvim-tree.lib').get_node_at_cursor()
@@ -587,6 +642,8 @@ end
     vim.keymap.set('n', '<left>',api.tree.change_root_to_parent , opts('Goto Parent'))
     vim.keymap.set('n', '<right>',api.tree.change_root_to_node , opts('Root to Node'))
     vim.keymap.set('n', 'Mt' , (function() api.tree.change_root_to_node(); timer.performWithDelay(1000, function() vim.api.nvim_command('Fin -matcher=fuzzy') end , 0) end),opts('TT'))
+    vim.keymap.set('n', 'S' , cycle_sort ,opts('Cycle Sort by'))
+
 
 
     vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
@@ -600,7 +657,9 @@ end
 -- OR setup with some options
 require("nvim-tree").setup({
 on_attach = my_on_attach,
-  sort_by = "case_sensitive",
+sort = {
+      sorter = sort_by,
+    },
   view = {
     width = 30,
   },
@@ -610,7 +669,7 @@ on_attach = my_on_attach,
   --actions = { change_dir = { global = true }},
   filters = {
     dotfiles = false,
-    gitignore = false
+    git_ignored =  false
   },
   live_filter = {
       prefix = "[FILTER]: ",

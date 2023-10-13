@@ -684,7 +684,7 @@ nmap m( ysiW(
 nnoremap M, :CtrlP<CR>
 nnoremap m. :CtrlPClearCache<CR>:CtrlP<CR>
 nnoremap mj :set nohlsearch<CR>
-nnoremap mr :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :set relativenumber <bar> endif<CR>
+nnoremap mrn :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :set relativenumber <bar> endif<CR>
 " \y is copy to another register
 "don't use it to cut
 noremap x "_x
@@ -742,7 +742,7 @@ call MapR()
 
 nnoremap <silent> <C-a>c :call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m'} )<CR>
 "search only for the mapping key
-noremap <silent> <C-a>m :call fzf#run({'source': GetMappings(),'options': '-m -n 2'} )<CR>
+noremap <silent> <C-a>m :Maps<CR>
 "search in mapping description as well
 nnoremap <silent> <C-a>M :call fzf#run({'source': GetMappings(),'options': '-m'} )<CR>
 nnoremap <leader><bar> <bar>
@@ -776,7 +776,7 @@ nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
 "nnoremap <c-a>f :CtrlPCurWD<CR>
 "nnoremap <silent> <C-a>f :exe ":LeaderfFile ".getcwd()<CR>
 nnoremap <c-a>f :Telescope find_files<CR>
-nnoremap <c-a>j :Telescope jumplist<CR>
+nnoremap <c-a>j :lua require('telescope.builtin').jumplist({fname_width=80 , layout_config = {      preview_width = 0.6,       width = 0.9     }})<CR>
 "files current file
 "66444
 nnoremap <silent> <C-a>F :exe ":LeaderfFile " . expand('%:p:h')<CR>
@@ -921,7 +921,8 @@ function! OnRight()
 endfunction 
 
 "opens file
-nmap <leader>of :call VspIfNeed()<CR>ml<M-Bslash>
+nmap <leader>mg :call CloseVspIfNeed()<CR>:vnew<CR><leader>gf
+nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
 nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
 nmap <leader>OF :call VspIfNeed()<CR>mm
 nmap <leader>mf :call VspIfNeed()<CR>mm
@@ -1576,8 +1577,10 @@ nmap <leader>gf :Telescope git_files<CR>
 
 
 function! DoTag()
-    let top = systemlist("git rev-parse --show-toplevel")[0]
     let tmp=getcwd()
+    :exe ":cd ". expand("%:p:h")
+
+    let top = systemlist("git rev-parse --show-toplevel")[0]
     :exe ':lcd '. top
     if filereadable('.\tagsloc')
         let t=readfile('tagsloc')[0]
@@ -1632,6 +1635,11 @@ endif
 
 endfunction
 
+function! Gut(bb) 
+exec 'cd '.expand('%:p:h')
+:GutentagsUpdate
+endfunction 
+au filetype * command! -buffer GutenTagRun :call gutentags#setup_gutentags() <bar> :call timer_start(15,'Gut')<CR>
 command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
 command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$",0 )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
@@ -1643,13 +1651,17 @@ command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
 :endfun
 
 vnoremap <leader>GR "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
-vnoremap <C-Y> "xy:call feedkeys( ":LfGitGen .*\<lt>CR>". @x . "\<lt>CR>")<CR>
+vmap <c-y> <leader>GR
 vnoremap <leader>gr "xy:call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
 nmap <leader>gr :call GitF(".*py$",0)<CR>
 nmap <leader>gR :call GitF("",0)<CR>
 nmap <leader>Gr :call GitF(".*py$",1)<CR>
 nmap <leader>GR :call GitF("",1)<CR>
+nmap mr <leader>Gr
+nmap mR <leader>GR
+"nmap mr :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
+"nmap mR :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
 nmap <leader>gs :call DoTag()<CR>
 "nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
@@ -1685,7 +1697,7 @@ endfunction
 
 nmap gf :call DoGF()<CR>
 
-nmap \] :e!<CR>
+nmap \] mC:bd<CR>:e <C-R>=@*<CR><CR>
 nmap <leader>gv :cd c:\users\ekarni\.vim<CR>:Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
 "nmap {          <Plug>EnhancedJumpsOlder
 "nmap }          <Plug>EnhancedJumpsNewer
@@ -1734,6 +1746,7 @@ xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <LocalLeader>rc :MagmaReevaluateCell<CR>
 nmap gw :Wtf<CR>
 nmap <leader>ms <Plug>(GitGutterStageHunk)
+nmap <leader>mu <Plug>(GitGutterUndoHunk)
 
 function! StashME()
  let stash = input('Enter name: ')
@@ -1741,4 +1754,15 @@ exec "!git stash push -m \"". stash . '" --keep-index '. expand('%')
 endfunction 
 nmap <leader>GS :call StashME()<CR>
 nmap <leader>gp :exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
-"vimgrep /special=/ `git ls-files`
+nmap <leader>gc :cd ~/compare-my-stocks<CR>
+function! LfFil(a)
+:exec " :LeaderfFile ". a:a
+endfunction
+nmap mo :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
+
+command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
+
+nmap \gA mc:Gw<CR>!git commit --amend --no-edit<CR>!git push --force<CR>
+#save and push
+nmap Zp ZZ:Git push<CR>
+nmap ZP ZZ:Git push --force<CR>

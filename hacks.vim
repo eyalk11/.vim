@@ -273,6 +273,7 @@ endfunction
 let g:last_copied=""
 let g:init=0
 function! TimerFunc(a)
+    checktime
     ":profile dump 
     "updates shada files to keep current commands
     wshada
@@ -969,3 +970,14 @@ norm x
 endfunction
 command! -range CL <line1>,<line2>call CreateList()
 
+function! ReplaceCasing(word,ow)
+    exec ":noautocmd vimgrep /" . a:ow.'/ `git ls-files`' 
+    exec ":noautocmd :cdo :s/". a:ow. "/" . a:word . "/g"
+    exec ":noautocmd vimgrep /\\c" . a:word.'/ `git ls-files`' 
+    exec ":noautocmd :cdo :s/\\c". a:word. "/" . a:word . "/g"
+endfunction 
+
+function! ReplaceCasing(word,ow)
+     exec ":%s/\\c". a:ow. "/" . a:word . "/g"
+     exec ":%s/\\c". a:word. "/" . a:word . "/g"
+endfunction 

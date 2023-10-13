@@ -45,6 +45,8 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
 Plug 'tamago324/nlsp-settings.nvim'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
@@ -67,7 +69,7 @@ Plug 'ThePrimeagen/refactoring.nvim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'jose-elias-alvarez/null-ls.nvim'
 "Plug 'mfussenegger/nvim-lint'
-"Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 Plug 'SmiteshP/nvim-navic'
 Plug 'numToStr/Comment.nvim'        " Optional
@@ -87,7 +89,7 @@ Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'github/copilot.vim'
 Plug 'ggandor/lightspeed.nvim'
 "Plug 'rhysd/clever-f.vim'
-Plug 'craigemery/vim-autotag'
+"Plug 'craigemery/vim-autotag'
 Plug 'kana/vim-arpeggio'
 Plug 'sindrets/diffview.nvim'
 "Plug 'tc50cal/vim-terminal'

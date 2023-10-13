@@ -765,3 +765,11 @@ let g:peekaboo_ins_prefix = 0
 
 let g:airline_extensions = ['branch', 'fugitiveline','tabline','hunks']
 
+let g:autotagVerbosityLevel	= 10 
+let g:gutentags_define_advanced_commands=1
+let g:gutentags_file_list_command = {
+    \ 'markers': {
+        \ '.git': 'git ls-files *.py *.vim',
+        \ },
+    \ }
+"au FileType python call gutentags#setup_gutentags()

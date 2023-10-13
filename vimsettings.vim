@@ -288,7 +288,7 @@ function! OnLoad()
         endif
         set shell=cmd 
 
-        exec "!echo ". v:servername . " > c:\\temp\\listen.txt"
+        exec "silent !echo ". v:servername . " > c:\\temp\\listen.txt"
         "override
         nmap <D-f> <Plug>(easymotion-s2) 
 
@@ -300,12 +300,12 @@ function! OnLoad()
 		set mouse+=a
         inoremap <c-p> <c-v>
         cnoremap <c-p> <c-v>
-        imap <c-v> <c-r><c-p>+
-        imap <c-v> <c-r><c-p>+
-        cmap <c-v> <c-r>+
-		nmap <c-v> p
+        inoremap <c-v> <c-r><c-p>+
+        inoremap <c-v> <c-r><c-p>+
+        cnoremap <c-v> <c-r>+
+		nnoremap <c-v> p
         nnoremap <M-v> <c-v>
-        nmap <M-a> ggVG
+        nnoremap <M-a> ggVG
 		"nmap <D-v> p
 		"imap <D-V> 
 		"imap <D-v> 
@@ -339,6 +339,7 @@ let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
 "au! GonvimAu OptionSet
 set mouse=a
+au! gutentags_detect 
 endfunction
 
 function! OnEnd()
@@ -387,3 +388,5 @@ augroup vimrc-noincsearch-highlight
 augroup END
 
 let g:no_spec_maps=1
+autocmd BufEnter,FocusGained * checktime
+"set noautoread #don't reload it when changed outside vim and no vim changes. 
