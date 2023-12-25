@@ -793,7 +793,7 @@ nnoremap <silent> <C-a><C-a> <C-a>
   " open FZF in
   " current file's2 directory
   "
-nmap \w :set wrap<CR>
+nmap <leader>W :set wrap<CR>
 
 function! GitDir()
 let top = systemlist("git rev-parse --show-toplevel")[0]
@@ -824,7 +824,6 @@ nnoremap <leader>GD :Gvdiffsplit!<CR>
 nmap <leader>GD Git! diff<CR>
 nnoremap <leader>Ge :Gedit<CR>
 nnoremap <leader>Gr :Gread<CR>
-nnoremap <leader>Gw :Gwrite<CR>
 nnoremap <leader>Gmo Git merge --strategy-option ours origin/master<CR>
 nnoremap <leader>Gmt Git merge --strategy-option theirs origin/master<CR>
 "Git log all commits
@@ -1644,10 +1643,16 @@ command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
 command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$",0 )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
 "Edit file in the same folder
+":com! -nargs=1 -bang -complete=customlist,EditFileComplete
+        "\ EditFile edit<bang> <args>
+":fun! EditFileComplete(A,L,P)
+":    return split(glob(expand("%:p:h").'\*'.(len(a:A)>1 ? a:A . "*" : '')), "\n")
+":endfun
+"```vim
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete
-        \ EditFile edit<bang> <args>
+        \ EditFile exec "edit<bang> ". expand("%:p:h")."/<args>"
 :fun! EditFileComplete(A,L,P)
-:    return split(glob(expand("%:p:h").'\*'.(len(a:A)>1 ? a:A . "*" : '')), "\n")
+:    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
 
 vnoremap <leader>GR "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
@@ -1758,11 +1763,19 @@ nmap <leader>gc :cd ~/compare-my-stocks<CR>
 function! LfFil(a)
 :exec " :LeaderfFile ". a:a
 endfunction
+function! DoMGf(a)
+    exec "cd " .a:a
+    norm \gf
+endfunction 
 nmap mo :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
+nmap MO :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
 
 command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 
-nmap \gA mc:Gw<CR>!git commit --amend --no-edit<CR>!git push --force<CR>
-#save and push
+nmap <leader>GWP mc:Gw<CR>:!git commit --amend --no-edit<CR>:!git push --force<CR>
+nmap <leader>Gw mc:Gw<CR>\Gc
+nnoremap <leader>w :Gwrite<CR>
+nmap <leader>gC :call GitF("",0)<CR>
+"#save and push  
 nmap Zp ZZ:Git push<CR>
 nmap ZP ZZ:Git push --force<CR>
