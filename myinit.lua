@@ -1,4 +1,19 @@
+function _G.set_workspace_dir(dir)
+    vim.lsp.buf.add_workspace_folder(dir)
+    local folders = vim.lsp.buf.list_workspace_folders()
+    for i = 1, #folders do
+        if dir ~= folders[i] then
+            vim.lsp.buf.remove_workspace_folder(folders[i])
+        end
+    end
+end
 
+--function _G.set_all_workspace_dir(dir)
+    --for t in vim.lsp.buf.list_workspace_folders() do
+        --vim.lsp.buf.remove_workspace_folder(t)
+    --end
+    --vim.lsp.buf.add_workspace_folder(dir)
+--end
 local function locate( table, value )
     for i = 1, #table do
         if table[i] == value then return true end
@@ -26,7 +41,7 @@ window = { size = "85%"}
 }
 
 --require("symbols-outline").setup()
---require('navigator').setup({  default_mapping = false, lsp_installer = true})
+--require('navigator').setup({  default_mapping = false, lsp = {disable_lsp  = "all" }} )
 require("grammar-guard").init()
 --require'lspconfig'.grammarly.setup{
      --filetypes = { "markdown" }
@@ -146,6 +161,10 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
     vim.keymap.set('n', '_k', vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set('n', '_wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set('n', '_ws', function() 
+        _G.set_workspace_dir(vim.fn.input('Directory: ',vim.fn.getcwd())) 
+    end 
+        )
     vim.keymap.set('n', '_wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '_wl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
@@ -222,20 +241,23 @@ cmp.setup({
     if cmp.visible() then cmp.abort()
     else vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
     end 
+    
 end ),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources(
 {
-    {
-    name = "dictionary",
-    keyword_length = 2,
-    priority=0.1
-    },
+    --{
+    --name = "dictionary",
+    --keyword_length = 2,
+    --priority=0.1
+    --},
     { name = 'buffer', priority = 1 },
+    { name = 'path' , proiority=5 },
+    { name = 'nvim_lsp', priority =200 }
+     
 
-    { name = 'ultisnips', priority= 3 }, -- For vsnip users.
-    { name = 'nvim_lsp' , priority = 100}
+    --{ name = 'ultisnips' }, -- For vsnip users.
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
@@ -272,7 +294,11 @@ cmp.setup.cmdline(':', {
 
 -- Setup lspconfig.
 -- cmp_nvim_lsp.
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+--local capabilities = require('cmp_nvim_lsp').default_capabilities()
+ local capabilities = vim.tbl_deep_extend("force",
+vim.lsp.protocol.make_client_capabilities(),
+require('cmp_nvim_lsp').default_capabilities()
+)
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
@@ -295,10 +321,10 @@ require("lspconfig").yamlls.setup{
     on_attach = on_attach,
 }
 
-require("lspconfig").vimls.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-}
+--require("lspconfig").vimls.setup{
+    --capabilities = capabilities,
+    --on_attach = on_attach,
+--}
 require("lspconfig").jsonls.setup{}
 
 --require'lspconfig'.sumneko_lua.setup{
@@ -306,7 +332,7 @@ require("lspconfig").jsonls.setup{}
     --on_attach = on_attach,
 --}    
 
---vim.lsp.set_log_level("debug")
+vim.lsp.set_log_level("debug")
 local root_files = {
 "pyproject.toml",
 "setup.py",
@@ -332,10 +358,13 @@ require('lspconfig').pylsp.setup{
                     enabled= false
                 },
                 pylint = { enabled = false },
-                rope = {enabled = true },
-                rope_auto_import = {enabled = true},
-                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true},
-                jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
+                --rope = {enabled = false,ropefolder='C:\\temp\\rope' },
+                --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
+                --rope_autoimport = {enabled = true, {completions = {enabled = true}, {code_actions = {enabled = true}}}},
+                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true, ignore_paths = { "^(?=.*compare-my-stocks)(?!.*src)"}}
+
+                --jedi = { enabled= true }
+                --jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
             }
             --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
         }
@@ -349,15 +378,15 @@ require('lspconfig')['pyright'].setup{
     end,
     flags = lsp_flags,
     settings = {
-        		python = {
-        			analysis = {
-        				autoSearchPaths = true,
-        				useLibraryCodeForTypes = true,
-        				diagnosticMode = "openFilesOnly",
-        				logLevel = "Trace",
-        			},
-        		},
-        	}
+                python = {
+                    analysis = {
+                        autoSearchPaths = true,
+                        useLibraryCodeForTypes = true,
+                        diagnosticMode = "openFilesOnly"
+                        --logLevel = "Trace",
+                    },
+                },
+            }
     --root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
     --verboseOutput = true
     --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
@@ -369,6 +398,11 @@ flags = lsp_flags
 }
 
 --
+--require'lspconfig'.jedi_language_server.setup{
+--capabilities = capabilities,
+--on_attach = on_attach
+----root_dir = function() return vim.loop.cwd() end
+--}
 
 --vim.api.nvim_create_autocmd("FileType", {
 --pattern = "python",
@@ -693,5 +727,9 @@ require("wtf").setup()
 -- or leave it empty to use the default settings
 -- refer to the configuration section below
 --}
+
+require("workspaces").setup({
+path = vim.fn.stdpath("data") .. "/workspaces",
+})
 
 --vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})

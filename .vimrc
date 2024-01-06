@@ -45,6 +45,11 @@ endif
 if g:minimal == 0
 
 call plug#begin('~/.vim/plugged')
+"Plug 'ZSaberLv0/ZFVimDirDiff'
+"Plug 'ZSaberLv0/ZFVimJob' " required
+"Plug 'ZSaberLv0/ZFVimIgnore' " optional, but recommended for auto ignore setup
+"Plug 'ZSaberLv0/ZFVimBackup' " optional, but recommended for auto backup
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
 Plug 'tamago324/nlsp-settings.nvim'
@@ -122,7 +127,7 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'justinmk/vim-sneak'
 Plug 'unblevable/quick-scope'
 "Plug 'liuchengxu/vim-which-key'
-Plug 'folke/lazy.nvim'
+"Plug 'folke/lazy.nvim'
 Plug 'folke/which-key.nvim'
 Plug 'kamykn/popup-menu.nvim'
 "Peek at registers before pasting

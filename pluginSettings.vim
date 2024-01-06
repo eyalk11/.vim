@@ -773,3 +773,29 @@ let g:gutentags_file_list_command = {
         \ },
     \ }
 "au FileType python call gutentags#setup_gutentags()
+let g:pymode=1
+let g:pymode_rope = 1
+let g:pymode_rope_autoimport =1
+let g:pymode_warnings = 0
+let g:pymode_trim_whitespaces = 0
+let g:pymode_options = 0
+let g:pymode_options_colorcolumn = 0
+let g:pymode_indent = 0
+let g:pymode_motion = 0
+let g:pymode_doc = 0
+let g:pymode_virtualenv = 0
+let g:pymode_run = 0
+let g:pymode_breakpoint = 0
+let g:pymode_lint = 0
+let g:pymode_lint_on_write = 0
+let g:pymode_lint_message = 0
+let g:pymode_lint_cwindow = 0
+let g:pymode_lint_signs = 0
+let g:pymode_rope_regenerate_on_write = 0
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_syntax = 0
+let g:pymode_syntax_slow_sync = 0
+let g:pymode_syntax_all = 0
+let g:pymode_folding = 0
+let g:pymode_debug = 0

@@ -315,15 +315,16 @@ nmap ? <Plug>(easymotion-sl)
 
 
 
-"imap <c-c> <c-o><Plug>(easymotion-lineanywhere) 
-"nmap <c-c> <Plug>(easymotion-lineanywhere) 
-"one line down
+"imap <c-c> <c-o><Plug>(easymotion-dineanywhere) 
+"nmap <c-c> <Plug>(easymotion-sineanywhere) 
+"one aine down
 "nnoremap <c-t> <c-e>
 "nnoremap <c-y> <c-u>
 "nmap <c-t> <Plug>(easymotion-sl)
 
 
 nmap <c-s> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
+nmap <m-s> <Plug>(easymotion-tn)
 vmap <c-s> <Plug>(easymotion-s2)
 
 "search help , lift saving
@@ -467,6 +468,9 @@ function! CompleteInf()
 	endfor 
 	call fzf#vim#complete(fzf#wrap({ 'source': nl,'prefix':pre, 'reducer': { lines -> split(lines[0], '\zs :')[0] },'sink':function('PInsert2')}))
 endfunction 
+"get documention of current symbol
+noremap <m-k> :let x=printf("Leaderf help --input %s", expand("<cword>"))<CR>:exec x<CR>
+vmap <m-k> "xy:let x=printf("Leaderf help --input \"%s\"", getreg("x"))<CR>:exec x<CR>
 "com
 "completion by fuzzing of anything
 imap <c-.> <CMD>:call CompleteInf()<CR>
@@ -1626,11 +1630,11 @@ endif
     finally
         echohl None
     endtry
-    if (a:curfile)
-    
-    :exe ':cd '.tmp
-endif 
     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+    if (a:curfile)
+
+        :exe ':cd '.tmp
+    endif 
 
 endfunction
 
@@ -1668,8 +1672,8 @@ nmap mR <leader>GR
 "nmap mr :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 "nmap mR :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
-nmap <leader>gs :call DoTag()<CR>
-"nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
+"nmap <leader>gs :call DoTag()<CR>
+nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
 
 "~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
@@ -1779,3 +1783,39 @@ nmap <leader>gC :call GitF("",0)<CR>
 "#save and push  
 nmap Zp ZZ:Git push<CR>
 nmap ZP ZZ:Git push --force<CR>
+" Get the directory of a file
+" - On Ex command lines, returns the directory of the file ('./' for new files)
+" - On other command lines (/,?) returns the keymap used to trigger it
+function! Command_dir(keymap) abort
+  let l:command_type = getcmdtype()
+  if l:command_type isnot# ':'
+    return a:keymap
+  endif
+  let l:dir = expand('%:h')
+  if empty(l:dir)
+    let l:dir = '.'
+  endif
+  if has("win64") || has("win32") || has("win16")
+      return l:dir . '\'
+  else 
+      return l:dir . '/'
+  endif
+endfunction
+cnoremap <expr> %% Command_dir('%%')
+"delete same file
+nmap <leader>ds :let current_bufname = expand('%:t') <bar> let current_bufnr = bufnr('%') <bar> for i in range(1, bufnr('$')) <bar> if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname <bar> execute 'bdelete' i <bar> endif <bar> endfor<CR>
+nmap <leader>ds :let current_bufname = expand('%:t') <bar> let current_bufnr = bufnr('%') <bar> for i in range(1, bufnr('$')) <bar> if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname <bar> execute 'bdelete' i <bar> endif <bar> endfor<CR>
+
+function! OpenSameFileInVSplit()
+    let current_bufname = expand('%:t')
+    let current_bufnr = bufnr('%')
+    for i in range(1, bufnr('$'))
+        if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname
+            execute 'vertical sb' i
+            break
+        endif
+    endfor
+endfunction
+nmap <leader>dsp :call OpenSameFileInVSplit()<CR>
+nmap <leader>dD :call OpenSameFileInVSplit()<CR>:diffthis<CR>:call GoOther()<CR>:diffthis<CR>
+
