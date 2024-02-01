@@ -544,7 +544,10 @@ nmap gp :exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
 """ m mappings
 
 
-nnoremap mb iimport ipdb;ipdb.set_trace()<ESC>
+nnoremap <leader>mb iimport ipdb;ipdb.set_trace()<ESC>
+nmap mb <leader><C-O>
+nmap mB <leader><C-I>
+nmap mv <leader><C-I>
 " jump to current path
 nmap mC :call CopyPath()<CR>
 noremap mc :cd %:p:h<CR>
@@ -573,7 +576,7 @@ noremap mM :Mru<CR>
 
 "newline
 
-nnoremap mn o<ESC>D
+"nnoremap mn o<ESC>D
 noremap H ~
 noremap \H H
 noremap \L L
@@ -907,20 +910,40 @@ nnoremap <leader>rd <c-L>
 
 "todo FZF
 nnoremap <leader>oc :copen<CR>
+
+
+
+
+
 function! CloseVspIfNeed()
-    "let x = tabpagebuflist()
-    "if len(x)==1
-    "vsp
-    "endif
+    let max_wincol = -1
+    let argmax_win_id = -1
+    let ll=0 
+    "counts real buffers
+
     for k in getwininfo()
-        if k['winrow']<=2 && k['wincol']>1
-            "look no further
-            let id=k['winid']
-            call win_gotoid(id)
-            :close
-            return
+        let win_id=k['winid']
+
+        let winnr=win_id2win(win_id)
+        let ft= getbufvar(winbufnr(winnr), '&filetype')
+        if k['winrow']<=2 && k['wincol']>max_wincol
+            let ll=ll+1
+            let max_wincol=k['wincol']
+            let argmax_win_id=win_id
         endif
+        if (ft=~'NvimTree')
+            let ll=ll-1
+        endif
+
     endfor
+
+    if argmax_win_id != -1 && ll>1
+        if OnRight()
+            call GoOther()
+        endif
+        call win_gotoid(win_id)
+        :close
+    endif
 endfunction
 function! VspIfNeed()
     "let x = tabpagebuflist()
@@ -946,8 +969,8 @@ endfunction
 nmap <leader>mg :call CloseVspIfNeed()<CR>:vnew<CR><leader>gf
 nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
 nmap mo :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
-nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
-nmap <leader>OF :call VspIfNeed()<CR>mm
+nmap <leader>og :call VspIfNeed()<CR>:let g:Lf_JumpToExistingWindow = 0<CR>:LeaderfFile<CR>
+nmap <leader>OF :call VspIfNeed()<CR>:let g:Lf_JumpToExistingWindow = 0<CR>mm
 nmap <leader>mf :call VspIfNeed()<CR>mm
 "open python
 "function! findbufjup
