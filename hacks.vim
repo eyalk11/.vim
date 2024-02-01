@@ -544,7 +544,7 @@ function! CloseAllWindowsButCurrent()
         let curwin=winnr() "could change
         let winnr=win_id2win(winid)
         let ft= getbufvar(winbufnr(winnr), '&filetype')
-        if and(winnr!=curwin,or((ft!~'netranger'),last2))
+        if and(winnr!=curwin,or((ft!~'NvimTree'),last2))
             execute ':'.winnr.'close!'
         endif
     endfor
@@ -718,8 +718,12 @@ function! CdDirPlug(item)
 endfunction
 
 function! HandleCommand(item)
-    call feedkeys("zq:")
-    call feedkeys("G?\\V".escape(a:item,'\/?')."\<CR>",'n')
+    echo a:item
+    call feedkeys(":".a:item)
+    call feedkeys("\<c-b>")
+    "call feedkeys("zq:")
+    "call feedkeys("G?\\V".escape(a:item,'\/?$')."\<CR>",'n')
+    
 endfunction
 
 function! BH(item)

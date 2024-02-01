@@ -47,8 +47,15 @@ require("grammar-guard").init()
      --filetypes = { "markdown" }
  --}
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
+
  require("nvim-lightbulb").setup({
- autocmd = { enabled = true }
+ autocmd = { enabled = true },
+ action_kinds= {'quickfix', 'refactor'},
+ number = {
+     enabled = true,
+     -- Highlight group to highlight the number column if there is a lightbulb.
+     hl = "LightBulbNumber",
+ }
 })
 
 local telescope = require("telescope")
@@ -87,7 +94,7 @@ telescope.setup {
    layout_config = { vertical = {
   width = function(_, max_columns)
   local percentage = 0.5
-  local max = 70
+  local max = 90
   return math.min(math.floor(percentage * max_columns), max)
 end,
 height = function(_, _, max_lines)
@@ -96,10 +103,23 @@ height = function(_, _, max_lines)
   return math.max(math.floor(percentage * max_lines), min)
 end
 } }}
+--lua require'telescope.builtin'.lsp_workspace_symbols({layout_config = { vertical = {
+--width = function(_, max_columns)
+--local percentage = 0.5
+--local max = 70
+--return math.min(math.floor(percentage * max_columns), max)
+--end,
+--height = function(_, _, max_lines)
+--local percentage = 0.5
+--local min = 70
+--return math.max(math.floor(percentage * max_lines), min)
+--end
+--}}})
 
 vim.keymap.set('n','<esc>','<esc>',opts)
 vim.keymap.set('i','<esc>','<esc>',opts)
-
+--lua require'telescope.builtin'.lsp_workspace_symbols({["layout_config.preview_width"]    = 0.8})
+--lua telescope.builtin.lsp_workspace_symbols({layout_config.width   = 0.8})
 local telescope=require('telescope')
 local actions = require("telescope.actions")
 --- Absolute path of the current node's directory
@@ -145,7 +165,6 @@ local function format ()
     vim.lsp.buf.format({ timeout_ms = 2000 })
 end     
 vim.keymap.set('n', 'mt' , opencwd ,opts)
-vim.keymap.set('n', 'mt' , opencwd ,opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -185,7 +204,8 @@ local on_attach = function(client, bufnr)
     local opts = { noremap=true, silent=true }
 
     buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
+    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    vim.keymap.set('n','_A', require("actions-preview").code_actions, opts)
 end
 
 local cmp = require'cmp'
@@ -246,23 +266,34 @@ end ),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources(
-{
-    --{
-    --name = "dictionary",
-    --keyword_length = 2,
-    --priority=0.1
-    --},
-    { name = 'buffer', priority = 1 },
-    { name = 'path' , proiority=5 },
-    { name = 'nvim_lsp', priority =200 }
-     
+{ { name = 'buffer', priority = 1 },
+                { name = 'path' , proiority=5 },
+                    { name = 'nvim_lsp', priority =200 }
+                })
 
-    --{ name = 'ultisnips' }, -- For vsnip users.
-    -- { name = 'luasnip' }, -- For luasnip users.
-    -- { name = 'ultisnips' }, -- For ultisnips users.
-    -- { name = 'snippy' }, -- For snippy users.
 })
-
+local bufIsBig = function(bufnr)
+    local max_filesize = 100 * 1024 -- 100 KB
+    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+    if ok and stats and stats.size > max_filesize then
+        return true
+    else
+        return false
+    end
+end
+vim.api.nvim_create_autocmd('BufReadPre', {
+    callback = function(t)
+        if not bufIsBig(t.buf) then
+            sources = cmp.config.sources(    { { name = 'buffer', priority = 1 },
+                { name = 'path' , proiority=5 },
+                    { name = 'nvim_lsp', priority =200 }
+                } )
+            else
+        cmp.setup.buffer {
+            sources = {}
+        }
+        end
+    end
 })
 
 -- Set configuration for specific filetype.
@@ -358,9 +389,9 @@ require('lspconfig').pylsp.setup{
                     enabled= false
                 },
                 pylint = { enabled = false },
-                --rope = {enabled = false,ropefolder='C:\\temp\\rope' },
+                rope = {enabled = false,ropefolder='C:\\temp\\rope' },
                 --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
-                --rope_autoimport = {enabled = true, {completions = {enabled = true}, {code_actions = {enabled = true}}}},
+                --rope_autoimport = {enabled = false, {completions = {enabled = false}, {code_actions = {enabled = false}}}},
                 jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true, ignore_paths = { "^(?=.*compare-my-stocks)(?!.*src)"}}
 
                 --jedi = { enabled= true }
@@ -401,7 +432,7 @@ flags = lsp_flags
 --require'lspconfig'.jedi_language_server.setup{
 --capabilities = capabilities,
 --on_attach = on_attach
-----root_dir = function() return vim.loop.cwd() end
+------root_dir = function() return vim.loop.cwd() end
 --}
 
 --vim.api.nvim_create_autocmd("FileType", {
@@ -488,21 +519,21 @@ require('refactoring').setup({})
 --
 local null_ls = require("null-ls")
 
-null_ls.setup({
-    sources = {
-        null_ls.builtins.code_actions.refactoring,
-        null_ls.builtins.formatting.stylua,
-        --[[null_ls.builtins.diagnostics.mypy.with({]]
-            --[[diagnostics_postprocess = function(diagnostic)]]
-                --[[diagnostic.severity =  vim.diagnostic.severity["WARN"]]
-            --[[end,]]
-        --[[}]]
-        --[[),]]
-         null_ls.builtins.formatting.isort, 
-          null_ls.builtins.formatting.black,
-        null_ls.builtins.completion.spell,
-    },
-})
+--null_ls.setup({
+    --sources = {
+        --null_ls.builtins.code_actions.refactoring,
+        --null_ls.builtins.formatting.stylua,
+        --[>null_ls.builtins.diagnostics.mypy.with({<]
+            --[>diagnostics_postprocess = function(diagnostic)<]
+                --[>diagnostic.severity =  vim.diagnostic.severity["WARN"<]
+            --[>end,<]
+        --[>}<]
+        --[>),<]
+         --null_ls.builtins.formatting.isort, 
+          --null_ls.builtins.formatting.black,
+        --null_ls.builtins.completion.spell,
+    --},
+--})
 --require('lint').linters_by_ft = {
 --py = {'black','mypy','isort',}
 --}
@@ -730,6 +761,12 @@ require("wtf").setup()
 
 require("workspaces").setup({
 path = vim.fn.stdpath("data") .. "/workspaces",
-})
+ hooks = {
+        open =  function()
+ set_workspace_dir(require'workspaces'.path())
+ print("workspace dir is " .. require'workspaces'.path())
+end,
+}})
+require("actions-preview").setup {}
 
 --vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})

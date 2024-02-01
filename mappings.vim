@@ -44,11 +44,25 @@ nnoremap <leader>' ``
 
 
 "recall command
-noremap m? ?
+noremap m? :set incsearch<CR>:set hlsearch<CR>?
+function! ToggleSearch()
+    if &incsearch
+        set noincsearch
+        set nohlsearch
+    else
+        set incsearch
+        set hlsearch
+    endif
+endfunction
 
-
-:nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
-":nmap ! :exec "normal a".nr2char(getchar())."\e"<CR>
+nnoremap mS :call ToggleSearch()<CR>
+":nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
+:nmap ( :exec "normal i".nr2char(getchar())."\e"<CR>
+:nmap ) :exec "normal a".nr2char(getchar())."\e"<CR>
+:nnoremap [( (<CR>
+:nnoremap [9 (<CR>
+:nnoremap [) (<CR>
+:nnoremap [0 )<CR>
 "qw inserts char after
 
 "nmap s :<C-U>call InsertBefore(v:count1)<CR>
@@ -61,9 +75,9 @@ noremap m? ?
 nmap <M-f> <Plug>(easymotion-s2)
 
 "replaacing default
-nnoremap zq q
+"nnoremap zq q
 "Alt - q is the new macro recording ....
-nnoremap <M-q> q
+"nnoremap <M-q> q
 "nmap s <Plug>(easymotion-s)
 "nmap S <Plug>(easymotion-s2)
 "endif
@@ -112,6 +126,7 @@ nmap _- :cd -<CR>
 "previous window
 nmap _P :wprevious<CR>
 nmap _N :wnext<CR>
+nmap _wo :WorkspacesOpen<CR>
 
 "do comment out
 map __ <leader>Cc
@@ -753,11 +768,13 @@ nnoremap <leader><bar> <bar>
 "nnoremap <silent> <bar> :call FZFOpen(':Buffers')<CR>
 "<M-Bslash>
 "<M-Bslash>
-nmap m<bar> :LeaderfDisablePreview<CR><bar>
+nmap <bar> :LeaderfDisablePreview<CR>:Leaderf --popup buffer<CR>
 nmap <M-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
 "nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
-nnoremap <silent> <bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
-nnoremap <silent> <C-a>b :call FZFOpen(':Buffers')<CR>
+nnoremap <silent> m<bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
+"nmap <bar> :Telescope buffers<CR>
+"nnoremap <silent> <C-a>b :Leaderf buffers<CR>
+"
 "nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
 
 nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
@@ -790,6 +807,7 @@ nnoremap <silent> <C-a>a :call FZFOpen(':Ag')<CR>
 nnoremap <silent> <C-a>d :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>D :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>w :call FZFOpen(':Windows')<CR>
+nnoremap <silent> <C-a>b :Leaderf window<CR>
 nnoremap <silent> <C-a>s :call FZFOpen(':Snippets')<CR>
 "use it to increase
 nnoremap <silent> <C-a><C-a> <C-a>
@@ -900,6 +918,7 @@ function! CloseVspIfNeed()
             let id=k['winid']
             call win_gotoid(id)
             :close
+            return
         endif
     endfor
 endfunction
@@ -926,6 +945,7 @@ endfunction
 "opens file
 nmap <leader>mg :call CloseVspIfNeed()<CR>:vnew<CR><leader>gf
 nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
+nmap mo :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
 nmap <leader>og :call VspIfNeed()<CR>:LeaderfFile<CR>
 nmap <leader>OF :call VspIfNeed()<CR>mm
 nmap <leader>mf :call VspIfNeed()<CR>mm
@@ -1667,21 +1687,32 @@ nmap <leader>gr :call GitF(".*py$",0)<CR>
 nmap <leader>gR :call GitF("",0)<CR>
 nmap <leader>Gr :call GitF(".*py$",1)<CR>
 nmap <leader>GR :call GitF("",1)<CR>
-nmap mr <leader>Gr
-nmap mR <leader>GR
+
+map mr <leader>gr
+map mR <leader>gR
+map MR <leader>GR
+map Mr <leader>Gr
 "nmap mr :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 "nmap mR :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
 "nmap <leader>gs :call DoTag()<CR>
-nmap <leader>gs :Telescope lsp_workspace_symbols<CR>
+nmap gs :Telescope lsp_workspace_symbols<CR>
+lua require'telescope.builtin'.lsp_workspace_symbols({path_display={'tail'}})
+""~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
-"~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
+
 
 function! DoGF()
     let f=expand('<cfile>')
     let sec =expand('<cWORD>')
     let line= substitute(sec,'^.*(\(.*\),.*):.*$','\1','')
     let arr=split(f,':')
+    let ff = getline('.')
+
+    if ff=~?'^.*File "\([^"]\+\)", line \(\d\+\).*'
+        let arr = [matchstr(ff, '"\zs[^"]\+\ze"'),matchstr(ff, 'line \zs\d\+') ]
+    endif
+
     if len(arr[0])==1
         let arr=[arr[0].':'.arr[1]]+arr[2:]
     endif
@@ -1771,8 +1802,8 @@ function! DoMGf(a)
     exec "cd " .a:a
     norm \gf
 endfunction 
-nmap mo :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
-nmap MO :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
+nmap <leader>mo :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
+nmap <leader>MO :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
 
 command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 
@@ -1818,4 +1849,10 @@ function! OpenSameFileInVSplit()
 endfunction
 nmap <leader>dsp :call OpenSameFileInVSplit()<CR>
 nmap <leader>dD :call OpenSameFileInVSplit()<CR>:diffthis<CR>:call GoOther()<CR>:diffthis<CR>
+"nmap _A :lua require("actions-preview").code_actions()<CR>
 
+function! DDa()
+           :lua vim.lsp.buf.code_action()
+           :sleep 5
+           :call feedkeys('4','t')
+       endfunction

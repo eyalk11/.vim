@@ -81,7 +81,7 @@ set spellfile = "~/.vim/spell/en.utf-8.add"
 set spelllang=en_us
 
 set updatetime =3000
-
+packadd cfilter
 "packadd! syntax-vim-ex
 "autocmd filetype python :call PythonSetup()
 " Defaults
