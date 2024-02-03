@@ -340,6 +340,7 @@ let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 "au! GonvimAu OptionSet
 set mouse=a
 au! gutentags_detect 
+set ut=3000
 endfunction
 
 function! OnEnd()

@@ -209,7 +209,7 @@ let g:special_insert = 0
 
 function! CheckSpecialInsert()
     if g:special_insert
-        au monitor CursorHoldI * call feedkeys(':echo "Insert timed out"')
+        au monitor CursorHoldI * echom "Insert timed out" | call feedkeys("\<esc>") | call EndSpecialInsert()
     endif
 endfunction
 

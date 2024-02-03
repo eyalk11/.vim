@@ -576,7 +576,7 @@ noremap mM :Mru<CR>
 
 "newline
 
-"nnoremap mn o<ESC>D
+nnoremap mn o<ESC>D
 noremap H ~
 noremap \H H
 noremap \L L
@@ -1243,13 +1243,16 @@ function! IfTerm()
        call feedkeys('i') 
     endif
 endfunc 
+function! GetOther()
+    if OnRight()
+        return "\<c-w>h"
+    else
+        return "\<c-w>l"
+    endif
+endfunction
 
 function! GoOther()
-    if OnRight()
-        call feedkeys("\<c-w>h")
-    else
-        call feedkeys("\<c-w>l")
-    endif
+:exec "norm ".GetOther()
 endfunction
 "Move line to terminal
 nmap mz my<CMD>:exec ":T ".  @" ."\r\n" <cr>
@@ -1259,6 +1262,8 @@ nmap <c-F5> mz
 "nmap mz <CMD>:TREPLSendLine<CR>
 "vmap mz <CMD>:TREPLSendSelection<CR>
 "move between two panels (left and right) 
+"copy to next pannel
+nmap MY "xyy:call GoOther()<CR>"xp
 nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
 tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
 
