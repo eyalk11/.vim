@@ -675,9 +675,6 @@ let g:textobj_function_no_default_key_mappings=1
 
 "Bookmarks
 "
-nmap <leader>gg :BookmarkGo<CR><Plug>(easymotion-bd-jk)
-nmap <leader>GG :BookmarkGo<CR>
-nmap <leader>ga :BookmarkAdd<CR>
 
 "targets
 "

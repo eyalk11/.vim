@@ -210,6 +210,7 @@ function! OnLoad()
 	
 	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
     if expand("%:p:t")=="special"
+        norm mb
         ":CtrlSpaceLoadWorkspace default
     endif 
 	if argc()==0

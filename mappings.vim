@@ -1879,6 +1879,21 @@ nmap <leader>dsp :call OpenSameFileInVSplit()<CR>
 nmap <leader>dD :call OpenSameFileInVSplit()<CR>:diffthis<CR>:call GoOther()<CR>:diffthis<CR>
 "nmap _A :lua require("actions-preview").code_actions()<CR>
 
+"function! SE()
+    "echom "xxx"
+    ""call feedkeys("\<CR>",'t')
+    "norm <CR>
+"endfunction 
+
+
+function! SE()
+    call feedkeys("\<CR>")
+endfunction 
+nmap <leader>gg :BookmarkGo<CR>:call EasyMotion#SolEnter(0,2,'call SE()')<CR>
+nmap <leader>GG :BookmarkGo<CR>
+nmap <leader>ga :BookmarkAdd<CR>
+nmap ? <c-a>j
+
 function! DDa()
            :lua vim.lsp.buf.code_action()
            :sleep 5

@@ -279,6 +279,7 @@ endfunction
 let g:last_copied=""
 let g:init=0
 function! TimerFunc(a)
+    try
     checktime
     ":profile dump 
     "updates shada files to keep current commands
@@ -307,6 +308,8 @@ function! TimerFunc(a)
         "let g:init=1
         "call ToggleVerbose() 
     endif
+catch
+endtry 
 
         ":profile stop
 
