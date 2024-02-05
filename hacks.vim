@@ -206,6 +206,10 @@ let g:inactivity_limit = 1  " max Insert mode inactivity before fail, in seconds
 let g:check_frequency = 200   "seconds between checks
 let g:special_insert = 0
 
+function! StartSpecialLines()
+    nmap my <Plug>(easymotion-sol-bd-jk)
+    au User EasyMotionPromptEnd <buffer> echo "aaa"
+endfunction 
 
 function! CheckSpecialInsert()
     if g:special_insert
@@ -268,6 +272,8 @@ autocmd InsertLeave * execute 'normal! mM'
 au ExitPre call StopTimerFunc() 
 function! StopTimerFunc()
     call timer_stop(g:autosaveWS)
+    call timer_stop(g:timerb)
+
 endfunction
 
 let g:last_copied=""
@@ -303,19 +309,29 @@ function! TimerFunc(a)
     endif
 
         ":profile stop
+
+endfunction
+
+function! TimerFuncB(a)
+    "echo "gg"
     "keep track of external clipboard using registers.
-    if g:last_copied!=@+ && @+!=@"
+    py3 import pyperclip
+    
+try 
+    if g:last_copied!=py3eval('pyperclip.paste()') && getreg('*')!=getreg('@')
         "from o to w
+        "echo "xx"
         for i in range(char2nr('v'),char2nr('o'),-1)
             exe "let @".nr2char(i+1)." = @". nr2char(i) 
         endfor
-call AddInsert(getreg("@+"))
+        "call AddInsert(getreg("@+"))
 
         let @o=@+
         let g:last_copied=@+
     endif
-
-endfunction
+catch
+endtry
+endfunction 
 
 function! SaveLastReg()
         if (exists("b:save_inserts")==0)

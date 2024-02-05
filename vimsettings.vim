@@ -333,7 +333,8 @@ endif
 		let g:lastdir=''
 	endif
 ":GitGutterEnable
-let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':0})
+let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
+let g:timerb=timer_start(3000,'TimerFuncB',{'repeat':-1})
 let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 "for solving ctags bug
