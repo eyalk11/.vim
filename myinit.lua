@@ -49,6 +49,7 @@ require("grammar-guard").init()
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
 
  require("nvim-lightbulb").setup({
+     ignore = { ft = { "python"}},
  autocmd = { enabled = true },
  action_kinds= {'quickfix', 'refactor'},
  number = {
@@ -90,19 +91,7 @@ telescope.setup {
       -- theme = { }, -- use own theme spec
       -- layout_config = { mirror=true }, -- mirror preview pane
     }
-  },
-   layout_config = { vertical = {
-  width = function(_, max_columns)
-  local percentage = 0.5
-  local max = 90
-  return math.min(math.floor(percentage * max_columns), max)
-end,
-height = function(_, _, max_lines)
-  local percentage = 0.5
-  local min = 70
-  return math.max(math.floor(percentage * max_lines), min)
-end
-} }}
+  }}
 --lua require'telescope.builtin'.lsp_workspace_symbols({layout_config = { vertical = {
 --width = function(_, max_columns)
 --local percentage = 0.5

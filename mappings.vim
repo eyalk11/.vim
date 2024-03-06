@@ -771,8 +771,8 @@ nnoremap <leader><bar> <bar>
 "nnoremap <silent> <bar> :call FZFOpen(':Buffers')<CR>
 "<M-Bslash>
 "<M-Bslash>
-nmap <bar> :LeaderfDisablePreview<CR>:Leaderf --popup buffer<CR>
-nmap <M-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer<CR>
+nmap <bar> :LeaderfDisablePreview<CR>:Leaderf --popup buffer --all<CR>
+nmap <M-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer --all<CR>
 "nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
 nnoremap <silent> m<bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
 "nmap <bar> :Telescope buffers<CR>
@@ -1724,8 +1724,7 @@ map Mr <leader>Gr
 "nmap mR :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
 "nmap <leader>gs :call DoTag()<CR>
-nmap gs :Telescope lsp_workspace_symbols<CR>
-lua require'telescope.builtin'.lsp_workspace_symbols({path_display={'tail'}})
+nmap gs :luafile c:\Users\ekarni\.vim\aa.v<CR>
 ""~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
 
