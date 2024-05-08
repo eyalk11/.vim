@@ -283,7 +283,7 @@ function! OnLoad()
 			"~/nvimMACfiles/macmap042.vim
 		endif 
         if g:on_ek_computer
-            nmap <leader>rv :exec "!start powershell ResetNeo"<CR>
+            nmap <leader>rv :wshada!<CR>:exec "!start powershell ResetNeo"<CR>
 
             "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
         endif

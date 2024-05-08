@@ -729,17 +729,28 @@ let g:sneak#use_ic_scs = 1
 "<Plug>(clever-f-T)                    *<Plug>(clever-f-T)*
 
 "<Plug>(clever-f-repeat-back)          *<Plug>(clever-f-repeat-back)*
-
+function! DisableT(a)
+    silent! nunmap <c-b>
+    nmap <c-b> <plug>ttt
+endfunction
+augroup lightspeed_active
+autocmd!
+autocmd User LightspeedEnter nmap <expr> <c-b> "<Plug>Lightspeed_,_ft"
+autocmd User LightspeedLeave let g:tm=timer_start(1000,'DisableT',{'repeat':1})
+augroup end
+"nmap <c-b> <Plug>Lightspeed_;_ft
+"nmap <expr> <c-b> "<Plug>Lightspeed_;_ft"
 
 "function! DisableT(a)
     "silent! nunmap t 
     "silent! nunmap T
     "nmap t :w<CR>
 "endfunction
+"let g:lightspeed_active =0
 "augroup lightspeed_active
 "autocmd!
-"autocmd User LightspeedEnter let g:lightspeed_active = 1  | nmap <nowait> t <esc>:call timer_pause(g:tm,1)<CR><Plug>Lightspeed_t | nmap T <esc><Plug>Lightspeed_T
-"autocmd User LightspeedLeave let g:tm=timer_start(10000,'DisableT',{'repeat':1})
+"autocmd User LightspeedEnter let g:lightspeed_active = 1  
+"autocmd User LightspeedLeave let g:lightspeed_active = 0 | :echo "b" 
 "augroup end
 "let g:lightspeed_last_motion = ''
 "augroup lightspeed_last_motion
@@ -747,6 +758,7 @@ let g:sneak#use_ic_scs = 1
     "autocmd User LightspeedEnter let g:lightspeed_last_motion = 'sx'
     "autocmd User LightspeedEnter let g:lightspeed_last_motion = 'ft'
 "augroup end
+"map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
 "map <expr> t g:lightspeed_last_motion == 'ft' ? "<Plug>Lightspeed_t" : "<Plug>Lightspeed_;_ft"
 "map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
   let g:qs_highlight_on_keys = []

@@ -254,7 +254,7 @@ function! FF()
     :call quick_scope#Wallhacks()
     return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
-imap <expr> <c-.> FF()
+"imap <expr> <c-.> FF()
 imap <expr> <c-'> FF()
 imap <c-/> <c-o><Plug>Lightspeed_s
 imap <M-/> <c-o><Plug>Lightspeed_S
@@ -278,6 +278,11 @@ omap <M-t> <Plug>(QuickScopet)
 "map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "map <Plug>cusnf :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
 "map <Plug>cusnF :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
+function! JJJ()
+    call feedkeys("mo\<tab>")
+endfunction 
+nmap <plug>ttt :call JJJ()<CR>
+nmap <expr> <c-b> "<plug>ttt"
 function! FFn()
     :call quick_scope#Wallhacks('t')
     return "\<Plug>Lightspeed_F"
@@ -294,8 +299,10 @@ nmap S <Plug>Lightspeed_S
 "nmap s <plug>Sneak_s
 "nmap S <plug>Sneak_S
 imap <c-t> <c-o>F
+imap <c-,> <c-o>f
 
-"Logical, since in normal we have s and S
+"Logical, scall v:lua.cmp.utils.feedkeys.call.run(27)
+"ince in normal we have s and S
 "imap <c-d> <c-o><Plug>(easymotion-bd-W)
 "nmap <c-d> <Plug>(easymotion-bd-W)
 "
@@ -706,12 +713,14 @@ nmap m( ysiW(
 nnoremap M, :CtrlP<CR>
 nnoremap m. :CtrlPClearCache<CR>:CtrlP<CR>
 nnoremap mj :set nohlsearch<CR>
-nnoremap mrn :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :set relativenumber <bar> endif<CR>
+nnoremap <leader>rn :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :set relativenumber <bar> endif<CR>
 " \y is copy to another register
 "don't use it to cut
 noremap x "_x
 "open command and search
 nmap m~ <c-a>c
+"use <c-o> to edit cmd in place
+nmap M~ :Leaderf cmdHistory<CR>
 nnoremap mQ q:k
 nnoremap <leader>~ ~
 nnoremap <M-Space> q:i
@@ -857,8 +866,8 @@ nnoremap <leader>Gl :silent! Glog<CR>
 nnoremap <leader>GL :0GcLog<CR>
 nnoremap <leader>Gg :Git grep<Space>
 nnoremap <leader>Gp :Git push<CR>
-nnoremap <leader>Gu :git push upstream<CR>
-nnoremap <leader>GU :git push -f upstream<CR>
+nnoremap <leader>Gu :Git push upstream<CR>
+nnoremap <leader>GU :Git push -f upstream<CR>
 nnoremap <leader>GP :Git push --force<CR>
 nnoremap <leader>Gb :Git branch<Space>
 nnoremap <leader>Go :Git checkout<Space>
@@ -943,6 +952,7 @@ function! CloseVspIfNeed()
         endif
         call win_gotoid(win_id)
         :close
+        call CloseVspIfNeed()
     endif
 endfunction
 function! VspIfNeed()
@@ -964,14 +974,31 @@ function! OnRight()
     let k=getwininfo(win_getid())[0]
     return (k['wincol']!=1)
 endfunction 
+function! SwitchKeepRight()
 
+    if OnRight() 
+        call GoOther() 
+    endif
+    ":close
+    :call feedkeys('mo')
+endfunction 
+function! LfFil(a)
+    :echom " :LeaderfFile ". a:a
+
+
+    :exec " :LeaderfFile ". a:a
+
+endfunction
 "opens file
 nmap <leader>mg :call CloseVspIfNeed()<CR>:vnew<CR><leader>gf
 nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
 nmap mo :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
-nmap <leader>og :call VspIfNeed()<CR>:let g:Lf_JumpToExistingWindow = 0<CR>:LeaderfFile<CR>
-nmap <leader>OF :call VspIfNeed()<CR>:let g:Lf_JumpToExistingWindow = 0<CR>mm
-nmap <leader>mf :call VspIfNeed()<CR>mm
+"<c-b> the same with tab
+"swaps right and left window
+nmap mO <c-w><c-r> 
+nmap <leader>og :call CloseVspIfNeed()<CR>:vnew<CR>:let g:Lf_JumpToExistingWindow = 0<CR>:LeaderfFile<CR>
+nmap <leader>OF :call CloseVspIfNeed()<CR>:vnew<CR>:let g:Lf_JumpToExistingWindow = 0<CR>mm
+nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>:call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil'),'options': '-m'})<CR>
 "open python
 "function! findbufjup
     "o
@@ -1686,11 +1713,11 @@ endif
 
 endfunction
 
-function! Gut(bb) 
-exec 'cd '.expand('%:p:h')
-:GutentagsUpdate
-endfunction 
-au filetype * command! -buffer GutenTagRun :call gutentags#setup_gutentags() <bar> :call timer_start(15,'Gut')<CR>
+"function! Gut(bb) 
+"exec 'cd '.expand('%:p:h')
+":GutentagsUpdate
+"endfunction 
+"au filetype * command! -buffer GutenTagRun :call gutentags#setup_gutentags() <bar> :call timer_start(15,'Gut')<CR>
 command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
 command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$",0 )<CR>
 command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
@@ -1898,3 +1925,58 @@ function! DDa()
            :sleep 5
            :call feedkeys('4','t')
        endfunction
+
+
+vnoremap <leader>gR "xy:call feedkeys( ":LfGitGen $\<lt>CR>". @x . "\<lt>CR>")<CR>
+
+nnoremap <leader>XD :lua vim.diagnostic.setloclist()<CR>
+
+"check file
+nnoremap <leader>xf :lua vim.diagnostic.setloclist()<CR>:Lfilter /syntax\\|is not defined/<CR>
+
+"restore cfilter
+nnoremap <leader>XR :lolder<CR>
+
+ 
+
+"to paste with formatting
+
+imap <c-i> <c-o>:norm mP<CR>
+
+nmap <leader>dx :diffthis<CR>:call GoOther()<CR>:diffthis<CR>
+
+
+
+nnoremap <leader>Grc :Git rebase --continue<CR>
+
+nnoremap <leader>Gra :Git rebase --abort<CR>
+
+nnoremap <leader>Gw :Gwrite<CR>
+
+nnoremap <leader>GA :Git commit  -a --amend --no-verify --no-edit<CR>
+
+nnoremap <leader>Gcv :Git commit -v -q<CR>
+
+ 
+
+nnoremap msS :%s/\s//g<CR>
+
+ 
+
+"remove dumplicate lines
+
+nnoremap msd :silent! %s/\r\r/\r/g<CR>:silent! %s/\n\n/\r/g<CR>
+
+ 
+
+nmap mst :s/ //g<CR>
+
+autocmd FileType * inoremap <expr> <m-]> IsRegular() ? "<esc><Plug>Lightspeed_s" : "<c-]>"
+
+nmap I :call StartSpecialInsert()<CR>i
+
+nnoremap <leader>I I
+
+nmap A :call StartSpecialInsert()<CR>i
+
+nnoremap <leader>A A

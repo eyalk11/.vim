@@ -7,6 +7,33 @@ function _G.set_workspace_dir(dir)
         end
     end
 end
+-- Print contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+function _G.tprint (tbl, indent)
+  if not indent then indent = 0 end
+  local toprint = string.rep(" ", indent) .. "{\r\n"
+  indent = indent + 2 
+  for k, v in pairs(tbl) do
+    toprint = toprint .. string.rep(" ", indent)
+    if (type(k) == "number") then
+      toprint = toprint .. "[" .. k .. "] = "
+    elseif (type(k) == "string") then
+      toprint = toprint  .. k ..  "= "   
+    end
+    if (type(v) == "number") then
+      toprint = toprint .. v .. ",\r\n"
+    elseif (type(v) == "string") then
+      toprint = toprint .. "\"" .. v .. "\",\r\n"
+    elseif (type(v) == "table") then
+      toprint = toprint .. tprint(v, indent + 2) .. ",\r\n"
+    else
+      toprint = toprint .. "\"" .. tostring(v) .. "\",\r\n"
+    end
+  end
+  toprint = toprint .. string.rep(" ", indent-2) .. "}"
+  print(toprint)
+  --return toprint
+end
 
 --function _G.set_all_workspace_dir(dir)
     --for t in vim.lsp.buf.list_workspace_folders() do
@@ -253,7 +280,16 @@ cmp.setup({
     
 end ),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-  }),
+    ['<C-CR>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+
+        cmp.confirm({ select = true })
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true) 
+        else
+            fallback()
+        end
+    end) 
+}),
   sources = cmp.config.sources(
 { { name = 'buffer', priority = 1 },
                 { name = 'path' , proiority=5 },
@@ -590,6 +626,8 @@ wk=require('which-key')
 wk.setup({plugins = {presets = { operators = false  }}})
 wk.register({
     p = {
+    prefix = "<leader>",
+    mode = "v",
         name = "ChatGPT",
         e = {
             function()
@@ -598,9 +636,6 @@ wk.register({
             "Edit with instructions",
         },
     },
-}, {
-    prefix = "<leader>",
-    mode = "v",
 })
 --require("transparent").setup({
     --groups = { -- table: default groups
