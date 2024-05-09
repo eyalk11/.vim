@@ -42,7 +42,8 @@ endif
 "source ~/.vim2/autoload/repmo.vim
 "
 "
-if g:minimal == 0
+"if g:minimal == 0
+if 1 == 0
 
 call plug#begin('~/.vim/plugged')
 Plug 'aznhe21/actions-preview.nvim'
@@ -242,10 +243,10 @@ Plug 'ipod825/vim-bookmark'
 Plug 'beeender/Comrade'
 call plug#end()
 else
-    call plug#begin('~/.vim/plugged')
-    exe "Plug ". g:onlyplug
-	Plug 'Houl/vim-repmo' "repeat moves
-    call plug#end()
+"    call plug#begin('~/.vim/plugged')
+"    exe "Plug ". g:onlyplug
+"	Plug 'Houl/vim-repmo' "repeat moves
+"    call plug#end()
 endif
 "Plug 'ivanov/vim-ipython'
 "Plug 'vim-scripts/mru.vim'
@@ -277,12 +278,12 @@ endif
 "Plug 'scrooloose/nerdtree'
 "Plug 'terryma/vim-multiple-cursors'
 "Plug 'davidhalter/jedi-vim' " Python autocomplete
-Plug 'Houl/vim-repmo' "repeat moves
+"Plug 'Houl/vim-repmo' "repeat moves
 "Plug 'sjl/gundo.vim'
-Plug 'w0rp/ale' " lint
+"Plug 'w0rp/ale' " lint
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
-Plug 'powerman/vim-plugin-AnsiEsc'
+"Plug 'powerman/vim-plugin-AnsiEsc'
 "Plug 'iamcco/vim-language-server'
 "Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 "Plug 'vim-jp/syntax-vim-ex'
@@ -300,6 +301,8 @@ endif
 " Plug 'severin-lemaignan/vim-minimap'
 
 function! Runit() 
+exe 'source' . " " . g:vimloc . "\\newplug.vim"
+exe 'source' . " " . g:vimloc . "\\t.lua"
 exe 'source' . " " . g:vimloc    . "\\secret.vim"
     
 exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
@@ -317,8 +320,15 @@ endfunction
 if g:minimal==0
     call Runit()
 else
-    exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
+    exe 'source' . " " . g:vimloc . "\\newplug.vim"
+    exe 'source' . " " . g:vimloc . "\\t.lua"
+      Lazy load airlinv
+      Lazy load quick-scopv
+	"exe 'source' . " " . g:vimloc . "\\hacks.vim"
+	"call CustomSources("newplug.vim") 
+	"exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
 	exe 'source' . " " . g:vimloc . "\\mappings.vim"
+	exe 
 endif 
 if g:on_ek_computer 
     "py3 exec(open('c:\\Users\\ekarni\\mypy\\voicerec.py','rt').read())

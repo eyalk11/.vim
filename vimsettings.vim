@@ -166,14 +166,26 @@ endfunction
 function! SetFont()
     if exists('g:GuiLoaded')
         :GuiFont! Fira\ Code:h12
+        set guifont=Fira\ Code:h12
     endif
 endfunction
+":GuiTabline 0
 function! OnLoad()
+    "sleev 500
+    
+    "Lazy reload vim-airline
+    "Lazy reload vim-arpeggio
+    "Lazy reload quic-kscope 
+    
+    sleep 700ms
     call PyAS()
-    silent !copy ~\.vim\profile ~\.vim\profile2
-    silent !del ~\.vim\profile 
-    "call StartProfile()
-    call DefineMapping()
+    "silent !copy ~\.vim\profile ~\.vim\profile2
+    "silent !del ~\.vim\profile
+
+
+
+
+    :call DefineMapping()
     set ambiwidth=single
     :silent Arpeggio inoremap jk  <Esc>
     :silent   Arpeggio inoremap kl  <Esc>
@@ -257,31 +269,32 @@ function! OnLoad()
 	"endif
 	"nvimQT
 	
-	if exists('g:GuiLoaded') || exists(':GonvimWorkspaceNew')
+let g:GuiLoaded=1  
         "echom "exists"
 		"set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h12
         "set guifont=Inconsolata-dz\ for\ powerline:h14
-		if !exists(':GonvimWorkspaceNew')
+		"if !exists(':GonvimWorkspaceNew')
 			":GuiTabline 0
-			"source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
-			"it started to act normal
-			imap <M-ß> :w<CR>
-			nmap <D-W> :q<CR>
-			nmap <D-w> :q<CR>
-			nnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>
-			inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
-			vnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
-			if g:on_ek_computer
+			""source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
+			""it started to act normal
+			"imap <M-ß> :w<CR>
+			"nmap <D-W> :q<CR>
+			"nmap <D-w> :q<CR>
+			"nnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>
+			"inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
+			"vnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
+			"if g:on_ek_computer
 
 
-                "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-				"nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
-				"nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
-				"nmap <leader>rv mwd:sleep 1<CR>:exec '!start \"powershell  ps \| Where-Object -Property ProcessName  -Like \"*goneovim*\" \| \%{Write-Host $_.Id ,$_.ProcessName ;$_.Kill()} ;  C:\Users\ekarni\Downloads\Goneovim-v0.4.12-win64\goneovim.exe\"'
-			endif
-		else
-			"~/nvimMACfiles/macmap042.vim
-		endif 
+                ""source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
+				""nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
+				""nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
+				""nmap <leader>rv mwd:sleep 1<CR>:exec '!start \"powershell  ps \| Where-Object -Property ProcessName  -Like \"*goneovim*\" \| \%{Write-Host $_.Id ,$_.ProcessName ;$_.Kill()} ;  C:\Users\ekarni\Downloads\Goneovim-v0.4.12-win64\goneovim.exe\"'
+			"endif
+		"else
+			""~/nvimMACfiles/macmap042.vim
+		"endif 
+    if 1
         if g:on_ek_computer
             nmap <leader>rv :wshada!<CR>:exec "!start powershell ResetNeo"<CR>
 
@@ -338,12 +351,26 @@ let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
 let g:timerb=timer_start(3000,'TimerFuncB',{'repeat':-1})
 let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
+let tt = timer_start(1000,'LazyIt',{'repeat':1})
 "for solving ctags bug
 "au! GonvimAu OptionSet
 set mouse=a
 au! gutentags_detect 
 set ut=3000
 endfunction
+
+function! LazyIt(a)
+    "let airline#extensions#tabline#enabled=0 
+    "augroup airline
+        "au VimLeave echo "a"
+    "augroup end
+colorscheme onedark
+sleep 500ms
+GuiTabline 0
+"Lazy load vim-airline
+Lazy reload quick-scope
+norm! \<esc>
+endfunction 
 
 function! OnEnd()
 	 "call ctrlspace#workspaces#SaveWorkspace("default")

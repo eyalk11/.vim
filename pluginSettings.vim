@@ -13,7 +13,7 @@ if executable('pyls')
         \ })
 endif
 "packadd! syntax-vim-ex asdasd
-colorscheme onedark
+"colorscheme onedark
 
 if or(or(has('python_dynamic'),has('python')),has('python3'))
 " powerline

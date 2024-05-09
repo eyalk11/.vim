@@ -629,7 +629,7 @@ function! Exec(cmd)
     exec printf('silent %s',a:cmd)
     redir END
     tabnew
-    norm "xp
+    norm! "xp
 endfunction
 
 
@@ -1004,3 +1004,22 @@ function! ReplaceCasing(word,ow)
      exec ":%s/\\c". a:ow. "/" . a:word . "/g"
      exec ":%s/\\c". a:word. "/" . a:word . "/g"
 endfunction 
+function! PathExpand(path)
+    return fnameescape(expand(a:path))
+endfunction
+"not clear
+function! SourceCustoms(...)
+    for vimfile in a:000
+        try
+            " Converts the path properly for win or unix
+            exec 'source ' . g:vimloc .  expand('/'. vimfile)
+        catch
+            echom "Exception from" v:throwpoint ":"
+            echom v:exception
+            if has('nvim')
+                lua if debug.stacktrace then print(debug.stacktrace()) end
+            endif
+            echom ""
+        endtry
+    endfor
+endfunction
