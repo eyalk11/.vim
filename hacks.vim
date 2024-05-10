@@ -279,6 +279,10 @@ endfunction
 let g:last_copied=""
 let g:init=0
 function! TimerFunc(a)
+ if mode() != 'n' ||  getcmdwintype() != ''
+     return
+endif 
+
     try
     checktime
     ":profile dump 

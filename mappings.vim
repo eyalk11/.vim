@@ -255,14 +255,27 @@ function! FF()
     return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
 "imap <expr> <c-.> FF()
+
+"move to both directions 
 imap <expr> <c-'> FF()
-imap <c-/> <c-o><Plug>Lightspeed_s
-imap <M-/> <c-o><Plug>Lightspeed_S
+
+"move forward 
+imap <c-/> <c-o><Plug>Lightspeed_f
+"move la
+imap <M-/> <c-o><Plug>Lightspeed_T
+imap <c-\> <c-o>f
+imap <c-p> <c-o>T
+imap <c-t> <c-o>t 
+imap <c-,> <c-o>f
+
 autocmd FileType * inoremap <expr> <c-]> IsRegular() ? "<c-o><Plug>Lightspeed_s" : "<c-]>"
 autocmd FileType * nnoremap <expr> <c-]> IsRegular() ? "<Plug>Lightspeed_s" : "<c-]>"
 autocmd FileType * nnoremap <expr>  m<c-]> <c-]>
 autocmd FileType * inoremap <expr> <c-[> IsRegular() ? "<c-o><Plug>Lightspeed_S" : "<c-[>"
 autocmd FileType * nnoremap <expr> <c-[> IsRegular() ? "<Plug>Lightspeed_S" : "<c-[>"
+
+autocmd FileType * inoremap <expr> <m-]> IsRegular() ? "<esc><Plug>Lightspeed_s" : "<m-]>"
+autocmd FileType * inoremap <expr> <m-[> IsRegular() ? "<esc><Plug>Lightspeed_S" : "<m-[>"
 
 
 "imap <tab> <c-o><Plug>Lightspeed_s
@@ -298,8 +311,6 @@ nmap s <Plug>Lightspeed_s
 nmap S <Plug>Lightspeed_S
 "nmap s <plug>Sneak_s
 "nmap S <plug>Sneak_S
-imap <c-t> <c-o>F
-imap <c-,> <c-o>f
 
 "Logical, scall v:lua.cmp.utils.feedkeys.call.run(27)
 "ince in normal we have s and S
@@ -703,7 +714,7 @@ vmap M Y
 "to find small word
 "coc#config
 "copy entire line no new line
-nnoremap my yy:let @+=@+[:len(@+)-2]<CR>
+nnoremap mY yy:let @+=@+[:len(@+)-2]<CR>
 "nnoremap <C-P> :CtrlPCurWD<CR>
 nmap m' ysiW'
 nmap m{ ysiW{
@@ -1219,9 +1230,9 @@ vnoremap c "zdi
 nnoremap <C-.> @:
 
 
-vnoremap <leader>p "zp
-nnoremap <leader>p "zp
-nnoremap <leader>P "zpi
+"vnoremap <leader>p "zp
+"nnoremap <leader>p "zp
+"nnoremap <leader>P "zpi
 
 " \y is copy to another register
 noremap <leader>yy "zyy
@@ -1289,8 +1300,10 @@ nmap <c-F5> mz
 "nmap mz <CMD>:TREPLSendLine<CR>
 "vmap mz <CMD>:TREPLSendSelection<CR>
 "move between two panels (left and right) 
-"copy to next pannel
-nmap MY "xyy:call GoOther()<CR>"xp
+"copy to other split
+nmap my "xyy:call GoOther()<CR>"xp
+vmap my "xy:call GoOther()<CR>"xp
+
 nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
 tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
 
@@ -1971,7 +1984,6 @@ nnoremap msd :silent! %s/\r\r/\r/g<CR>:silent! %s/\n\n/\r/g<CR>
 
 nmap mst :s/ //g<CR>
 
-autocmd FileType * inoremap <expr> <m-]> IsRegular() ? "<esc><Plug>Lightspeed_s" : "<c-]>"
 
 nmap I :call StartSpecialInsert()<CR>i
 

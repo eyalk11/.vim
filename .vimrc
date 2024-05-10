@@ -118,13 +118,11 @@ Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'stevearc/aerial.nvim'
 "Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/cmp-nvim-lsp'
 "Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
+"Plug 'hrsh7th/cmp-path'
 "Plug 'ray-x/cmp-treesitter'
-Plug 'uga-rosa/cmp-dictionary'
-Plug 'hrsh7th/nvim-cmp', { 'branch': 'main'}
+"Plug 'uga-rosa/cmp-dictionary'
+"Plug 'hrsh7th/nvim-cmp', { 'branch': 'main'}
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...
 Plug 'justinmk/vim-sneak'

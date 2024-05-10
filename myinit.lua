@@ -764,6 +764,8 @@ sort = {
       prefix = "[FILTER]: ",
       always_show_folders = false,
   }})
+  
+  
 
 require('telescope').load_extension('git_grep')
 --require('telescope').load_extension('projects')
