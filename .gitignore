@@ -1,4 +1,4 @@
-plugged/
+plugged/**/
 undo/
 .netrwhist
 secret.vim

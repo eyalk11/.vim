@@ -1,17 +1,21 @@
+vim.opt.rtp:prepend( vim.fn.expand( '~/.vim' ))
+vim.opt.rtp:prepend( vim.fn.expand( '~/.vim/plugged') ) 
+vim.opt.rtp:prepend( vim.fn.expand( '~/.vim/plugged/plugins') ) 
 require("lazy").setup(
 
 {
+    moduledir= 'c:\\users\\ekarni\\.vim\\',
   root = vim.g.pluginInstallPath,  -- share plugin folder with Plug
   defaults = {
       lazy = false, -- should plugins be lazy-loaded?
       version = false 
        
-  }, performance = { rtp = {reset_packpath = true, paths = { '~/.vim'  }}},
+  },
+--, performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
   spec = {
-      {import="plugged.noice"},
-      {import="noice"},
-      {import="noice.lua"},
-      {import="plugged"},
+      {import="plugged/noice"},
+      --{import="plugins"},
+      --{import="noice"},
     {"equalsraf/neovim-gui-shim",version="*", config = function () vim.cmd("colorscheme onedark") end,priority=10000},
     {'vim-airline/vim-airline',priority=1000    },
     --{'vim-airline/vim-airline',priority=3},

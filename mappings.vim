@@ -1,14 +1,13 @@
-
 "tabs
 let i = 1
 while i <= 9
-    execute 'nnoremap <Leader>' . i . ' :' . i . 'tabn<CR>'
+    execute 'nnoremap <Leader>' . i . ' <CMD>' . i . 'tabn<CR>'
     let i = i + 1
 endwhile
 
 
 "mouse 
-"nmap <MiddleMouse> :redraw<CR>
+"<CMD>redraw<CR>
 "nmap <MiddleMouse> i
 "imap <MiddleMouse> <ESC>
 "
@@ -23,7 +22,7 @@ nmap <Home> ^
 "replace vanila
 nnoremap <leader>& &
 "get start of (next) string
-"nmap <expr> & (getline('.')[col('.')-1]=='"' <bar><bar> getline('.')[col('.')-1]== "'") ? "%" : "viqo\<ESC>h"
+"nmap <expr> & (getline('.')[col('.')-1]=='"a' <bar><bar> getline('.')[col('.')-1]== "'") ? "%" : "viqo\<ESC>h"
 "nmap <expr> z& (getline('.')[col('.')-1]=='"' <bar><bar> getline('.')[col('.')-1]== "'") ? "%" : "vilq\<ESC>l"
 
 nmap <expr> <Plug>NextQ (getline('.')[col('.')-1]=='"' <bar><bar> getline('.')[col('.')-1]== "'") ? "viq\<ESC>llviqo\<ESC>h" : "viqo\<ESC>h"
@@ -44,21 +43,21 @@ nnoremap <leader>' ``
 
 
 "recall command
-noremap m? :set incsearch<CR>:set hlsearch<CR>?
+noremap m? <CMD>set incsearch<CR><CMD>set hlsearch<CR>?
 function! ToggleSearch()
-    if &incsearch
-        set noincsearch
-        set nohlsearch
-    else
-        set incsearch
-        set hlsearch
-    endif
+if &incsearch
+    set noincsearch
+    set nohlsearch
+else
+    set incsearch
+    set hlsearch
+endif
 endfunction
 
-nnoremap mS :call ToggleSearch()<CR>
+nnoremap mS <CMD>call ToggleSearch()<CR>
 ":nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap ( :exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap ) :exec "normal a".nr2char(getchar())."\e"<CR>
+:nmap ( <CMD>exec "normal i".nr2char(getchar())."\e"<CR>
+:nmap ) <CMD>exec "normal a".nr2char(getchar())."\e"<CR>
 :nnoremap [( (<CR>
 :nnoremap [9 (<CR>
 :nnoremap [) (<CR>
@@ -78,6 +77,7 @@ nmap <M-f> <Plug>(easymotion-s2)
 "nnoremap zq q
 "Alt - q is the new macro recording ....
 "nnoremap <M-q> q
+
 "nmap s <Plug>(easymotion-s)
 "nmap S <Plug>(easymotion-s2)
 "endif
@@ -91,7 +91,7 @@ vmap U <Plug>(easymotion-bd-tl)
 vnoremap <leader>U U
 "vnoremap <leader>U U
 "we use t for saving
-nmap <nowait> t :let g:init=1<CR>:w<CR>
+nmap <nowait> t <CMD>let g:init=1<CR><CMD>w<CR>
 
 " insert a single char
 nnoremap <leader>` `
@@ -105,8 +105,9 @@ nnoremap <leader>F F
 "end only until the end and not one more
 vnoremap <end> $h
 
-nnoremap , :LeaderfDisablePreview<CR>:Leaderf line --popup<CR>
-nmap m, :LeaderfEnablePreview<CR>:Leaderf line --popup<CR>
+"nunmap ,
+nmap <nowait> , <CMD>LeaderfDisablePreview<CR><CMD>Leaderf line --popup<CR>
+nmap m, <CMD>LeaderfEnablePreview<CR><CMD>Leaderf line --popup<CR>
 "nnoremap <leader><c-t> <c-t>
 
 "wroks with all letters but N
@@ -114,34 +115,34 @@ nmap m, :LeaderfEnablePreview<CR>:Leaderf line --popup<CR>
 
 "
 " _ mappings 
-noremap _g :diffget<CR>
-noremap _p :diffput<CR>
-nmap _u :LastWindow<CR>
+noremap _g <CMD>diffget<CR>
+noremap _p <CMD>diffput<CR>
+nmap _u <CMD>LastWindow<CR>
 
 if g:on_ek_computer
-    nmap _U :Telescope my_last_windows<CR>
+nmap _U <CMD>Telescope my_last_windows<CR>
 endif
-nmap _. :cd ..<CR>
-nmap _- :cd -<CR>
+nmap _. <CMD>cd ..<CR>
+nmap _- <CMD>cd -<CR>
 "previous window
-nmap _P :wprevious<CR>
-nmap _N :wnext<CR>
-nmap _wo :WorkspacesOpen<CR>
+nmap _P <CMD>wprevious<CR>
+nmap _N <CMD>wnext<CR>
+nmap _wo <CMD>WorkspacesOpen<CR>
 
 "do comment out
 map __ <leader>Cc
 "uncomment
 map _+ <leader>Cu
 "Alternative buffer
-map _# :e #<CR>
+map _# <CMD>e #<CR>
 
-"Previous and next visited buffer \<c-o> of course
+"Previous and next visited buffer <c-o> of course
 "nmap <c-[> <bar><DOWN><CR>
 "nmap <M-[> <bar><UP><CR>
 
-nmap _t :exe "tabn ".g:lasttab<CR>
-noremap _b :bnext<CR>
-noremap _B :bprev<CR>
+nmap _t <CMD>exe "tabn ".g:lasttab<CR>
+noremap _b <CMD>bnext<CR>
+noremap _B <CMD>bprev<CR>
 
 "Grammerous M- mappings
 "imap <M-Down> <esc>
@@ -149,29 +150,34 @@ noremap _B :bprev<CR>
 "imap <M-Left> <esc>
 "imap <M-Right> <esc>
 
-"nmap <M-Down> <Plug>(grammarous-move-to-next-error)	
+"nmap <M-Down> <Plug>(grammarous-move-to-next-error)    
 "nmap <M-Up> <Plug>(grammarous-move-to-previous-error)
-"nmap <M-Left> <Plug>(grammarous-open-info-window)	
-"nmap <M-Right> <Plug>(grammarous-fixit)	
-
+"nmap <M-Left> <Plug>(grammarous-open-info-window)      
+"nmap <M-Right> <Plug>(grammarous-fixit)        
 
 "F keys
-noremap <F1> :execute ":help " . expand('<cword>')<CR>
+noremap <F1> <CMD>execute ":help " . expand('<cword>')<CR>
 "execut under cursor
-nnoremap <F2> :exe getline(".")<CR>
-vnoremap <F2> "xy:@x<CR>
+
+
+
+nnoremap <F2> <CMD>exe getline(".")<CR>
+nmap <S-F2> <CMD>exec "lua ". getline(".")<CR>
+vmap <S-F2> "xy<CMD>exec "lua ".@x<CR>
+vmap <F6> "xy<CMD>exec "lua " . "print(" . @x . ")"<CR>
+vnoremap <F2> "xy<CMD>@x<CR>
 
 "nmap <leader><F5> q:i<esc>
-noremap <S-F3> :call Goprev()<CR>
-noremap <S-F4> :call Gonext()<CR>
+noremap <S-F3> <CMD>call Goprev()<CR>
+noremap <S-F4> <CMD>call Gonext()<CR>
 nnoremap <S-F6> "xddkk"xp
 nnoremap <S-F7> "xyy"xp
 nnoremap <S-F8> "xdd"xp
 
 vmap <F3> "xygv:TREPLSendSelection<CR>
-nmap <F3> :call AddInsert(getline('.'))<CR>:TREPLSendLine<CR>
-nmap <F4> :exec("Texec clear\r\n")<CR>:exec("Texec &" .expand("%:p") . "\r\n")<CR>
-nmap <F8> :exec("Texec clear\r\n")<CR>
+nmap <F3> <CMD>call AddInsert(getline('.'))<CR><CMD>TREPLSendLine<CR>
+nmap <F4> <CMD>exec("Texec clear\r\n")<CR><CMD>exec("Texec &" .expand("%:p") . "\r\n")<CR>
+nmap <F8> <CMD>exec("Texec clear\r\n")<CR>
 
 "nmap <F3>        <Plug>VimspectorStepOut
 "nmap <F4>        :call vimspector#Launch()<CR>
@@ -195,8 +201,8 @@ map <silent> <F5>         <Plug>(IPy-Run)
 nmap <S-F5> <leader>rf
 " or \rf
 
-nmap <F13> :call StartSpecialInsert()<CR>i
-nmap <F12> :call StartSpecialInsert()<CR>i
+nmap <F13> <CMD>call StartSpecialInsert()<CR>i
+nmap <F12> <CMD>call StartSpecialInsert()<CR>i
 imap <F12> <c-o>
 imap <F13> <ESC>
 
@@ -209,14 +215,14 @@ imap <F13> <ESC>
 "
 
 "faster
-nnoremap <c-,> :Leaderf line --recall<CR>
+nnoremap <c-,> <CMD>Leaderf line --recall<CR>
 
 
 "nmap <C--> <Plug>Sneak_,
 "nmap <C-=> <Plug>Sneak_;
 nmap <C-=> <Plug>(easymotion-next)
 nmap <C--> <Plug>(easymotion-prev)
-nmap <c-_> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
+nmap <c-_> <CMD>let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
 
 
 
@@ -227,16 +233,17 @@ nmap <c-_> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
 "nmap <c-U> <c-b>w
 
 "if ($TERM=="xterm-256color")
-	""only on nvim
-	"nmap  <C-/> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
+    ""only on nvim
+    "nmap  <C-/> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
 "endif
 "map <C-CR> <F13>
 "imap <C-CR> <F13>
 "imap <S-CR> <c-o>
 function! Teasy()
-    if EasyMotion#SL(1,0,2)==0
-        normal l
-    endif 
+if EasyMotion#SL(1,0,2)==0
+
+normal l
+endif 
 endfunction
 
 
@@ -251,8 +258,8 @@ imap <silent><script><expr> <M-j> copilot#Next()
 let g:copilot_no_tab_map = v:true
 
 function! FF()
-    :call quick_scope#Wallhacks()
-    return "\<c-o>\<Plug>(easymotion-sl)"
+<CMD>call quick_scope#Wallhacks()
+return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
 "imap <expr> <c-.> FF()
 
@@ -281,30 +288,30 @@ autocmd FileType * inoremap <expr> <m-[> IsRegular() ? "<esc><Plug>Lightspeed_S"
 "imap <tab> <c-o><Plug>Lightspeed_s
 "imap <S-tab> <c-o><Plug>L`ightspeed_S
 "nmap <M-/> <Plug>(easymotion-tl)
-"imap <M-t> <c-o>:call Teasy()<CR> 
+"imap <M-t> <c-o><CMD>call Teasy()<CR> 
 nmap <M-t> <Plug>(easymotion-bd-tl)
 imap <M-t> <c-o><Plug>(QuickScopet)
 nmap <M-t> <Plug>(QuickScopet)
 xmap <M-t> <Plug>(QuickScopet)
 omap <M-t> <Plug>(QuickScopet)
 "this is untill"
-"map <Plug>cusF :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
-"map <Plug>cusnf :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
-"map <Plug>cusnF :call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
+"map <Plug>cusF <CMD>call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
+"map <Plug>cusnf <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
+"map <Plug>cusnF <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
 function! JJJ()
-    call feedkeys("mo\<tab>")
+call feedkeys("mo\<C-B>")
 endfunction 
-nmap <plug>ttt :call JJJ()<CR>
+nmap <plug>ttt <CMD>call JJJ()<CR>
 nmap <expr> <c-b> "<plug>ttt"
 function! FFn()
-    :call quick_scope#Wallhacks('t')
-    return "\<Plug>Lightspeed_F"
+<CMD>call quick_scope#Wallhacks('t')
+return "\<Plug>Lightspeed_F"
 endfunction
 nmap <expr> f Ffn()
 nmap <expr> F FFn()
 function! Ffn()
-    :call quick_scope#Wallhacks('f')
-    return "\<Plug>Lightspeed_f"
+<CMD>call quick_scope#Wallhacks('f')
+return "\<Plug>Lightspeed_f"
 endfunction
 "nmap F <Plug>cusF
 nmap s <Plug>Lightspeed_s
@@ -315,6 +322,7 @@ nmap S <Plug>Lightspeed_S
 "Logical, scall v:lua.cmp.utils.feedkeys.call.run(27)
 "ince in normal we have s and S
 "imap <c-d> <c-o><Plug>(easymotion-bd-W)
+
 "nmap <c-d> <Plug>(easymotion-bd-W)
 "
 "beginning of words
@@ -342,11 +350,8 @@ nmap ? <Plug>(easymotion-sl)
 "<M-t>
 
 "finds the best next item and complete up to it. in Vim!
-":imap <c-,> <c-X><c-V>
+"<CMD>imap <c-,> <c-X><c-V>
 "imap <c-,> <c-o><Plug>(easymotion-bd-t)
-
-
-
 
 "imap <c-c> <c-o><Plug>(easymotion-dineanywhere) 
 "nmap <c-c> <Plug>(easymotion-sineanywhere) 
@@ -355,14 +360,13 @@ nmap ? <Plug>(easymotion-sl)
 "nnoremap <c-y> <c-u>
 "nmap <c-t> <Plug>(easymotion-sl)
 
-
-nmap <c-s> :let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
+nmap <c-s> <CMD>let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
 nmap <m-s> <Plug>(easymotion-tn)
 vmap <c-s> <Plug>(easymotion-s2)
 
 "search help , lift saving
 nmap <c-f> mH
-"nmap <c-g> :call CocActionAsync("doHover")<cr>
+"nmap <c-g> <CMD>call CocActionAsync("doHover")<cr>
 
 nmap <C-e> mn-
 
@@ -389,12 +393,13 @@ imap <M-Up> <c-h>
 imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "inoremap <c-k> <Cmd>call feedkeys("\<c-L>",'n')<CR>
 "completes one char or  from dict 
-inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o>:call RecallInserts(0)<CR>"
-"inoremap <expr> <C-b>  pumvisible()? "<c-b>" : "<c-o>:call RecallInserts(0)<CR>"
-imap <c-b> <c-o>:call RecallInserts(0)<CR>
+inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o><CMD>call RecallInserts(0)<CR>"
+"inoremap <expr> <C-b>  pumvisible()? "<c-b>" : "<c-o><CMD>call RecallInserts(0)<CR>"
+imap <c-b> <c-o><CMD>call RecallInserts(0)<CR>
 
 
 "does chars 
+
 inoremap <m-c-k> <c-x><c-k>
 inoremap <c-f> <c-x><c-n>
 "imap <c-z> <c-f><up><down>
@@ -402,19 +407,17 @@ inoremap <c-f> <c-x><c-n>
 "Greatness , completes the text with one type
 "Greatness
 
-
-
 "function! DoCz()
-    "if pumvisible() 
-        "if complete_info()['mode']=='keyword'
-            "return complete_info()['selected'] ==-1 ?  feedkeys("\<c-r>SuperTab('n')") :  feedkeys("\<tab>\<s-tab>\<c-f>\<tab>") 
-        "else 
-            "return 0
-            ""return complete_info()['selected'] ==-1 ?  feedkeys("\<c-f>\<tab>",'t') :  feedkeys("\<c-f>") 
-        "endif 
+"if pumvisible() 
+    "if complete_info()['mode']=='keyword'
+        "return complete_info()['selected'] ==-1 ?  feedkeys("\<c-r>SuperTab('n')") :  feedkeys("\<tab>\<s-tab>\<c-f>\<tab>") 
     "else 
-        "return  feedkeys("\<c-f>",'t')
+        "return 0
+        ""return complete_info()['selected'] ==-1 ?  feedkeys("\<c-f>\<tab>",'t') :  feedkeys("\<c-f>") 
     "endif 
+"else 
+    "return  feedkeys("\<c-f>",'t')
+"endif 
 "endfunction 
 
 "inoremap <c-f> <c-x><c-n>
@@ -426,18 +429,18 @@ inoremap <c-f> <c-x><c-n>
 "return comple
 "Greatness , completes
 function! DoCz()
-    if pumvisible() 
-        if complete_info()['mode']=='keyword'
-            return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<Tab>\<S-Tab>"
-            "return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<tab>\<c-r>=SuperTab('p')\<CR>"
-            "return complete_info()['selected'] ==-1 ? "\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>\<c-r>=SuperTab('p')\<CR>"
-        else 
-            return complete_info()['selected'] ==-1 ? "\<c-f>\<tab>" : "\<c-f>\<tab>"
-            "return complete_info()['selected'] ==-1 ? "\<c-f>\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>"
-        endif 
+if pumvisible() 
+    if complete_info()['mode']=='keyword'
+        return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<Tab>\<S-Tab>"
+        "return complete_info()['selected'] ==-1 ? "\<tab>" : "\<c-f>\<tab>\<c-r>=SuperTab('p')\<CR>"
+        "return complete_info()['selected'] ==-1 ? "\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>\<c-r>=SuperTab('p')\<CR>"
     else 
-        return "\<c-f>"
+        return complete_info()['selected'] ==-1 ? "\<c-f>\<tab>" : "\<c-f>\<tab>"
+        "return complete_info()['selected'] ==-1 ? "\<c-f>\<c-r>=SuperTab('n')\<CR>" : "\<c-f>\<c-r>=SuperTab('n')\<CR>"
     endif 
+else 
+    return "\<c-f>"
+endif 
 endfunction 
 
 imap <c-z> <CMD>call DoCz()<CR> 
@@ -451,21 +454,19 @@ imap <S-CR> <c-o>
 "nmap <silent> <M-K> <Plug>(ale_next_wrap)
 "nmap <silent> <M-k> <Plug>(ale_next_wrap) a\n/
 
-    imap <M-g> <Plug>(IPy-Complete)
-    nmap <M-k> <Plug>(IPy-WordObjInfo) 
-    nmap <M-r> :call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
-    command PyRun -complete=custom,IPyCompleteForInput call IPyRun(<f-args>)
-"nmap <M-r> :call IPyRun(input('enter python: '))<CR>
-"nmap <M-I> :let @z=input('enter text: ') <bar> norm "zp<CR>
-"nmap <M-i> :let @z=input('enter text: ') <bar> norm "zp<CR>
+imap <M-g> <Plug>(IPy-Complete)
+nmap <M-k> <Plug>(IPy-WordObjInfo) 
+nmap <M-r> <CMD>call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
+command PyRun -complete=custom,IPyCompleteForInput <CMD>call IPyRun(<f-args>)
+"nmap <M-r> <CMD>call IPyRun(input('enter python: '))<CR>
+"nmap <M-I> <CMD>let @z=input('enter text: ') <bar> norm "zp<CR>
+"nmap <M-i> <CMD>let @z=input('enter text: ') <bar> norm "zp<CR>
 nmap <M-i> <leader>of
-
 
 let g:neoterm_automap_keys="<plug>(aaaa)"
 
 "imappings!!
 "c-t c-d c-h <Plug>(easymotion-hlsearch)<Plug>(easymotion-hlsearch)same as bef
-
 
 "imap <c-.> <c-o>.
 
@@ -475,6 +476,7 @@ let g:neoterm_automap_keys="<plug>(aaaa)"
 
 "needed to be in onload
 "imap <M-a> <c-x><c-o>
+
 "imap <M-A> <c-x><c-o>
 "inoremap ^] ^X^]
 "inoremap ^L ^X^L
@@ -482,32 +484,32 @@ let g:neoterm_automap_keys="<plug>(aaaa)"
 "imap jk <ESC>l" : " 
 "
 " 
-"nmap § :call StartSpecialInsert()<CR>i
+"nmap § <CMD>call StartSpecialInsert()<CR>i
 "imap § <c-o>
 inoremap § <c-l>
 
 "imap <c-z> <c-f><c-r>=SuperTab('n')<CR> 
 "
 
-vmap <c-t> :Trans<CR>
+vmap <c-t> <CMD>Trans<CR>
 "imap <c-i> <c-f><S-Tab>
 
 function! CompleteInf()
-	let pre= '\(\\ref{\zs\k*$\|\\cite{\zs\k*$\|\k*$\)'
-	let nl=[]
-	let l=complete_info()
-	for k in l['items']
-		call add(nl, k['word']. ' : ' .k['info'] . ' '. k['menu'] )
-	endfor 
-	call fzf#vim#complete(fzf#wrap({ 'source': nl,'prefix':pre, 'reducer': { lines -> split(lines[0], '\zs :')[0] },'sink':function('PInsert2')}))
+    let pre= '\(\\ref{\zs\k*$\|\\cite{\zs\k*$\|\k*$\)'
+    let nl=[]
+    let l=complete_info()
+    for k in l['items']
+            call add(nl, k['word']. ' <CMD> ' .k['info'] . ' '. k['menu'] )
+    endfor 
+    call fzf#vim#complete(fzf#wrap({ 'source': nl,'prefix':pre, 'reducer': { lines -> split(lines[0], '\zs <CMD>')[0] },'sink':function('PInsert2')}))
 endfunction 
 "get documention of current symbol
-noremap <m-k> :let x=printf("Leaderf help --input %s", expand("<cword>"))<CR>:exec x<CR>
-vmap <m-k> "xy:let x=printf("Leaderf help --input \"%s\"", getreg("x"))<CR>:exec x<CR>
+noremap <m-k> <CMD>let x=printf("Leaderf help --input %s", expand("<cword>"))<CR><CMD>exec x<CR>
+vmap <m-k> "xy<CMD>let x=printf("Leaderf help --input \"%s\"", getreg("x"))<CR><CMD>exec x<CR>
 "com
 "completion by fuzzing of anything
-imap <c-.> <CMD>:call CompleteInf()<CR>
-cmap <c-.> <CMD>:call CompleteInf()<CR>
+imap <c-.> <CMD>call CompleteInf()<CR>
+cmap <c-.> <CMD>call CompleteInf()<CR>
 imap <M-K> <plug>(fzf-complete-word)
 imap <M-k> <plug>(fzf-complete-word)
 "imap <M-F> <plug>(fzf-complete-path)
@@ -540,14 +542,14 @@ imap <M-l> <plug>(fzf-complete-line)
 
 
 "let g:EasyMotion_use_upper = 1
- " type `l` and match `l`&`L`
+" type `l` and match `l`&`L`
 "cmd shortcuts
 "m shokjknaaartcuts
 "nnoremap <m-s> :w<CR>
 "inoremap <m-s> <esc>:w<CR>
 
-nmap [a :ALEPrevious<CR>
-nmap ]a :ALENext<CR>
+nmap [a <CMD>ALEPrevious<CR>
+nmap ]a <CMD>ALENext<CR>
 nmap ]E <Plug>(coc-diagnostic-next)
 nmap [E <Plug>(coc-diagnostic-prev)
 nmap ]e <Plug>(coc-diagnostic-next-error)
@@ -555,10 +557,11 @@ nmap [e <Plug>(coc-diagnostic-prev-error)
 nmap [h <Plug>(GitGutterPrevHunk)
 nmap ]h <Plug>(GitGutterNextHunk)
 "map <expr><buffer> ]M repmo#Key('<plug>(PythonsenseEndOfPythonFunction)', '<plug>(PythonsenseEndOfPreviousPythonFunction)')|sunmap <buffer> ]M
+
 "map <expr><buffer> [M repmo#Key('<plug>(PythonsenseEndOfPreviousPythonFunction)', '<plug>(PythonsenseEndOfPythonFunction)')|sunmap <buffer> [M
 """ g mapping 
 "makesure we are powershell
-nmap gp :exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
+nmap gp <CMD>exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
 """ m mappings
 
 
@@ -567,30 +570,30 @@ nmap mb <leader><C-O>
 nmap mB <leader><C-I>
 nmap mv <leader><C-I>
 " jump to current path
-nmap mC :call CopyPath()<CR>
-noremap mc :cd %:p:h<CR>
-nnoremap md :diffupdate<CR>
-nnoremap mf :!start %:p:h<CR>
-nnoremap mF :exec '!open '.getcwd()<CR>
+nmap mC <CMD>call CopyPath()<CR>
+noremap mc <CMD>cd %:p:h<CR>
+nnoremap md <CMD>diffupdate<CR>
+nnoremap mf <CMD>!start %:p:h<CR>
+nnoremap mF <CMD>exec '!open '.getcwd()<CR>
 nmap mF vaF<F2>
 
 
-"go to the current selection in rg"xy:call feedkeys("\<C-a>g" . @x)<CR>
+"go to the current selection in rg"xy<CMD>call feedkeys("\<C-a>g" . @x)<CR>
 
 "vmap mg <C-Y>
 
 "exact 
-vnoremap mge "xy:exe ":FzfRg -e" . @x<CR>
+vnoremap mge "xy<CMD>exe ":FzfRg -e" . @x<CR>
 "current folder lookup word
 "nmap mg viWmg
 "current file lookup word
 nmap MG viWY
-nnoremap MH :Help 
-nnoremap Mh :help 
-nnoremap mH :LeaderfHelp<CR>
-noremap mm :LeaderfMru<CR>
+nnoremap MH <CMD>Help 
+nnoremap Mh <CMD>help 
+nnoremap mH <CMD>LeaderfHelp<CR>
+noremap mm <CMD>LeaderfMru<CR>
 "this is by order and not fuzzy
-noremap mM :Mru<CR>
+noremap mM <CMD>Mru<CR>
 
 "newline
 
@@ -604,26 +607,25 @@ noremap \L L
 nnoremap <leader>M M
 
 function! MPf()
-	let @+ =substitute(@+,"\<NL>$","",'')
-	let @+ =substitute(@+,"^[ \t]*","",'')
-	exec "norm \"+]P"
+    let @+ =substitute(@+,"\\<NL>$","","")
+    let @+ =substitute(@+,"^[ \t]*","","")
+    exec "norm \"+]P"
 endfunction
 
 "paste new line
 "remove indent
 "
-nnoremap mp o<esc>:s/[^ \t]//ge<CR>:call MPf()<CR>
+nnoremap mp o<esc><CMD>s/[^ \t]//ge<CR><CMD>call MPf()<CR>
 imap <C-i> <c-o><cmd>norm mP<CR>
 
 
 
 
 
-
 function! PasteFormat(x)
-    let l=@+
-	let l=len(split(l,"\n"))-1
-	return a:x."V".string(l).'j='
+let l=@+
+    let l=len(split(l,"\n"))-1
+    return a:x."V".string(l).'j='
 endfunction
 
 nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
@@ -631,21 +633,23 @@ nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? Past
 "nnoremap <silent>]p <cmd>call Putline("]p")<CR>
 
 function! Putline(how)
-    let l:type = getregtype(v:register)
-    call setreg(getreg(v:register), "V")
-    execute 'normal! "' . v:register . a:how
-    call setreg(getreg(v:register), l:type)
+let l:type = getregtype(v:register)
+call setreg(getreg(v:register), "V")
+execute 'normal! "' . v:register . a:how
+call setreg(getreg(v:register), l:type)
+
+
 endfunction
 
 
-"nnoremap <silent> mp :call Putline("]p")<CR>
+"nnoremap <silent> mp <CMD>call Putline("]p")<CR>
 function! Domp()
-	let @z=substitute(@+,"\<NL>","","g")
+    let @z=substitute(@+,"\<NL>","","g")
 endfunction
 
-vnoremap mP :call Domp()<CR>"zp
-nnoremap mP :call Domp()<CR>"zp
-nnoremap MP :call Domp()<CR>"zP
+vnoremap mP <CMD>call Domp()<CR>"zp
+nnoremap mP <CMD>call Domp()<CR>"zp
+nnoremap MP <CMD>call Domp()<CR>"zP
 "convert from WINDOWS style <CR> 
 nmap mwin :s/\<lf>CR>//g<CR>
 
@@ -655,83 +659,86 @@ nnoremap msa :s/^[\t ]*//<CR>:s/\s\+$//e<CR>:.g/^[\t ]*$/d<CR>:s/[  ]* / /g<CR>
 
 nnoremap msb :%s/\s\+$//e<CR>:g/^$/d<CR>:%s/[  ]* / /g<CR>
 "remove multi space in current line
-nnoremap mss :s/\s\+/ /g<CR>
+nnoremap mss <CMD>s/\s\+/ /g<CR>
 "remove empty lines
-nnoremap msl :%s/\s\+$//e<CR>
-nnoremap msl :%g/^\s*$/norm dd<CR>
+nnoremap msl <CMD>%s/\s\+$//e<CR>
+nnoremap msl <CMD>g/^\s*$/norm dd<CR>
 "remove trailing spaces
-nnoremap msc :%s/^\(.\{-\}\)[ ]*$/\1<CR>
+nnoremap msc <CMD>%s/^\(.\{-\}\)[ ]*$/\1<CR>
 "open cur folder 
-"nmap mt :NvimTreeClose<CR>:echom ":NvimTreeOpen ".getcwd() <CR>:exec ":NvimTreeOpen ".escape(getcwd(),'\')<CR> 
-"noremap mt :call CloseAllNR()<CR>:sleep 200m<CR>:exec ":vert topleft split " . getcwd()<CR>
-"noremap mT :call CloseAllNR()<CR>:sleep 200m<CR>:exe ":tabnew ".expand("%:p:h")<CR>
+"nmap mt <CMD>NvimTreeClose<CR>:<CMD>echom ":NvimTreeOpen ".getcwd() <CR>:<CMD>exec ":NvimTreeOpen ".escape(getcwd(),'\')<CR> 
+"noremap mt <CMD>call CloseAllNR()<CR>:<CMD>sleep 200m<CR>:<CMD>exec ":vert topleft split " . getcwd()<CR>
+"noremap mT <CMD>call CloseAllNR()<CR>:<CMD>sleep 200m<CR>:<CMD>exe ":tabnew ".expand("%:p:h")<CR>
 "open cur file's folder
 "mt is defined in lua
-noremap MT :exec "NvimTreeOpen ".expand("%:p:h")<CR>
-"noremap mt :NERDTreeFind<CR>
+noremap MT <CMD>exec "NvimTreeOpen ".expand("%:p:h")<CR>
+"noremap mt <CMD>NERDTreeFind<CR>
 
-nnoremap mu :UndotreeToggle<CR>
-"nnoremap mu :MundoShow<CR>
+nnoremap mu <CMD>UndotreeToggle<CR>
+"nnoremap mu <CMD>MundoShow<CR>
 
-nnoremap mws :CtrlSpaceSaveWorkspace<CR>
-nnoremap mwd :let g:overrideCWD=0<CR>:CtrlSpaceSaveWorkspace default<CR>let g:overrideCWD=1<CR>
+nnoremap mws <CMD>CtrlSpaceSaveWorkspace<CR>
+nnoremap mwd <CMD>let g:overrideCWD=0<CR>:<CMD>CtrlSpaceSaveWorkspace default<CR>let g:overrideCWD=1<CR>
 
-nmap TT :LeaderfLineCword<CR>
-vnoremap T "xy:call feedkeys( ":LeaderfLine\<lt>CR>". @x ,'t')<CR>
+nmap TT <CMD>LeaderfLineCword<CR>
+vnoremap T "xy:<CMD>call feedkeys( ":LeaderfLine\<lt>CR>". @x ,'t')<CR>
 function! SpecialFindLeader(type)
-  let &selection = "inclusive"
-	exec 'normal! `[v`]"xy'
-    :call feedkeys( ":LeaderfLine\<CR>". @x ,'t')
-	"call Matches(@x)
+let &selection = "inclusive"
+exec 'normal! `[v`]"xy'
+:call feedkeys( ":LeaderfLine\<CR>". @x ,'t')
+"call Matches(@x)
 endfunction
 
 function! SpecialFind(type)
-  let &selection = "inclusive"
-	exec 'normal! `[v`]"xy'
-	call Matches(@x)
+let &selection = "inclusive"
+exec 'normal! `[v`]"xy'
+call Matches(@x)
 endfunction
 
-nnoremap M :set opfunc=SpecialFind<CR>g@
+nnoremap M <CMD>set opfunc=SpecialFind<CR>g@
 "vmap T 
 nmap Mm Miw
 nmap MM MiW
 
 function! SpecialFindRg(type)
-  let &selection = "inclusive"
-	exec 'normal! `[v`]"xy'
-    :call feedkeys( ":LeaderfRgInteractive\<CR>". @x . "\<CR>\<CR>") 
+let &selection = "inclusive"
+exec 'normal! `[v`]"xy'
+:call feedkeys( ":LeaderfRgInteractive\<CR>". @x . "\<CR>\<CR>") 
 endfunction
 
-nnoremap L :set opfunc=SpecialFindRg<CR>g@
+nnoremap L <CMD>set opfunc=SpecialFindRg<CR>g@
 vmap L <C-Y>
 nmap Ll Liw
 nmap LL LiW
 "make it seach the current zone
 vnoremap RR "xy/=escape(@x,'\/')<CR><CR>
 "look in the current file for all matches
-vnoremap Y "xy:call Matches(@x)<CR>
+vnoremap Y "xy:<CMD>call Matches(@x)<CR>
 vmap M Y
 "to find small word
 "coc#config
 "copy entire line no new line
-nnoremap mY yy:let @+=@+[:len(@+)-2]<CR>
-"nnoremap <C-P> :CtrlPCurWD<CR>
+
+
+
+nnoremap mY yy<CMD>let @+=@+[:len(@+)-2]<CR>
+"nnoremap <C-P> <CMD>CtrlPCurWD<CR>
 nmap m' ysiW'
 nmap m{ ysiW{
 nmap m[ ysiW[
 nmap m( ysiW(
 
-nnoremap M, :CtrlP<CR>
-nnoremap m. :CtrlPClearCache<CR>:CtrlP<CR>
-nnoremap mj :set nohlsearch<CR>
-nnoremap <leader>rn :if &relativenumber <bar> :set norelativenumber <bar> else <bar> :set relativenumber <bar> endif<CR>
+nnoremap M, <CMD>CtrlP<CR>
+nnoremap m. <CMD>CtrlPClearCache<CR><CMD>CtrlP<CR>
+nnoremap mj <CMD>set nohlsearch<CR>
+nnoremap <leader>rn <CMD>if &relativenumber <bar> <CMD>set norelativenumber <bar> else <bar> <CMD>set relativenumber <bar> endif<CR>
 " \y is copy to another register
 "don't use it to cut
 noremap x "_x
 "open command and search
 nmap m~ <c-a>c
 "use <c-o> to edit cmd in place
-nmap M~ :Leaderf cmdHistory<CR>
+nmap M~ <CMD>Leaderf cmdHistory<CR>
 nnoremap mQ q:k
 nnoremap <leader>~ ~
 nnoremap <M-Space> q:i
@@ -741,10 +748,10 @@ nnoremap <M-Space> q:i
 nnoremap mq q:i<esc>
 
 
-"nmap <leader>bh :split <bar> :e ~/.bash_history<CR>,
-"nmap <leader>bh :call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
+"nmap <leader>bh <CMD>split <bar> <CMD>e ~/.bash_history<CR>,
+"nmap <leader>bh <CMD>call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
 function! CompleteCommand(arg)
-	call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m --query "'.a:arg.'"'} ) 
+    call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m --query "'.a:arg.'"'} ) 
 endfunction 
 
 nnoremap <leader>R R
@@ -752,93 +759,96 @@ nnoremap <leader>R R
 "this function maps all registers so that we know what we have in each
 "c-q for insert mode%. R for other modes.
 func! MapR()
-	let lst=['+','*','.','=','%']
-    imap <M--> <CMD>:echo getreg("+")<CR>
-    imap <M--> <CMD>:echo getreg("+")<CR>
-    imap <M-=> <CMD>:echo getreg("=")<CR>
-    imap <M-=> <CMD>:echo getreg("=")<CR>
-	for i in range(10)
-		call add(lst,string(i))
-		exec 'map <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
-		exec 'imap <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
-		"exec 'vmap <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
-	endfor
-	let k=char2nr('a')
-	for j in range(26)
-		call add(lst,nr2char(k+j))
-	endfor 
+    let lst=['+','*','.','=','%']
+imap <M--> <CMD>:echo getreg("+")<CR>
+imap <M--> <CMD>:echo getreg("+")<CR>
+imap <M-=> <CMD>:echo getreg("=")<CR>
+imap <M-=> <CMD>:echo getreg("=")<CR>
+    for i in range(10)
+            call add(lst,string(i))
+            exec 'map <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+            exec 'imap <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+            "exec 'vmap <M-'. string(i) .'> <CMD>:echo getreg("'.string(i) .'")<CR>'
+    endfor
+    let k=char2nr('a')
+    for j in range(26)
+            call add(lst,nr2char(k+j))
+    endfor 
 for i in lst 
-		exec 'nmap R'. i .' :echo getreg("'.i .'")<CR>'
-		exec 'vmap R'. i .' <CMD>:echo getreg("'.i .'")<CR>'
-		"exec 'imap <M-'. i .'> <CMD>:echo getreg("'.(i) .'")<CR>'
+            exec 'nmap R'. i .' <CMD>echo getreg("'.i .'")<CR>'
+            exec 'vmap R'. i .' <CMD>echo getreg("'.i .'")<CR>'
+            "exec 'imap <M-'. i .'> <CMD>echo getreg("'.(i) .'")<CR>'
 endfor 
 endf
 
 call MapR()
 
 "complete the command using recent commands 
-:cmap <expr> <c-a> &cedit.'^"xy$'."<esc><esc>:call CompleteCommand(@x)<CR>"
+:cmap <expr> <c-a> &cedit.'^"xy$'."<esc><esc><CMD>call CompleteCommand(@x)<CR>"
 "edit command in command window
 :cmap <expr> <c-b> &cedit."i"
 
 
-nnoremap <silent> <C-a>c :call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m'} )<CR>
+nnoremap <silent> <C-a>c <CMD>call fzf#run({'source': GetCommands(),'sink': function('HandleCommand'),'options': '-m'} )<CR>
 "search only for the mapping key
-noremap <silent> <C-a>m :Maps<CR>
+noremap <silent> <C-a>m <CMD>Maps<CR>
 "search in mapping description as well
-nnoremap <silent> <C-a>M :call fzf#run({'source': GetMappings(),'options': '-m'} )<CR>
+nnoremap <silent> <C-a>M <CMD>call fzf#run({'source': GetMappings(),'options': '-m'} )<CR>
 nnoremap <leader><bar> <bar>
-"nnoremap <silent> <bar> :call FZFOpen(':Buffers')<CR>
+"nnoremap <silent> <bar> <CMD>call FZFOpen(':Buffers')<CR>
 "<M-Bslash>
 "<M-Bslash>
-nmap <bar> :LeaderfDisablePreview<CR>:Leaderf --popup buffer --all<CR>
-nmap <M-Bslash> :let g:Lf_JumpToExistingWindow = 0<CR>:Leaderf --popup buffer --all<CR>
-"nnoremap <silent> <M-Bslash> :call FZFOpen(':Windows')<CR>
-nnoremap <silent> m<bar> :LeaderfEnablePreview<CR>:let g:Lf_JumpToExistingWindow = 1<CR>:Leaderf --popup buffer<CR>
-"nmap <bar> :Telescope buffers<CR>
-"nnoremap <silent> <C-a>b :Leaderf buffers<CR>
-"
-"nnoremap <silent> <C-z> :call FZFOpen(':Buffers')<CR>
+nmap <bar> <CMD>LeaderfDisablePreview<CR><CMD>Leaderf --popup buffer --all<CR>
+nmap <M-Bslash> <CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup buffer --all<CR>
+"nnoremap <silent> <M-Bslash> <CMD>call FZFOpen(':Windows')<CR>
 
-nnoremap <silent> <C-a>g :LeaderfRgInteractive<CR>
-"nnoremap <silent> <C-a>g :Telescope live_grep<CR>
-nnoremap <silent> <C-a>G :lua require('git_grep').live_grep( {additional_args = { "--","*.py"}} )<CR>
-"nnoremap <silent> <C-a>g :call FZFOpen(':FzfRg!')<CR>
-"nnoremap <silent> <C-a>G :Leaderf rg -tpy<CR>
+
+
+nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExistingWindow = 1<CR><CMD>Leaderf --popup buffer<CR>
+"nmap <bar> <CMD>Telescope buffers<CR>
+"nnoremap <silent> <C-a>b <CMD>Leaderf buffers<CR>
+"
+"nnoremap <silent> <C-z> <CMD>call FZFOpen('<CMD>Buffers')<CR>
+
+nnoremap <silent> <C-a>g <CMD>LeaderfRgInteractive<CR>
+"nnoremap <silent> <C-a>g <CMD>Telescope live_grep<CR>
+nnoremap <silent> <C-a>G <CMD>lua require('git_grep').live_grep( {additional_args = { "--","*.py"}} )<CR>
+"nnoremap <silent> <C-a>g <CMD>call FZFOpen('<CMD>FzfRg!')<CR>
+"nnoremap <silent> <C-a>G <CMD>Leaderf rg -tpy<CR>
 
 "for exact
-"nnoremap <silent> <C-a>G :call FZFOpen(':FzfRg! -e')<CR>
-nnoremap <silent> <C-a>C :call FZFOpen(':Commands')<CR>
-"nnoremap <silent> <C-a>l :call FZFOpen(':BLines')<CR>
+"nnoremap <silent> <C-a>G <CMD>call FZFOpen('<CMD>FzfRg! -e')<CR>
+nnoremap <silent> <C-a>C <CMD>call FZFOpen('<CMD>Commands')<CR>
+"nnoremap <silent> <C-a>l <CMD>call FZFOpen('<CMD>BLines')<CR>
 "c-l is lines in insert mode aaa
-nnoremap <silent> <C-a>l :call GetAllInsertsForCurrentBufs()<CR>
-nnoremap <silent> <C-a>L m':LeaderfLineAll<CR>
-nnoremap <silent> <C-a>r :Leaderf --recall<CR>
-nnoremap <silent> <C-a>R :LeaderfRgRecall<CR>
+nnoremap <silent> <C-a>l <CMD>call GetAllInsertsForCurrentBufs()<CR>
+nnoremap <silent> <C-a>L m'<CMD>LeaderfLineAll<CR>
+nnoremap <silent> <C-a>r <CMD>Leaderf --recall<CR>
+nnoremap <silent> <C-a>R <CMD>LeaderfRgRecall<CR>
 "files current dir
-"nnoremap <silent> <C-a>f :call FZFOpen(':Files')<CR>
-"nnoremap <c-a>f :CtrlPCurWD<CR>
-"nnoremap <silent> <C-a>f :exe ":LeaderfFile ".getcwd()<CR>
-nnoremap <c-a>f :Telescope find_files<CR>
-nnoremap <c-a>j :lua require('telescope.builtin').jumplist({fname_width=80 , layout_config = {      preview_width = 0.6,       width = 0.9     }})<CR>
+"nnoremap <silent> <C-a>f <CMD>call FZFOpen('<CMD>Files')<CR>
+"nnoremap <c-a>f <CMD>CtrlPCurWD<CR>
+"nnoremap <silent> <C-a>f <CMD>exe "<CMD>LeaderfFile ".getcwd()<CR>
+nnoremap <c-a>f <CMD>Telescope find_files<CR>
+nnoremap <c-a>j <CMD>lua require('telescope.builtin').jumplist({fname_width=80 , layout_config = {      preview_width = 0.6,       width = 0.9     }})<CR>
 "files current file
 "66444
-nnoremap <silent> <C-a>F :exe ":LeaderfFile " . expand('%:p:h')<CR>
-nnoremap <silent> <C-a>h :call FZFOpen(':History')<CR>
-nmap <silent> <C-a>H :call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
-nnoremap <silent> <C-a>a :call FZFOpen(':Ag')<CR>
-nnoremap <silent> <C-a>d :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
-nnoremap <silent> <C-a>D :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
-nnoremap <silent> <C-a>w :call FZFOpen(':Windows')<CR>
-nnoremap <silent> <C-a>b :Leaderf window<CR>
-nnoremap <silent> <C-a>s :call FZFOpen(':Snippets')<CR>
+nnoremap <silent> <C-a>F <CMD>exe "<CMD>LeaderfFile " . expand('%:p:h')<CR>
+nnoremap <silent> <C-a>h <CMD>call FZFOpen('<CMD>History')<CR>
+nmap <silent> <C-a>H <CMD>call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
+nnoremap <silent> <C-a>a <CMD>call FZFOpen('<CMD>Ag')<CR>
+nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
+nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
+nnoremap <silent> <C-a>w <CMD>call FZFOpen('<CMD>Windows')<CR>
+nnoremap <silent> <C-a>b <CMD>Leaderf window<CR>
+nnoremap <silent> <C-a>s <CMD>call FZFOpen('<CMD>Snippets')<CR>
 "use it to increase
 nnoremap <silent> <C-a><C-a> <C-a>
 
-  " open FZF in
-  " current file's2 directory
-  "
-nmap <leader>W :set wrap<CR>
+" open FZF in
+" current file's2 directory
+"
+nmap <leader>W <CMD>set wrap<CR>
 
 function! GitDir()
 let top = systemlist("git rev-parse --show-toplevel")[0]
@@ -852,60 +862,65 @@ endfunction
 
 command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'git_dir': GitDir() })
 
-nmap mg :GCWD<CR>
-nmap MG :unlet b:git_dir<CR>:G<CR>
+nmap mg <CMD>GCWD<CR>
+nmap MG <CMD>unlet b:git_dir<CR><CMD>G<CR>
 
 
-map <leader>g2 :diffget \\2<CR>
-map <leader>g3 :diffget \\3<CR>
-nnoremap <leader>Gs :Gdiff --staged<CR>
-nnoremap <leader>Gc :Git commit -v -q<CR>
-nnoremap <leader>GC :Git commit --amend --no-verify<CR>
-nnoremap <leader>Ga :sil Git add %<CR>
-nnoremap <leader>Gt :Git commit -v -q %<CR>
-nnoremap <leader>Gd :Gvdiffsplit<CR>
+map <leader>g2 <CMD>diffget \\2<CR>
+map <leader>g3 <CMD>diffget \\3<CR>
+nnoremap <leader>Gs <CMD>Gdiff --staged<CR>
+nnoremap <leader>Gc <CMD>Git commit -v -q<CR>
+nnoremap <leader>GC <CMD>Git commit --amend --no-verify<CR>
+nnoremap <leader>Ga <CMD>sil Git add %<CR>
+nnoremap <leader>Gt <CMD>Git commit -v -q %<CR>
+nnoremap <leader>Gd <CMD>Gvdiffsplit<CR>
 
-nnoremap <leader>GD :Gvdiffsplit!<CR>
+nnoremap <leader>GD <CMD>Gvdiffsplit!<CR>
 nmap <leader>GD Git! diff<CR>
-nnoremap <leader>Ge :Gedit<CR>
-nnoremap <leader>Gr :Gread<CR>
+nnoremap <leader>Ge <CMD>Gedit<CR>
+nnoremap <leader>Gr <CMD>Gread<CR>
 nnoremap <leader>Gmo Git merge --strategy-option ours origin/master<CR>
 nnoremap <leader>Gmt Git merge --strategy-option theirs origin/master<CR>
 "Git log all commits
-nnoremap <leader>Gl :silent! Glog<CR>
+nnoremap <leader>Gl <CMD>silent! Glog<CR>
 "Git log current
-nnoremap <leader>GL :0GcLog<CR>
-nnoremap <leader>Gg :Git grep<Space>
-nnoremap <leader>Gp :Git push<CR>
-nnoremap <leader>Gu :Git push upstream<CR>
-nnoremap <leader>GU :Git push -f upstream<CR>
-nnoremap <leader>GP :Git push --force<CR>
-nnoremap <leader>Gb :Git branch<Space>
-nnoremap <leader>Go :Git checkout<Space>
-"nnoremap <leader>Grc :Git rebase --continue<CR>
-"nnoremap <leader>Gra :Git rebase --abort<CR>
+
+
+
+nnoremap <leader>GL <CMD>0GcLog<CR>
+nnoremap <leader>Gg <CMD>Git grep<Space>
+nnoremap <leader>Gp <CMD>Git push<CR>
+nnoremap <leader>Gu <CMD>Git push upstream<CR>
+nnoremap <leader>GU <CMD>Git push -f upstream<CR>
+nnoremap <leader>GP <CMD>Git push --force<CR>
+nnoremap <leader>Gb <CMD>Git branch<Space>
+nnoremap <leader>Go <CMD>Git checkout<Space>
+"nnoremap <leader>Grc <CMD>Git rebase --continue<CR>
+"nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
 
 
 map <silent> <leader>? <Plug>(IPy-WordObjInfo)
 " opens terminal in new window
 "
-noremap  <leader>od :exec ":vs " . getcwd()<CR>
-nnoremap <leader>em :call Exec("messages")<CR>
-nnoremap <leader>EM :call VspIfNeed()<CR>:enew<CR>:let @x=MinExec('messages')<CR>:norm "xp<CR>
+noremap  <leader>od <CMD>exec ":vs " . getcwd()<CR>
+"nnoremap <leader>em <CMD>call Exec("messages")<CR>
+nnoremap <leader>em <CMD>NoiceHistory<CR>
+nnoremap <leader>EM <CMD>NoiceTelescope<CR>
+"nnoremap <leader>EM <CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm "xp<CR>
 
 "enable save
 nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
 nnoremap <leader>SI :let b:save_inserts= !b:save_inserts<CR>:echo "save inserts is now ". b:save_inserts<CR>
-nmap     <leader>AS :AutoSaveToggle<CR>
-
-nnoremap <leader>do :diffoff<CR>
-nnoremap <leader>du :diffupdate<CR>
-nnoremap <leader>dt :diffthis<CR>
+nmap     <leader>AS <CMD>:AutoSaveToggle<CR>
 
 
 
 
 
+
+nnoremap <leader>do <CMD>diffoff<CR>
+nnoremap <leader>du <CMD>diffupdate<CR>
+nnoremap <leader>dt <CMD>diffthis<CR>
 
 
 function! DoRf()
@@ -920,8 +935,8 @@ endfunction
 
 
 
-au filetype python nmap <leader>rf  :exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
-au filetype ps1 nmap <leader>rf  :call DoRf()<CR>
+au filetype python nmap <leader>rf  <CMD>exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
+au filetype ps1 nmap <leader>rf  <CMD>call DoRf()<CR>
 map <silent> <leader>rb <Plug>(IPy-Interrupt)
 nmap <leader>rt <Plug>(IPy-Terminate)
 map <leader>rc <Plug>(IPy-RunCell)
@@ -929,10 +944,7 @@ map <leader>rc <Plug>(IPy-RunCell)
 nnoremap <leader>rd <c-L>
 
 "todo FZF
-nnoremap <leader>oc :copen<CR>
-
-
-
+nnoremap <leader>oc <CMD>copen<CR>
 
 
 function! CloseVspIfNeed()
@@ -1001,30 +1013,30 @@ function! LfFil(a)
 
 endfunction
 "opens file
-nmap <leader>mg :call CloseVspIfNeed()<CR>:vnew<CR><leader>gf
-nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
-nmap mo :call CloseVspIfNeed()<CR>:vnew<CR>ml<M-Bslash>
+nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
+nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
+nmap mo <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 "<c-b> the same with tab
 "swaps right and left window
 nmap mO <c-w><c-r> 
-nmap <leader>og :call CloseVspIfNeed()<CR>:vnew<CR>:let g:Lf_JumpToExistingWindow = 0<CR>:LeaderfFile<CR>
-nmap <leader>OF :call CloseVspIfNeed()<CR>:vnew<CR>:let g:Lf_JumpToExistingWindow = 0<CR>mm
-nmap <leader>of :call CloseVspIfNeed()<CR>:vnew<CR>:call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil'),'options': '-m'})<CR>
+nmap <leader>og <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>LeaderfFile<CR>
+nmap <leader>OF <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR>mm
+nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil'),'options': '-m'})<CR>
 "open python
 "function! findbufjup
-    "o
+"o
 "endfunction
 nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
-nmap <leader>upd \ttupama
+nmap <leader>upd \ttupama
 
-nnoremap <leader>oi :call RecallInserts(0)<CR>
-nnoremap <leader>OI :call GetAllInserts()<CR>
-nnoremap <leader>ol :lopen<CR>
-nnoremap <leader>ov :TN ~/.vim/.vimrc<CR>
-nmap <leader>om :TN ~/.vim/mappings.vim<CR>
-nmap <leader>on :TN ~/.vim/myinit.lua<CR>
+nnoremap <leader>oi <CMD>call RecallInserts(0)<CR>
+nnoremap <leader>OI <CMD>call GetAllInserts()<CR>
+nnoremap <leader>ol <CMD>lopen<CR>
+nnoremap <leader>ov <CMD>TN ~/.vim/.vimrc<CR>
+nmap <leader>om <CMD>TN ~/.vim/mappings.vim<CR>
+nmap <leader>on <CMD>TN ~/.vim/myinit.lua<CR>
 
-nnoremap <leader>oE :!
+"nnoremap <leader>oE <CMD>!
 
 function! TermLOV()
     set splitright
@@ -1072,12 +1084,12 @@ function! TermO()
 endfunction
 
 "open terminal in new tab
-nnoremap <leader>ot :tabnew <bar> :call TermO()<CR>:call feedkeys("i")<CR>
+nnoremap <leader>ot <CMD>tabnew <bar> :call TermO()<CR><CMD>call feedkeys("i")<CR>
 "open terminal in new window
-nmap <leader>tt :call TermOV(0)<CR>li
-nmap <leader>Tt :call TermOV(1)<CR>li
-nmap <leader>gt :call TermLOV()<CR>li
-nmap <leader>ge :VimscriptLastError<CR>
+nmap <leader>tt <CMD>call TermOV(0)<CR>li
+nmap <leader>Tt <CMD>call TermOV(1)<CR>li
+nmap <leader>gt <CMD>call TermLOV()<CR>li
+nmap <leader>ge <CMD>VimscriptLastError<CR>
 
 nnoremap <leader>vL :TN ~/.vim/vimlog.log<CR>
 nmap <leader>vs         <Plug>VimspectorStop
@@ -1101,53 +1113,57 @@ nmap <leader>vr        :call vimspector#Reset()<CR>
 ""closes other tabs
 "noremap Q :call SaveLastWindow()<CR> :close<CR>
 noremap Q :close<CR>
-nnoremap <leader>q :tabo!<CR>:call CloseAllBuffersButCurrent()<CR>
+nnoremap <leader>q :tabo!<CR><CMD>call CloseAllBuffersButCurrent()<CR>
 nnoremap <leader>Q :q!<CR>
 "closes other buffer same tab
-nnoremap <nowait> <leader>c :call CloseAllWindowsButCurrent()<CR>
-nnoremap <nowait> <leader>C :call CloseAllNR()<CR>
+nnoremap <nowait> <leader>c <CMD>call CloseAllWindowsButCurrent()<CR>
+nnoremap <nowait> <leader>C <CMD>call CloseAllNR()<CR>
  
-nnoremap ZB :call CloseAllBuffersButCurrent()<CR>
 
-nnoremap <silent> <Leader>= :exe "vertical resize " . (winwidth(0) * 3/2)<CR>
-nnoremap <silent> <Leader>- :exe "vertical resize " . (winwidth(0) * 2)/3<CR>
+nnoremap ZB <CMD>call CloseAllBuffersButCurrent()<CR>
+
+nnoremap <silent> <Leader>= <CMD>exe "vertical resize " . (winwidth(0) * 3/2)<CR>
+nnoremap <silent> <Leader>- <CMD>exe "vertical resize " . (winwidth(0) * 2)/3<CR>
 
 "to use ml mj mk 
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>l :wincmd l<CR>
-nnoremap <leader>mt :tabnext<CR>
-nnoremap <leader>nt :tabprevious<CR>
+nnoremap <leader>k <CMD>wincmd k<CR>
+
+
+
+nnoremap <leader>j <CMD>wincmd j<CR>
+nnoremap <leader>l <CMD>wincmd l<CR>
+nnoremap <leader>mt <CMD>tabnext<CR>
+nnoremap <leader>nt <CMD>tabprevious<CR>
 
 nmap ml <leader>l
 nmap mj <leader>j
 nmap mk <leader>k
-nmap mh :wincmd h<CR>
+nmap mh <CMD>wincmd h<CR>
 
-"autocmd  FileType * nnoremap <nowait> <buffer> <leader>h :wincmd h<CR>
+"autocmd  FileType * nnoremap <nowait> <buffer> <leader>h <CMD>wincmd h<CR>
 
-"avabnnoremap2 <leader>s :exec "normal i".nr2chaar(getchar())."\e"<CR>
+"avabnnoremap2 <leader>s <CMD>exec "normal i".nr2chaar(getchar())."\e"<CR>
 function! InsertBefore(count) range
-	if a:count==0
-		let l=1
-	else
-		let l=a:count
-	endif
-	for j in range(l)
-		let t=getchar()
-		if t==27
-			break
-		endif
+        if a:count==0
+                let l=1
+        else
+                let l=a:count
+        endif
+        for j in range(l)
+                let t=getchar()
+                if t==27
+                        break
+                endif
         let @z= t
-        ":normal "zp
+        "<CMD>normal "zp
         if l>1
-		exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+                exec "<CMD>normal a"."\<c-r>=nr2char(".t.")\<ESC>"
     else
-		exec ":normal i"."\<c-r>=nr2char(".t.")\<ESC>"
-		"exec ":normal i"."\<c-r>='".nr2char(t)."'"."\<ESC>"
+                exec "<CMD>normal i"."\<c-r>=nr2char(".t.")\<ESC>"
+                "exec "<CMD>normal i"."\<c-r>='".nr2char(t)."'"."\<ESC>"
     endif
-		"redraw
-	endfor 
+                "redraw
+        endfor 
 endfunction
 
 function! MJoin()
@@ -1168,21 +1184,21 @@ endfunction
 vmap mjoin "xdi<C-r>=MJoin()<CR>
 
 function! InsertAfter(count) range
-	if a:count==0
-		let l=1
-	else
-		let l=a:count
-	endif
-	for j in range(l)
-		let t=getchar()
-		if t==27
-			break
-		endif
+        if a:count==0
+                let l=1
+        else
+                let l=a:count
+        endif
+        for j in range(l)
+                let t=getchar()
+                if t==27
+                        break
+                endif
         let @z= t
-        ":normal "zp
-		exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
-		"redraw
-	endfor 
+        "<CMD>normal "zp
+                exec "<CMD>normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+                "redraw
+        endfor 
 endfunction
 
 "nmap ` i
@@ -1193,9 +1209,12 @@ nmap <c-`> <esc>
 "duplicate in onload because of mapping
 "
 "nnoremap m= =
-"nmap ` :exec "normal i".nr2char(getchar())."\e"<CR>
+"nmap ` <CMD>exec "normal i".nr2char(getchar())."\e"<CR>
+
+
+
 "appends one char
-"nthis isnoremap <leader>S :exec "normal a".nr2char(getchar())."\e"<CR>
+"nthis isnoremap <leader>S <CMD>exec "normal a".nr2char(getchar())."\e"<CR>
 nmap <leader>i -o
 
 noremap <leader>dd "zdd
@@ -1213,7 +1232,7 @@ vnoremap D "zd
 nnoremap DD "zdd
 
 "C to ci
-nnoremap C :call StartSpecialInsert()<CR>ci
+nnoremap C <CMD>call StartSpecialInsert()<CR>ci
 nnoremap cc C
 nnoremap <leader>C cc 
 
@@ -1223,7 +1242,7 @@ vnoremap c "zc
 
 "We want to keep the pasted text, while z is the presented text in the visual
 "...
-vnoremap p :<C-U>let a=@*<CR>gvp:let @z=@"<CR>:let @*=a<CR>:let @"=a<CR>
+vnoremap p :<C-U>let a=@*<CR>gvp:<CMD>let @z=@"<CR>:let @*=a<CR>:let @"=a<CR>
 vnoremap c "zdi
 
 "cnnoremap <leader>. @:
@@ -1250,15 +1269,15 @@ noremap <leader>Y "zyi
 
 " for ansi keyboard
 "nnoremap ± :set incsearch<CR>/
-nnoremap Y :set incsearch<CR>/\c
+nnoremap Y <CMD>set incsearch<CR>/\c
 "nnoremap , :set incsearch<CR>/\c
 "nnoremap <C-[> :set incsearch<CR>/\c
-"vnoremap <nowait> af <Plug>(textobj-function-a) 
+vnoremap <nowait> af <Plug>(textobj-function-a) 
 
 "execute a function based on the current visual selection but replace content of selection
-vnoremap H "xy:call HandleH()<CR>
-vnoremap <C-H> "xy:call HandleCH()<CR>
-vnoremap <C-J> "xy:call HandleCJ()<CR>
+vnoremap H "xy:<CMD>call HandleH()<CR>
+vnoremap <C-H> "xy:<CMD>call HandleCH()<CR>
+vnoremap <C-J> "xy:<CMD>call HandleCJ()<CR>
 "look in files for a match
 "vnoremap <C-Y> "xy:exe ":FzfRg " . @x<CR>
 
@@ -1267,14 +1286,17 @@ vnoremap <C-J> "xy:call HandleCJ()<CR>
 "nnoremap <C-K> :call RegsToggle()<CR>
 "vnoremap <C-K> <CMD>:call RegsToggle()<CR>
 nnoremap <c-k> <CMD>:ChatGPT<CR>
-nmap <leader>pC :ChatGPT<CR>:Voice<CR>
+nmap <leader>pC <CMD>ChatGPT<CR>:Voice<CR>
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
 
 
 "translates
-nmap <leader><c-t> vaw:Trans<CR>
-vmap <leader>t :Trans<CR>
+nmap <leader><c-t> vaw:<CMD>Trans<CR>
+
+
+
+vmap <leader>t <CMD>Trans<CR>
 
 function! IfTerm()
     if &bt=="terminal"
@@ -1293,58 +1315,58 @@ function! GoOther()
 :exec "norm ".GetOther()
 endfunction
 "Move line to terminal
-nmap mz my<CMD>:exec ":T ".  @" ."\r\n" <cr>
+nmap mz my<CMD>exec "<CMD>T ".  @" ."\r\n" <cr>
 vmap mz <CMD>:'<,'>g/./norm mz<CR>
 nmap <c-F5> mz
 
-"nmap mz <CMD>:TREPLSendLine<CR>
-"vmap mz <CMD>:TREPLSendSelection<CR>
+"nmap mz <CMD>TREPLSendLine<CR>
+"vmap mz <CMD>TREPLSendSelection<CR>
 "move between two panels (left and right) 
 "copy to other split
-nmap my "xyy:call GoOther()<CR>"xp
-vmap my "xy:call GoOther()<CR>"xp
+nmap my "xyy<CMD>call GoOther()<CR>"xp
+vmap my "xy<CMD>call GoOther()<CR>"xp
 
-nnoremap <C-'> :call GoOther()<CR>:call IfTerm()<CR>
-tnoremap <C-'> <C-\><C-n>:call GoOther()<CR>
+nnoremap <C-'> <CMD>call GoOther()<CR><CMD>call IfTerm()<CR>
+tnoremap <C-'> <C-\><C-n><CMD>call GoOther()<CR>
 
 " terminal mappings !
 
 if has('vim')
-	:tnoremap <C-V> <C-W>"+
-	:tnoremap <C-l> <C-W>N
-	:tnoremap <C-Y> <C-W>Nyyi
-	:tnoremap <C-X> <C-W>NT$ly$i " copy line from $
-	:tnoremap <C-Z> <C-W>Nyi
+        :tnoremap <C-V> <C-W>"+
+        :tnoremap <C-l> <C-W>N
+        :tnoremap <C-Y> <C-W>Nyyi
+        :tnoremap <C-X> <C-W>NT$ly$i " copy line from $
+        :tnoremap <C-Z> <C-W>Nyi
 else
-	
-	:tnoremap <C-v> <C-\><c-N>pi
-	:tnoremap <C-y> <C-\><c-N>yyi
-	:tnoremap <C-X> <C-\><c-N>T$ly$i
-	:tnoremap <C-l> <C-\><c-N>
-	:tnoremap <C-d> cd <C-\><c-N>"=getcwd()<CR>pi<CR>
-	:tnoremap <C-e> cd <C-\><c-N>"=expand("#:p:h")<CR>pi<CR>
+        
+        :tnoremap <C-v> <C-\><c-N>pi
+        :tnoremap <C-y> <C-\><c-N>yyi
+        :tnoremap <C-X> <C-\><c-N>T$ly$i
+        :tnoremap <C-l> <C-\><c-N>
+        :tnoremap <C-d> cd <C-\><c-N>"=getcwd()<CR>pi<CR>
+        :tnoremap <C-e> cd <C-\><c-N>"=expand("#:p:h")<CR>pi<CR>
     "set path of terminal to current cwd
-    :tnoremap <C-t> <c-\><c-N>^w:exec 'cd '. expand('<cfile>')<CR>i
-	"quits
-	:tmap <C-q> <C-l>Q
-	" copy line from $
+    :tnoremap <C-t> <c-\><c-N>^w<CMD>exec 'cd '. expand('<cfile>')<CR>i
+        "quits
+        :tmap <C-q> <C-l>Q
+        " copy line from $
 endif
 "esc only in neoterm
-au filetype neoterm :tnoremap <buffer> <Esc> <C-\><C-n>
-au filetype neoterm :tnoremap <buffer> <C-BS> <ESC>
+au filetype neoterm <CMD>tnoremap <buffer> <Esc> <C-\><C-n>
+au filetype neoterm <CMD>tnoremap <buffer> <C-BS> <ESC>
 "make Y act like M
 
 
 
-"map NT :NERDTree
-nnoremap TN :tabnew<CR>
+"map NT <CMD>NERDTree
+nnoremap TN <CMD>tabnew<CR>
 
 runtime ftplugin/man.vim " adds Man command
 
 
 
 "let cmd=['export PYTHONPATH="$PYTHONPATH;/Users/eyalkarni/utils/jmpacket"']
-":CtrlSpaceLoadWorkspace default
+"<CMD>CtrlSpaceLoadWorkspace default
 "call ctrlspace#workspaces#LoadWorkspace(0,'default')
 
 
@@ -1354,6 +1376,9 @@ runtime ftplugin/man.vim " adds Man command
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gY <Plug>(coc-type-definition)
 nnoremap <silent> gy  :<C-u>CocList -A yank<cr>
+
+
+
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gR <Plug>(coc-refactor)
@@ -1373,33 +1398,33 @@ endfunction
 
 nmap <BS> call Show_documentation()<CR>
 "Coc _ mappings 
-"nnoremap <silent> _a  :<C-u>CocList actions<cr>
+"nnoremap <silent> _a  <CMD><C-u>CocList actions<cr>
 "" Manage extensions
-"nnoremap <silent> _e  :<C-u>CocList extensions<cr>
+"nnoremap <silent> _e  <CMD><C-u>CocList extensions<cr>
 "" Show commands
-"nnoremap <silent> _c  :<C-u>CocList commands<cr>
-"nnoremap <silent> _d  :<C-u>CocList diagnostics<cr>
+"nnoremap <silent> _c  <CMD><C-u>CocList commands<cr>
+"nnoremap <silent> _d  <CMD><C-u>CocList diagnostics<cr>
 "" Find symbol of current document
-"nnoremap <silent> _o  :<C-u>CocList outline<cr>
+"nnoremap <silent> _o  <CMD><C-u>CocList outline<cr>
 " Search workspace symbols
 
 " Do default action for next item.
-"nnoremap <silent> _j  :<C-u>CocNext<CR>
+"nnoremap <silent> _j  <CMD><C-u>CocNext<CR>
 "" Do default action for previous item.
-"nnoremap <silent> _k  :<C-u>CocPrev<CR>
+"nnoremap <silent> _k  <CMD><C-u>CocPrev<CR>
 " Resume latest coc list
 "nnoremap <silent> _p  :<C-u>CocListResume<CR>
 :endif
 
-nnoremap _d :Telescope diagnostics<CR>
-nmap _d :TroubleToggle<CR>
-nnoremap _o :Telescope lsp_document_symbols<CR>
-nnoremap _O :Telescope lsp_workspace_symbols<CR>
-nnoremap _r :Telescope lsp_references<CR>
-nnoremap _a :Telescope lsp_code_actions<CR>
-nmap <nowait> <leader>s :Navbuddy<CR>
+nnoremap _d <CMD>Telescope diagnostics<CR>
+nmap _d <CMD>TroubleToggle<CR>
+nnoremap _o <CMD>Telescope lsp_document_symbols<CR>
+nnoremap _O <CMD>Telescope lsp_workspace_symbols<CR>
+nnoremap _r <CMD>Telescope lsp_references<CR>
+nnoremap _a <CMD>Telescope lsp_code_actions<CR>
+nmap <nowait> <leader>s <CMD>Navbuddy<CR>
 
-nnoremap <silent> _s  :Telescope lsp_workspace_symbols<CR>
+nnoremap <silent> _s  <CMD>Telescope lsp_workspace_symbols<CR>
 
 "map <silent> <C-c> <Plug>(coc-cursors-position)
 "nmap <silent> <C-d> <Plug>(coc-cursors-word)*
@@ -1410,7 +1435,7 @@ nnoremap <silent> _s  :Telescope lsp_workspace_symbols<CR>
 "silent! call repeat#set("H", -1)
 
 
-":call UltiSnips#ExpandSnippet()<CR>
+"<CMD>call UltiSnips#ExpandSnippet()<CR>
 "strange that I have to change this
 "function! ChangeOrder()
 "envdebug_keymap
@@ -1426,15 +1451,18 @@ nnoremap <silent> _s  :Telescope lsp_workspace_symbols<CR>
 "let g:jedi#usages_command = "<leader>gn"
 "let g:jedi#completions_command = "<C-b>"
 
-"nnoremap <leader>gg :YcmCompleter GoTo<CR>
-"nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-"nnoremap <leader>gD :YcmCompleter GoToDeclaration<CR>
-"nnoremap <leader>gI :YcmCompleter GoToInclude<CR>
-"nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-"nnoremap <leader>gT :YcmCompleter GetType<CR>
+"nnoremap <leader>gg <CMD>YcmCompleter GoTo<CR>
+"nnoremap <leader>gd <CMD>YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>gD <CMD>YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>gI <CMD>YcmCompleter GoToInclude<CR>
+"nnoremap <leader>gr <CMD>YcmCompleter GoToReferences<CR>
+"nnoremap <leader>gT <CMD>YcmCompleter GetType<CR>
 "
-"au filetype c nnoremap K :YcmCompleter GetDoc<CR>
-noremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+"au filetype c nnoremap K <CMD>YcmCompleter GetDoc<CR>
+
+
+
+noremap <leader>gl <CMD>YcmCompleter GoToDeclaration<CR>
 "let g:ycm_key_invoke_completion="<C-b>" "ctrl i ?
 "let g:ycm_key_detailed_diagnostics='<leader>wd'
 " let g:ycm_server_python_interpreter="PY
@@ -1454,21 +1482,21 @@ noremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 "set runtimepath^=~/vimpy3/plugged/coc-pythom
 
 "function! SetupPython()
-	":CocCommand python.setInterpreter
-	":sleep 5
-	":call feedkeys('5')
+        "<CMD>CocCommand python.setInterpreter
+        "<CMD>sleep 5
+        "<CMD>call feedkeys('5')
 "endfunction
 
-nmap <M-C-Q> :qa!
+nmap <M-C-Q> <CMD>qa!
 
-"nnoremap , :BLines<CR>
-"nmap <c-,> :BLines<CR><C-P>
+"nnoremap , <CMD>BLines<CR>
+"nmap <c-,> <CMD>BLines<CR><C-P>
 "
 "let g:Lf_CommandMp = {'<C-K>': ['<Up>'], '<C-J>': ['<Down>']}
 " I did the switch in code manager.py
 "
-":inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
-":inoremap <S-b> <C-R>=STab_Or_Complete()<CR>
+"<CMD>inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
+"<CMD>inoremap <S-b> <C-R>=STab_Or_Complete()<CR>
 
 
 
@@ -1550,21 +1578,22 @@ vmap [, <ESC>[,hvi,
 vmap ], <ESC>],vi,
 
 "textobj-function
-autocmd  FileType * vmap <nowait> <buffer> aF <Plug>(textobj-function-A)
+autocmd  FileType * omap <nowait> <buffer> aF <Plug>(textobj-function-a)
+
 "select func
-vmap	aF	<Plug>(textobj-function-a)
-vmap	iF	<Plug>(textobj-function-i)
+omap aF <Plug>(textobj-function-a)
+omap iF <Plug>(textobj-function-i)
 "call popsikey#register('<leader>g', [
-        "\ #{key: 'g', info: 'status', action: ":Gstatus\<CR>", flags: 'n'},
-        "\ #{key: 'c', info: 'commit', action: ":Gcommit\<CR>", flags: 'n'},
+        "\ #{key: 'g', info: 'status', action: "<CMD>Gstatus\<CR>", flags: 'n'},
+        "\ #{key: 'c', info: 'commit', action: "<CMD>Gcommit\<CR>", flags: 'n'},
 "n
 "
 "v
         "\ ],
         "\ {})
 "call popsikey#register('mZ', [ 
-"            \ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'},
-"    \ {'key': 'c', 'info': 'commit', 'action': ":Gcommit\<CR>", 'flags': 'n'}], {})
+"            \ {'key': 'g', 'info': 'status', 'action': "<CMD>Gstatus\<CR>", 'flags': 'n'},
+"    \ {'key': 'c', 'info': 'commit', 'action': "<CMD>Gcommit\<CR>", 'flags': 'n'}], {})
 
 "to call at the end
 function! DefineMapping()
@@ -1632,13 +1661,13 @@ endfunction
 "evals a function based on the current visual selection
 vnoremap F "xd"=HandleF()<CR>P
 "execute a function based on the current visual selection
-vnoremap <C-F> "xy:call HandleCF()<CR>p
+vnoremap <C-F> "xy<CMD>call HandleCF()<CR>p
 
 "function! GetRegs()
     "call fzf#run({'source':":reg",'sink': function('PInsert')})<CR>
 "endendfunction
-"nnoremap <silent> <leader> :WhichKey '\'<CR>
-"nnoremap <silent> m :WhichKey 'm'<CR>
+"nnoremap <silent> <leader> <CMD>WhichKey '\<CR>
+"nnoremap <silent> m <CMD>WhichKey 'm'<CR>
 let g:which_key_vertical=1
 
 function! Ff()
@@ -1661,18 +1690,18 @@ EOF
     echo printf("'%s','%s'", x,com)
 endfunction
 
-:nnoremap <Leader>pp :lua require'telescope.builtin'.lsp_workspace_symbols{}<CR>
+nnoremap <Leader>pp <CMD>lua require'telescope.builtin'.lsp_workspace_symbols{}<CR>
 "Telescope
-nmap <leader>gf :Telescope git_files<CR>
+nmap <leader>gf <CMD>Telescope git_files<CR>
 "nnoremap <leader>gr <cmd>lua require('telescope.builtin').live_grep{ cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1] ,glob='*.py'}<cr>
 
 
 function! DoTag()
     let tmp=getcwd()
-    :exe ":cd ". expand("%:p:h")
+    <CMD>exe ":cd ". expand("%:p:h")
 
     let top = systemlist("git rev-parse --show-toplevel")[0]
-    :exe ':lcd '. top
+    <CMD>exe ':lcd '. top
     if filereadable('.\tagsloc')
         let t=readfile('tagsloc')[0]
         :exe ':lcd ' . t
@@ -1728,12 +1757,12 @@ endfunction
 
 "function! Gut(bb) 
 "exec 'cd '.expand('%:p:h')
-":GutentagsUpdate
+"<CMD>GutentagsUpdate
 "endfunction 
-"au filetype * command! -buffer GutenTagRun :call gutentags#setup_gutentags() <bar> :call timer_start(15,'Gut')<CR>
-command! -nargs=1 LfExt :Leaderf rg --live --glob <q-args><CR>
-command! -nargs=1 LfGitExt :call GitF(".*\\.". <f-args> ."$",0 )<CR>
-command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
+"au filetype * command! -buffer GutenTagRun <CMD>call gutentags#setup_gutentags() <bar> <CMD>call timer_start(15,'Gut')<CR>
+command! -nargs=1 LfExt <CMD>Leaderf rg --live --glob <q-args><CR>
+command! -nargs=1 LfGitExt <CMD>call GitF(".*\\.". <f-args> ."$",0 )<CR>
+command! -nargs=1 LfGitGen <CMD>call GitF(<f-args>,0)<CR>
 "Edit file in the same folder
 ":com! -nargs=1 -bang -complete=customlist,EditFileComplete
         "\ EditFile edit<bang> <args>
@@ -1747,24 +1776,24 @@ command! -nargs=1 LfGitGen :call GitF(<f-args>,0)<CR>
 :    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
 
-vnoremap <leader>GR "xy:call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
+vnoremap <leader>GR "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 vmap <c-y> <leader>GR
-vnoremap <leader>gr "xy:call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
+vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
-nmap <leader>gr :call GitF(".*py$",0)<CR>
-nmap <leader>gR :call GitF("",0)<CR>
-nmap <leader>Gr :call GitF(".*py$",1)<CR>
-nmap <leader>GR :call GitF("",1)<CR>
+nmap <leader>gr <CMD>call GitF(".*py$",0)<CR>
+nmap <leader>gR <CMD>call GitF("",0)<CR>
+nmap <leader>Gr <CMD>call GitF(".*py$",1)<CR>
+nmap <leader>GR <CMD>call GitF("",1)<CR>
 
 map mr <leader>gr
 map mR <leader>gR
 map MR <leader>GR
 map Mr <leader>Gr
-"nmap mr :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
-"nmap mR :call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
+"nmap mr <CMD>call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
+"nmap mR <CMD>call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
-"nmap <leader>gs :call DoTag()<CR>
-nmap gs :luafile c:\Users\ekarni\.vim\aa.v<CR>
+"nmap <leader>gs <CMD>call DoTag()<CR>
+nmap gs <CMD>luafile c:\Users\ekarni\.vim\aa.v<CR>
 ""~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
 
@@ -1802,10 +1831,10 @@ function! DoGF()
 endfunction
  
 
-nmap gf :call DoGF()<CR>
+nmap gf <CMD>call DoGF()<CR>
 
-nmap \] mC:bd<CR>:e <C-R>=@*<CR><CR>
-nmap <leader>gv :cd c:\users\ekarni\.vim<CR>:Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
+nmap \] mC<CMD>bd<CR>:e <C-R>=@*<CR><CR>
+nmap <leader>gv <CMD>cd c:\users\ekarni\.vim<CR><CMD>Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
 "nmap {          <Plug>EnhancedJumpsOlder
 "nmap }          <Plug>EnhancedJumpsNewer
 "nmap g{         <Plug>EnhancedJumpsLocalOlder
@@ -1815,13 +1844,13 @@ nmap <leader>gv :cd c:\users\ekarni\.vim<CR>:Leaderf rg --glob "*.vim" --glob "*
 nmap z; <Plug>EnhancedJumpsFarChangeOlder
 nmap z, <Plug>EnhancedJumpsFarChangeNewer
 
-command! -nargs=1 ReloadPackage :exe "cd c:/users/ekarni/.vim" <bar> lua require('funcs').reload_package(<f-args>)
-nmap <leader>pc :ChatGPT<CR>
+command! -nargs=1 ReloadPackage <CMD>exe "cd c:/users/ekarni/.vim" <bar> lua require('funcs').reload_package(<f-args>)
+nmap <leader>pc <CMD>ChatGPT<CR>
 
 "function! GetVoice()
     "return py3eval('recognize_voice()')
 "endfunction 
-nmap <c-L> :Voice<CR>
+nmap <c-L> <CMD>Voice<CR>
 
 imap <C-L> <C-R>=GetVoice()<CR>
 
@@ -1834,8 +1863,10 @@ endfunction
 autocmd FileType * call MapCC()
 vmap \\v <Plug>(VM-Visual-Add)
 "%s/^.\{-}",".\{-}",".\{-}","\(.\{-}\)".*/\1
-nmap \\. :call Exec(expand('@:'))<CR>
-"call nvim_input('ea<BS><tab>')<CR>:call timerstart(1,"call nvim_input('<tab><c-y>')")<CR>
+
+
+nmap \\. <CMD>call Exec(expand('@:'))<CR>
+"call nvim_input('ea<BS><tab>')<CR><CMD>call timerstart(1,"call nvim_input('<tab><c-y>')")<CR>
 "
 "
 nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
@@ -1843,15 +1874,15 @@ nnoremap <leader>xw <cmd>TroubleToggle workspace_diagnostics<cr>
 nnoremap <leader>xd <cmd>TroubleToggle document_diagnostics<cr>
 nnoremap <leader>xr <cmd>TroubleToggle lsp_references<cr>
 
-nmap _i :NayvyImports<CR>
-nmap _I :NayvyImportFZF<CR>
+nmap _i <CMD>NayvyImports<CR>
+nmap _I <CMD>NayvyImportFZF<CR>
 
 
 nnoremap <expr><silent> <LocalLeader>ro  nvim_exec('MagmaEvaluateOperator', v:true)
-nnoremap <silent>       <LocalLeader>rr :MagmaEvaluateLine<CR>
+nnoremap <silent>       <LocalLeader>rr <CMD>MagmaEvaluateLine<CR>
 xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
-nnoremap <silent>       <LocalLeader>rc :MagmaReevaluateCell<CR>
-nmap gw :Wtf<CR>
+nnoremap <silent>       <LocalLeader>rc <CMD>MagmaReevaluateCell<CR>
+nmap gw <CMD>Wtf<CR>
 nmap <leader>ms <Plug>(GitGutterStageHunk)
 nmap <leader>mu <Plug>(GitGutterUndoHunk)
 
@@ -1859,25 +1890,25 @@ function! StashME()
  let stash = input('Enter name: ')
 exec "!git stash push -m \"". stash . '" --keep-index '. expand('%') 
 endfunction 
-nmap <leader>GS :call StashME()<CR>
-nmap <leader>gp :exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
-nmap <leader>gc :cd ~/compare-my-stocks<CR>
+nmap <leader>GS <CMD>call StashME()<CR>
+nmap <leader>gp <CMD>exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
+nmap <leader>gc <CMD>cd ~/compare-my-stocks<CR>
 function! LfFil(a)
-:exec " :LeaderfFile ". a:a
+exec " :LeaderfFile ". a:a
 endfunction
 function! DoMGf(a)
     exec "cd " .a:a
     norm \gf
 endfunction 
-nmap <leader>mo :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
-nmap <leader>MO :call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
+nmap <leader>mo <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil')})<CR>
+nmap <leader>MO <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
 
 command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 
 nmap <leader>GWP mc:Gw<CR>:!git commit --amend --no-edit<CR>:!git push --force<CR>
 nmap <leader>Gw mc:Gw<CR>\Gc
-nnoremap <leader>w :Gwrite<CR>
-nmap <leader>gC :call GitF("",0)<CR>
+nnoremap <leader>w <CMD>Gwrite<CR>
+nmap <leader>gC <CMD>call GitF("",0)<CR>
 "#save and push  
 nmap Zp ZZ:Git push<CR>
 nmap ZP ZZ:Git push --force<CR>
@@ -1901,8 +1932,7 @@ function! Command_dir(keymap) abort
 endfunction
 cnoremap <expr> %% Command_dir('%%')
 "delete same file
-nmap <leader>ds :let current_bufname = expand('%:t') <bar> let current_bufnr = bufnr('%') <bar> for i in range(1, bufnr('$')) <bar> if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname <bar> execute 'bdelete' i <bar> endif <bar> endfor<CR>
-nmap <leader>ds :let current_bufname = expand('%:t') <bar> let current_bufnr = bufnr('%') <bar> for i in range(1, bufnr('$')) <bar> if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname <bar> execute 'bdelete' i <bar> endif <bar> endfor<CR>
+nmap <leader>ds <CMD>let current_bufname = expand('%:t') <bar> let current_bufnr = bufnr('%') <bar> for i in range(1, bufnr('$')) <bar> if bufexists(i) && i != current_bufnr && bufname(i) =~ current_bufname <bar> execute 'bdelete' i <bar> endif <bar> endfor<CR>
 
 function! OpenSameFileInVSplit()
     let current_bufname = expand('%:t')
@@ -1914,9 +1944,11 @@ function! OpenSameFileInVSplit()
         endif
     endfor
 endfunction
-nmap <leader>dsp :call OpenSameFileInVSplit()<CR>
-nmap <leader>dD :call OpenSameFileInVSplit()<CR>:diffthis<CR>:call GoOther()<CR>:diffthis<CR>
-"nmap _A :lua require("actions-preview").code_actions()<CR>
+
+
+nmap <leader>dsp <CMD>call OpenSameFileInVSplit()<CR>
+nmap <leader>dD <CMD>call OpenSameFileInVSplit()<CR><CMD>diffthis<CR><CMD>call GoOther()<CR><CMD>diffthis<CR>
+"nmap _A <CMD>lua require("actions-preview").code_actions()<CR>
 
 "function! SE()
     "echom "xxx"
@@ -1928,67 +1960,68 @@ nmap <leader>dD :call OpenSameFileInVSplit()<CR>:diffthis<CR>:call GoOther()<CR>
 function! SE()
     call feedkeys("\<CR>")
 endfunction 
-nmap <leader>gg :BookmarkGo<CR>:call EasyMotion#SolEnter(0,2,'call SE()')<CR>
-nmap <leader>GG :BookmarkGo<CR>
-nmap <leader>ga :BookmarkAdd<CR>
+nmap <leader>gg <CMD>BookmarkGo<CR><CMD>call EasyMotion#SolEnter(0,2,'call SE()')<CR>
+nmap <leader>GG <CMD>BookmarkGo<CR>
+nmap <leader>ga <CMD>BookmarkAdd<CR>
 nmap ? <c-a>j
 
 function! DDa()
-           :lua vim.lsp.buf.code_action()
-           :sleep 5
-           :call feedkeys('4','t')
+           <CMD>lua vim.lsp.buf.code_action()
+           <CMD>sleep 5
+           <CMD>call feedkeys('4','t')
        endfunction
 
 
-vnoremap <leader>gR "xy:call feedkeys( ":LfGitGen $\<lt>CR>". @x . "\<lt>CR>")<CR>
+vnoremap <leader>gR "xy<CMD>call feedkeys( ":LfGitGen $\<lt>CR>". @x . "\<lt>CR>")<CR>
 
-nnoremap <leader>XD :lua vim.diagnostic.setloclist()<CR>
+nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
-nnoremap <leader>xf :lua vim.diagnostic.setloclist()<CR>:Lfilter /syntax\\|is not defined/<CR>
+nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|is not defined/<CR>
 
 "restore cfilter
-nnoremap <leader>XR :lolder<CR>
+nnoremap <leader>XR <CMD>lolder<CR>
 
- 
+
 
 "to paste with formatting
 
-imap <c-i> <c-o>:norm mP<CR>
+imap <c-i> <c-o><CMD>norm mP<CR>
 
-nmap <leader>dx :diffthis<CR>:call GoOther()<CR>:diffthis<CR>
+nmap <leader>dx <CMD>diffthis<CR><CMD>call GoOther()<CR><CMD>diffthis<CR>
 
 
 
-nnoremap <leader>Grc :Git rebase --continue<CR>
+nnoremap <leader>Grc <CMD>Git rebase --continue<CR>
 
-nnoremap <leader>Gra :Git rebase --abort<CR>
+nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
 
-nnoremap <leader>Gw :Gwrite<CR>
+nnoremap <leader>Gw <CMD>Gwrite<CR>
 
-nnoremap <leader>GA :Git commit  -a --amend --no-verify --no-edit<CR>
+nnoremap <leader>GA <CMD>Git commit  -a --amend --no-verify --no-edit<CR>
 
-nnoremap <leader>Gcv :Git commit -v -q<CR>
+nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
- 
 
-nnoremap msS :%s/\s//g<CR>
 
- 
+nnoremap msS <CMD>%s/\s//g<CR>
+
+
 
 "remove dumplicate lines
 
-nnoremap msd :silent! %s/\r\r/\r/g<CR>:silent! %s/\n\n/\r/g<CR>
-
- 
-
-nmap mst :s/ //g<CR>
+nnoremap msd <CMD>silent! %s/\r\r/\r/g<CR><CMD>silent! %s/\n\n/\r/g<CR>
 
 
-nmap I :call StartSpecialInsert()<CR>i
+
+nmap mst <CMD>s/ //g<CR>
+
+
+nmap I <CMD>call StartSpecialInsert()<CR>i
 
 nnoremap <leader>I I
 
-nmap A :call StartSpecialInsert()<CR>i
+nmap A <CMD>call StartSpecialInsert()<CR>i
 
 nnoremap <leader>A A
+

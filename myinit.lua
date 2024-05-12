@@ -626,8 +626,6 @@ wk=require('which-key')
 wk.setup({plugins = {presets = { operators = false  }}})
 wk.register({
     p = {
-    prefix = "<leader>",
-    mode = "v",
         name = "ChatGPT",
         e = {
             function()
@@ -636,6 +634,9 @@ wk.register({
             "Edit with instructions",
         },
     },
+}, {
+    prefix = "<leader>",
+    mode = "v",
 })
 --require("transparent").setup({
     --groups = { -- table: default groups

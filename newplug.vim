@@ -17,15 +17,14 @@ endif
 "            \ 'ov': ['i,', 'a', 'I', 'A'],
 "            \ })}
 "
-"Plugit 'equalsraf/neovim-gui-shim'
 Plugit 'aznhe21/actions-preview.nvim'
-Plugit 'will133/vim-dirdiff'
-Plugit 'ZSaberLv0/ZFVimDirDiff', {'on':'LazyVimStarted'}
-Plugit 'ZSaberLv0/ZFVimJob' 
+Plugit 'will133/vim-dirdiff', {'event': 'VeryLazy'}
+Plugit 'ZSaberLv0/ZFVimDirDiff', {'event': 'VeryLazy'}
+Plugit 'ZSaberLv0/ZFVimJob' , {'event': 'VeryLazy'}
 " required
-Plugit 'ZSaberLv0/ZFVimIgnore' 
+Plugit 'ZSaberLv0/ZFVimIgnore' , {'event': 'VeryLazy'}
 " optional, but recommended for auto ignore setup
-Plugit 'ZSaberLv0/ZFVimBackup' 
+Plugit 'ZSaberLv0/ZFVimBackup' , {'event': 'VeryLazy'}
 " optional, but recommended for auto backup
 Plugit 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plugit 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
@@ -43,7 +42,7 @@ Plugit 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -D
 
 Plugit 'dyng/ctrlsf.vim'
 
-Plugit 'lkhphuc/jupyter-kernel.nvim'
+Plugit 'lkhphuc/jupyter-kernel.nvim' , {'event':'VeryLazy'}
 Plugit 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugits' }
 
 Plugit 'davvid/telescope-git-grep.nvim'
@@ -57,7 +56,7 @@ Plugit 'nvim-telescope/telescope-live-grep-args.nvim'
 Plugit 'SmiteshP/nvim-navic'
 Plugit 'numToStr/Comment.nvim'        
 " Optional
-Plugit 'SmiteshP/nvim-navbuddy'
+Plugit 'SmiteshP/nvim-navbuddy', {'event': 'VeryLazy'}
 "Plugit 'simrat39/symbols-outline.nvim'
 Plugit 'folke/trouble.nvim'
 Plugit 'lambdalisue/fin.vim'
@@ -66,11 +65,11 @@ Plugit 'relastle/vim-nayvy'
 "Plugit 'xiyaowong/transparent.nvim'
 Plugit 'blblb/speech-to-text.nvim'
 Plugit 'sbdchd/neoformat'
-Plugit 'MunifTanjim/nui.nvim'
-Plugit 'jackMort/ChatGPT.nvim'
+Plugit 'MunifTanjim/nui.nvim' , {'event': 'VeryLazy'}
+Plugit 'jackMort/ChatGPT.nvim' , {'event': 'VeryLazy'}
 Plugit 'kosayoda/nvim-lightbulb'
 Plugit 'antoinemadec/FixCursorHold.nvim'
-Plugit 'github/copilot.vim'
+Plugit 'github/copilot.vim' , {'event': 'VeryLazy'}
 Plugit 'ggandor/lightspeed.nvim'
 "Plugit 'rhysd/clever-f.vim'
 "Plugit 'craigemery/vim-autotag'
@@ -81,15 +80,15 @@ Plugit 'sindrets/diffview.nvim'
 "Plugit 'ibhagwan/fzf-lua', {'branch': 'main'}
 " optional for icon support
 "plug 'brettanomyces/nvim-terminus'
-Plugit 'natecraddock/workspaces.nvim'
+Plugit 'natecraddock/workspaces.nvim', {'event': 'VeryLazy'}
 Plugit 'brymer-meneses/grammar-guard.nvim'
 Plugit 'kyazdani42/nvim-web-devicons'
 Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
-Plugit 'ray-x/navigator.lua'
+Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
 Plugit 'nvim-treesitter/nvim-treesitter-refactor'
-Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plugit 'nvim-lua/plenary.nvim'
-Plugit 'nvim-telescope/telescope.nvim'
+Plugit 'nvim-telescope/telescope.nvim', {'event': 'VeryLazy'}
 Plugit 'nvim-telescope/telescope-symbols.nvim'
 Plugit 'stevearc/aerial.nvim'
 "Plugit 'williamboman/nvim-lsp-installer'
@@ -103,7 +102,7 @@ Plugit 'uga-rosa/cmp-dictionary'
 Plugit 'hrsh7th/nvim-cmp', { 'branch': 'main'}
 Plugit 'quangnguyen30192/cmp-nvim-ultisnips'
 "tpope/vim-eunuch.git best in linux env I guess...
-Plugit 'justinmk/vim-sneak'
+"Plugit 'justinmk/vim-sneak'
 "Plugit 'unblevable/quick-scope'
 "Plugit 'liuchengxu/vim-which-key'
 "Plugit 'folke/lazy.nvim'
@@ -144,6 +143,7 @@ Plugit 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 "switch tabs
 Plugit 'viniciusarcanjo/fzf-tabs.nvim'
 Plugit 'airblade/vim-gitgutter'
+"airline needs it
 "needed? yes, just a collection of snippets
 Plugit 'honza/vim-snippets'
 "tab completion 
@@ -230,11 +230,6 @@ Plugit 'Houl/vim-repmo'
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
 Plugit 'powerman/vim-plugin-AnsiEsc'
-let g:vim_shell_plug_args = {'dependencies': []}
-if has('nvim')
-    let g:vim_shell_plug_args['event'] = 'VeryLazy'
-endif
-
 if !has('nvim')
     call plug#end()
 endif
