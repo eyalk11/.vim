@@ -85,8 +85,8 @@ Plugit 'brymer-meneses/grammar-guard.nvim'
 Plugit 'kyazdani42/nvim-web-devicons'
 Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
-Plugit 'nvim-treesitter/nvim-treesitter-refactor'
-Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
+"Plugit 'nvim-treesitter/nvim-treesitter-refactor'
+"Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plugit 'nvim-lua/plenary.nvim'
 Plugit 'nvim-telescope/telescope.nvim', {'event': 'VeryLazy'}
 Plugit 'nvim-telescope/telescope-symbols.nvim'
@@ -145,7 +145,7 @@ Plugit 'viniciusarcanjo/fzf-tabs.nvim'
 Plugit 'airblade/vim-gitgutter'
 "airline needs it
 "needed? yes, just a collection of snippets
-Plugit 'honza/vim-snippets'
+"Plugit 'honza/vim-snippets'
 "tab completion 
 "Plugit 'ervandew/supertab'
 "we dont need it right now

@@ -1,6 +1,4 @@
 vim.opt.rtp:prepend( vim.fn.expand( '~/.vim' ))
-vim.opt.rtp:prepend( vim.fn.expand( '~/.vim/plugged') ) 
-vim.opt.rtp:prepend( vim.fn.expand( '~/.vim/plugged/plugins') ) 
 require("lazy").setup(
 
 {
@@ -11,9 +9,11 @@ require("lazy").setup(
       version = false 
        
   },
---, performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
+-- , performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
   spec = {
-      {import="plugged/noice"},
+        {import = "plugins" },
+        --{import = "plugins" },
+      --{import="plugged/noice"},
       --{import="plugins"},
       --{import="noice"},
     {"equalsraf/neovim-gui-shim",version="*", config = function () vim.cmd("colorscheme onedark") end,priority=10000},

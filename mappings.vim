@@ -1,10 +1,8 @@
-"tabs
 let i = 1
 while i <= 9
     execute 'nnoremap <Leader>' . i . ' <CMD>' . i . 'tabn<CR>'
     let i = i + 1
 endwhile
-
 
 "mouse 
 "<CMD>redraw<CR>
@@ -18,7 +16,8 @@ imap <RightMouse> <ESC>
 
 nmap <Home> ^
 
-
+map __ <Plug>NERDCommenterComment
+map <leader>Cu <Plug>NERDCommenterUncomment
 "replace vanila
 nnoremap <leader>& &
 "get start of (next) string
@@ -106,7 +105,21 @@ nnoremap <leader>F F
 vnoremap <end> $h
 
 "nunmap ,
-nmap <nowait> , <CMD>LeaderfDisablePreview<CR><CMD>Leaderf line --popup<CR>
+nmap <nowait> , <CMD>Leaderf line<CR>
+"nmap <nowait> , <CMD>call Lff()<CR>
+"function! Lff()
+"py3 << EOF
+"import cProfile
+"import pstats
+"profiler = cProfile.Profile()
+"profiler.enable()
+"anyHub.start('line')
+"profiler.disable()
+"stats = pstats.Stats(profiler).sort_stats('cumulative')
+"stats.dump_stats('output.pstats')
+"EOF
+"endfunction
+
 nmap m, <CMD>LeaderfEnablePreview<CR><CMD>Leaderf line --popup<CR>
 "nnoremap <leader><c-t> <c-t>
 
@@ -258,7 +271,7 @@ imap <silent><script><expr> <M-j> copilot#Next()
 let g:copilot_no_tab_map = v:true
 
 function! FF()
-<CMD>call quick_scope#Wallhacks()
+call quick_scope#Wallhacks()
 return "\<c-o>\<Plug>(easymotion-sl)"
 endfunction
 "imap <expr> <c-.> FF()
@@ -304,13 +317,13 @@ endfunction
 nmap <plug>ttt <CMD>call JJJ()<CR>
 nmap <expr> <c-b> "<plug>ttt"
 function! FFn()
-<CMD>call quick_scope#Wallhacks('t')
+call quick_scope#Wallhacks('t')
 return "\<Plug>Lightspeed_F"
 endfunction
 nmap <expr> f Ffn()
 nmap <expr> F FFn()
 function! Ffn()
-<CMD>call quick_scope#Wallhacks('f')
+call quick_scope#Wallhacks('f')
 return "\<Plug>Lightspeed_f"
 endfunction
 "nmap F <Plug>cusF
@@ -1032,7 +1045,7 @@ nmap <leader>upd \ttupama
 nnoremap <leader>oi <CMD>call RecallInserts(0)<CR>
 nnoremap <leader>OI <CMD>call GetAllInserts()<CR>
 nnoremap <leader>ol <CMD>lopen<CR>
-nnoremap <leader>ov <CMD>TN ~/.vim/.vimrc<CR>
+nnoremap <leader>ov <CMD>TN ~/.vim/newplug.vim<CR>
 nmap <leader>om <CMD>TN ~/.vim/mappings.vim<CR>
 nmap <leader>on <CMD>TN ~/.vim/myinit.lua<CR>
 
@@ -1780,9 +1793,14 @@ vnoremap <leader>GR "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x .
 vmap <c-y> <leader>GR
 vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
+
+"Use current workspace git py  
 nmap <leader>gr <CMD>call GitF(".*py$",0)<CR>
+"Use current workspace git all 
 nmap <leader>gR <CMD>call GitF("",0)<CR>
+"Use current file  git py  
 nmap <leader>Gr <CMD>call GitF(".*py$",1)<CR>
+"Use current file  git all  
 nmap <leader>GR <CMD>call GitF("",1)<CR>
 
 map mr <leader>gr
