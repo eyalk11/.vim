@@ -13,7 +13,7 @@ endwhile
 "speical insert
 nmap <RightMouse> <F12>
 imap <RightMouse> <ESC>
-
+inoremap <S-TAB> <esc><<^i
 nmap <Home> ^
 
 map __ <Plug>NERDCommenterComment
@@ -104,8 +104,9 @@ nnoremap <leader>F F
 "end only until the end and not one more
 vnoremap <end> $h
 
-"nunmap ,
+
 nmap <nowait> , <CMD>Leaderf line<CR>
+"nmap <nowait> , <CMD>Telescope current_buffer_fuzzy_find<CR>
 "nmap <nowait> , <CMD>call Lff()<CR>
 "function! Lff()
 "py3 << EOF
@@ -1047,7 +1048,9 @@ nnoremap <leader>OI <CMD>call GetAllInserts()<CR>
 nnoremap <leader>ol <CMD>lopen<CR>
 nnoremap <leader>ov <CMD>TN ~/.vim/newplug.vim<CR>
 nmap <leader>om <CMD>TN ~/.vim/mappings.vim<CR>
+nmap <leader>OM <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>e ~/.vim/mappings.vim<CR>
 nmap <leader>on <CMD>TN ~/.vim/myinit.lua<CR>
+nmap <leader>ON <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>e ~/.vim/myinit.lua<CR>
 
 "nnoremap <leader>oE <CMD>!
 
@@ -1768,6 +1771,30 @@ endif
 
 endfunction
 
+function! GitFPat(regfilter,curfile,pattern) 
+    let pattern= a:pattern
+    if (a:curfile)
+
+    let tmp=getcwd()
+    :exe ":cd ". expand("%:p:h")
+endif 
+    let top = systemlist("git rev-parse --show-toplevel")[0]
+    "echo top
+    :exe ':cd '. top
+    let a=systemlist("git ls-files --full-name" )
+    :if len(a:regfilter)>0
+    let a = filter(a,{idx,val -> (val =~ a:regfilter)})
+    let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
+    :endif 
+    ":echo a
+    :call writefile(a,'c:\temp\filelist.txt')
+    exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+    if (a:curfile)
+
+        :exe ':cd '.tmp
+    endif 
+
+endfunction
 "function! Gut(bb) 
 "exec 'cd '.expand('%:p:h')
 "<CMD>GutentagsUpdate
@@ -1789,9 +1816,6 @@ command! -nargs=1 LfGitGen <CMD>call GitF(<f-args>,0)<CR>
 :    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
 
-vnoremap <leader>GR "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
-vmap <c-y> <leader>GR
-vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
 
 "Use current workspace git py  
@@ -1802,6 +1826,15 @@ nmap <leader>gR <CMD>call GitF("",0)<CR>
 nmap <leader>Gr <CMD>call GitF(".*py$",1)<CR>
 "Use current file  git all  
 nmap <leader>GR <CMD>call GitF("",1)<CR>
+
+vmap <leader>Gr "xy<CMD>call GitFPat(".*py$",1,@x)<CR>
+vmap <leader>GR "xy<CMD>call GitFPat("",1,@x)<CR>
+vmap <leader>gR "xy<CMD>call GitFPat("",0,@x)<CR>
+vmap <leader>gr "xy<CMD>call GitFPat(".*py$",0,@x)<CR>
+
+vnoremap <c-a>g "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
+vmap <c-y> <leader>GR
+vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
 map mr <leader>gr
 map mR <leader>gR
@@ -1990,7 +2023,6 @@ function! DDa()
        endfunction
 
 
-vnoremap <leader>gR "xy<CMD>call feedkeys( ":LfGitGen $\<lt>CR>". @x . "\<lt>CR>")<CR>
 
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 

@@ -92,7 +92,7 @@ Plugit 'nvim-telescope/telescope.nvim', {'event': 'VeryLazy'}
 Plugit 'nvim-telescope/telescope-symbols.nvim'
 Plugit 'stevearc/aerial.nvim'
 "Plugit 'williamboman/nvim-lsp-installer'
-Plugit 'neovim/nvim-lspconfig'
+"Plugit 'neovim/nvim-lspconfig'
 Plugit 'hrsh7th/cmp-nvim-lsp'
 "Plugit 'hrsh7th/cmp-buffer'
 Plugit 'hrsh7th/cmp-path'
@@ -145,7 +145,7 @@ Plugit 'viniciusarcanjo/fzf-tabs.nvim'
 Plugit 'airblade/vim-gitgutter'
 "airline needs it
 "needed? yes, just a collection of snippets
-"Plugit 'honza/vim-snippets'
+Plugit 'honza/vim-snippets'
 "tab completion 
 "Plugit 'ervandew/supertab'
 "we dont need it right now

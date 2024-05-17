@@ -75,6 +75,7 @@ require("grammar-guard").init()
  --}
  require'lightspeed'.setup { ignore_case = true, repeat_ft_with_target_char = true}
 
+local lga_actions = require("telescope-live-grep-args.actions")
  require("nvim-lightbulb").setup({
      ignore = { ft = { "python"}},
  autocmd = { enabled = true },
@@ -87,8 +88,6 @@ require("grammar-guard").init()
 })
 
 local telescope = require("telescope")
-local lga_actions = require("telescope-live-grep-args.actions")
-local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 
 telescope.setup {
         defaults = {
@@ -132,8 +131,8 @@ telescope.setup {
 --end
 --}}})
 
-vim.keymap.set('n','<esc>','<esc>',opts)
-vim.keymap.set('i','<esc>','<esc>',opts)
+vim.keymap.set('n','<esc>','<esc>')
+vim.keymap.set('i','<esc>','<esc>')
 --lua require'telescope.builtin'.lsp_workspace_symbols({["layout_config.preview_width"]    = 0.8})
 --lua telescope.builtin.lsp_workspace_symbols({layout_config.width   = 0.8})
 local telescope=require('telescope')
@@ -183,47 +182,6 @@ end
 vim.keymap.set('n', 'mt' , opencwd ,opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-    ---- Mappings.
-    ---- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-    vim.keymap.set('n', '<BS>', vim.lsp.buf.hover, bufopts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', '_k', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', '_wa', vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set('n', '_ws', function() 
-        _G.set_workspace_dir(vim.fn.input('Directory: ',vim.fn.getcwd())) 
-    end 
-        )
-    vim.keymap.set('n', '_wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set('n', '_wl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end
-    , bufopts)
-    vim.keymap.set('n', '_D', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', 'gR', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set("v", "<c-y>", live_grep_args_shortcuts.grep_visual_selection)
-    vim.keymap.set('n', '_f' , format , bufopts)
-    --vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
-    --vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
-    ----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
-    ----vim.keymap.set('n','g0',require('navigator.symbols').document_symbols())
-    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-    --local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-    local opts = { noremap=true, silent=true }
-
-    buf_set_keymap('n', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    buf_set_keymap('v', '_a', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    vim.keymap.set('n','_A', require("actions-preview").code_actions, opts)
-end
-
 local cmp = require'cmp'
 
 local has_words_before = function()
@@ -235,18 +193,18 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 cmp.setup({
-  snippet = {
-    -- REQUIRED - you must specify a snippet engine
-    expand = function(args)
-      -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-      vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+  --snippet = {
+    ---- REQUIRED - you must specify a snippet engine
+    --expand = function(args)
+      ---- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      ---- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      ---- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+      --vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
 
-    end,
-  },
+    --end,
+  --},
   window = {
-    -- completion = cmp.config.window.bordered(), 
+    -- completion = cmp.config.window.bordered(),
     -- documentation = cmp.config.window.bordered(),doc flags
     -- rep
   },
@@ -266,7 +224,7 @@ cmp.setup({
       end
     end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
+    ["<S-Tab>"] = cmp.mapping(function(fallback) -- inoremap <S-TAB> <esc><<^i
      if cmp.visible() then
         cmp.select_prev_item()
       elseif has_words_before() then
@@ -358,37 +316,7 @@ cmp.setup.cmdline(':', {
 -- Setup lspconfig.
 -- cmp_nvim_lsp.
 --local capabilities = require('cmp_nvim_lsp').default_capabilities()
- local capabilities = vim.tbl_deep_extend("force",
-vim.lsp.protocol.make_client_capabilities(),
-require('cmp_nvim_lsp').default_capabilities()
-)
-local lsp_flags = {
-    -- This is the default in Nvim 0.7+
-    debounce_text_changes = 150,
-}
-require('lspconfig')['tsserver'].setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-    flags = lsp_flags,
-}
-require('lspconfig')['rust_analyzer'].setup{
-    on_attach = on_attach,
-    flags = lsp_flags,
-    -- Server-specific settings...
-    settings = {
-        ["rust-analyzer"] = {}
-    }
-}
-require("lspconfig").yamlls.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-}
 
---require("lspconfig").vimls.setup{
-    --capabilities = capabilities,
-    --on_attach = on_attach,
---}
-require("lspconfig").jsonls.setup{}
 
 --require'lspconfig'.sumneko_lua.setup{
     --capabilities = capabilities,
@@ -396,69 +324,8 @@ require("lspconfig").jsonls.setup{}
 --}    
 
 vim.lsp.set_log_level("debug")
-local root_files = {
-"pyproject.toml",
-"setup.py",
-"setup.cfg",
-"requirements.txt",
-"Pipfile",
-"pyrightconfig.json",
-}
 
-require('lspconfig').pylsp.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-    settings =
-    {
-        pylsp = {
-            plugins =
-            {
-                pycodestyle = {
-                    enabled = false,
-                    ignore = {'E225','E231'},
-                },
-                pydocstyle = {
-                    enabled= false
-                },
-                pylint = { enabled = false },
-                rope = {enabled = false,ropefolder='C:\\temp\\rope' },
-                --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
-                --rope_autoimport = {enabled = false, {completions = {enabled = false}, {code_actions = {enabled = false}}}},
-                jedi_symbols = { enabled = true, all_scopes = true, include_import_symbols = true, ignore_paths = { "^(?=.*compare-my-stocks)(?!.*src)"}}
 
-                --jedi = { enabled= true }
-                --jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
-            }
-            --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
-        }
-    }
-}
-require('lspconfig')['pyright'].setup{
-    capabilities = capabilities,
-    on_attach =  function(client)
-        client.server_capabilities.completionProvider = false
-        on_attach(client)
-    end,
-    flags = lsp_flags,
-    settings = {
-                python = {
-                    analysis = {
-                        autoSearchPaths = true,
-                        useLibraryCodeForTypes = true,
-                        diagnosticMode = "openFilesOnly"
-                        --logLevel = "Trace",
-                    },
-                },
-            }
-    --root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
-    --verboseOutput = true
-    --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
-}
-require'lspconfig'.lua_ls.setup {
-capabilities = capabilities,
-on_attach = on_attach,
-flags = lsp_flags
-}
 
 --
 --require'lspconfig'.jedi_language_server.setup{
@@ -589,10 +456,6 @@ require("cmp_dictionary").setup({
 --require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
   --capabilities = capabilities
 --}
-require'lspconfig'.powershell_es.setup{
-    capabilities = capabilities,
-    on_attach = on_attach,
-}
  require("which-key").setup {
       -- your configuration comes here
       -- or leave it empty to use the default settings
@@ -706,8 +569,12 @@ end
         local node = api.tree.get_node_under_cursor()
         print(node.absolute_path)
         local fil = "aaa"
-
-        if vim.fn.filereadable(node.absolute_path) == 2 then 
+        if node == nil then 
+            fil= require "nvim-tree.core".get_cwd()
+            --fil= vim.fn.get_line('.')
+            --# remove last 3 letters 
+            --fil = string.sub(fil, 1, -4)
+        elseif vim.fn.filereadable(node.absolute_path) == 2 then 
             fil=node.absolute_path -- is dir
         else 
             fil=vim.fn.fnamemodify(node.absolute_path,':h')

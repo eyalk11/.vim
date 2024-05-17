@@ -545,6 +545,8 @@ let tt = timer_start(1000,'LazyIt',{'repeat':1})
 set mouse=a
 au! gutentags_detect 
 set ut=3000
+nunmap ,tt
+nunmap ,t
 endfunction
 
 function! LazyIt(a)

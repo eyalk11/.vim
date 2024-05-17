@@ -304,71 +304,98 @@ let g:EasyMotion_off_screen_search = 1
 "
 
 " Ultisnips
- " let g:UltiSnipsJumpForwardTrigger = '<tab>'
- "  "let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
-"
- let g:UltiSnipsExpandTrigger = '<c-g>'
-let  g:UltiSnipsJumpForwardTrigger   =     '<c-j>'
-let  g:UltiSnipsJumpBackwardTrigger  =     '<c-k>'
-"
-"
+"function! UltiSnips#map_keys#MapKeys() abort
+    "if exists("g:UltiSnipsExpandOrJumpTrigger")
+        "exec "inoremap <silent> " . g:UltiSnipsExpandOrJumpTrigger . " <C-R>=UltiSnips#ExpandSnippetOrJump()<cr>"
+        "exec "snoremap <silent> " . g:UltiSnipsExpandOrJumpTrigger . " <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>"
+    "elseif exists("g:UltiSnipsJumpOrExpandTrigger")
+        "exec "inoremap <silent> " . g:UltiSnipsJumpOrExpandTrigger . " <C-R>=UltiSnips#JumpOrExpandSnippet()<cr>"
+        "exec "snoremap <silent> " . g:UltiSnipsJumpOrExpandTrigger . " <Esc>:call UltiSnips#JumpOrExpandSnippet()<cr>"
+    "elseif g:UltiSnipsExpandTrigger == g:UltiSnipsJumpForwardTrigger
+        "exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippetOrJump()<cr>"
+        "exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>"
+    "else
+        "exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippet()<cr>"
+        "exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippet()<cr>"
+    "endif
+    "exec "xnoremap <silent> " . g:UltiSnipsExpandTrigger. " :call UltiSnips#SaveLastVisualSelection()<cr>gvs"
+    "if len(g:UltiSnipsListSnippets) > 0
+        "exec "inoremap <silent> " . g:UltiSnipsListSnippets . " <C-R>=UltiSnips#ListSnippets()<cr>"
+        "exec "snoremap <silent> " . g:UltiSnipsListSnippets . " <Esc>:call UltiSnips#ListSnippets()<cr>"
+    ""endif
 
-"Nerdtree
-"
-function! NERDDoClose()
-	let node = g:NERDTreeFileNode.GetSelected()
-	if !(node.path.isDirectory)
-		execute "norm x"
-	elseif node.path.isDirectory && (node.isOpen==1)
-		execute "norm \<CR>zt"
-	endif
-endfunction
+    "snoremap <silent> <BS> <c-g>"_c
+    "snoremap <silent> <DEL> <c-g>"_c
+    "snoremap <silent> <c-h> <c-g>"_c
+    "snoremap <c-r> <c-g>"_c<c-r>
+    "endf
+    "let g:UltiSnipsJumpForwardTrigger = '<tab>'
+    "let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+    "
+    let g:UltiSnipsRemoveSelectModeMappings = 1
+    let g:UltiSnipsExpandTrigger = '<c-g>'
+    let  g:UltiSnipsJumpForwardTrigger   =     '<c-j>'
+    let  g:UltiSnipsJumpBackwardTrigger  =     '<c-k>'
+    let g:UltiSnipsListSnippets = '\ulv'
+    "
+    "
 
-function! NERDDoOpen()
-	let node = g:NERDTreeFileNode.GetSelected()
-	if node.path.isDirectory && (node.isOpen==0)
-		execute "norm \<CR>ztj"
-	endif
-endfunction
+    "Nerdtree
+    "
+    function! NERDDoClose()
+        let node = g:NERDTreeFileNode.GetSelected()
+        if !(node.path.isDirectory)
+            execute "norm x"
+        elseif node.path.isDirectory && (node.isOpen==1)
+            execute "norm \<CR>zt"
+        endif
+    endfunction
 
-function! DoClose()
-PY<<EOF
-import vim
-nod=netranger.api.NETRApi.ranger.cur_node
-cur_ind=int(vim.eval("line('.')")) - 1
-for i in range(cur_ind,0,-1):
-	nod=netranger.api.NETRApi.ranger.cur_buf.nodes[i]
-	if nod.is_DIR:
-		if (nod.expanded):
-			netranger.api.NETRApi.ranger.cur_buf.set_clineno_by_node(nod)
-			netranger.api.NETRApi.ranger.cur_buf.clineNo=i
-			netranger.api.NETRApi.ranger.NETRToggleExpand()
-			break
-EOF
-endfunction
+    function! NERDDoOpen()
+        let node = g:NERDTreeFileNode.GetSelected()
+        if node.path.isDirectory && (node.isOpen==0)
+            execute "norm \<CR>ztj"
+        endif
+    endfunction
 
-function! DoOpen()
-PY<<EOF
-import vim
-nod=netranger.api.NETRApi.ranger.cur_node
-if nod.is_DIR:
-	if not (nod.expanded):
-		netranger.api.NETRApi.ranger.NETRToggleExpand()
-		vim.command("norm kztjj")
-EOF
-endfunction
+    function! DoClose()
+        PY<<EOF
+        import vim
+        nod=netranger.api.NETRApi.ranger.cur_node
+        cur_ind=int(vim.eval("line('.')")) - 1
+        for i in range(cur_ind,0,-1):
+            nod=netranger.api.NETRApi.ranger.cur_buf.nodes[i]
+            if nod.is_DIR:
+                if (nod.expanded):
+                    netranger.api.NETRApi.ranger.cur_buf.set_clineno_by_node(nod)
+                    netranger.api.NETRApi.ranger.cur_buf.clineNo=i
+                    netranger.api.NETRApi.ranger.NETRToggleExpand()
+                    break
+                    EOF
+                endfunction
 
-function! Duplicate(dst)
-	PY dst=vim.eval('a:dst')
-	PY import os
-	PY di=vim.eval('getcwd()')
-	PY nod=netranger.api.NETRApi.ranger.cur_node
-	PY fil=nod.name
-	PY import fs_server
-	PY fs_server.cp(os.path.join(di,fil),os.path.join(di,dst))
-endfunction
-" other
-"To use for consecutive searches. Saves the need to enter search seperately
+                function! DoOpen()
+                    PY<<EOF
+                    import vim
+                    nod=netranger.api.NETRApi.ranger.cur_node
+                    if nod.is_DIR:
+                        if not (nod.expanded):
+                            netranger.api.NETRApi.ranger.NETRToggleExpand()
+                            vim.command("norm kztjj")
+                            EOF
+                        endfunction
+
+                        function! Duplicate(dst)
+                            PY dst=vim.eval('a:dst')
+                            PY import os
+                            PY di=vim.eval('getcwd()')
+                            PY nod=netranger.api.NETRApi.ranger.cur_node
+                            PY fil=nod.name
+                            PY import fs_server
+                            PY fs_server.cp(os.path.join(di,fil),os.path.join(di,dst))
+                        endfunction
+                        " other
+                        "To use for consecutive searches. Saves the need to enter search seperately
 "each time. TODO: only on file xzt
 "let g:NETRIgnore=[]
 "
