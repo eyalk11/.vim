@@ -82,7 +82,7 @@ Plugit 'sindrets/diffview.nvim'
 "plug 'brettanomyces/nvim-terminus'
 Plugit 'natecraddock/workspaces.nvim', {'event': 'VeryLazy'}
 Plugit 'brymer-meneses/grammar-guard.nvim'
-Plugit 'kyazdani42/nvim-web-devicons'
+"Plugit 'kyazdani42/nvim-web-devicons'
 Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
 "Plugit 'nvim-treesitter/nvim-treesitter-refactor'
@@ -207,6 +207,7 @@ Plugit  'mg979/vim-visual-multi'
 
 Plugit 'nvim-tree/nvim-tree.lua'
 Plugit 'nvim-tree/nvim-web-devicons'
+Plug 'ryanoasis/vim-devicons'
 Plugit 'jeetsukumaran/vim-pythonsense'
 if !has('nvim')
 	Plugit 'powerline/powerline'

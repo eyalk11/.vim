@@ -1795,6 +1795,7 @@ endif
     endif 
 
 endfunction
+nmap <leader>vv <CMD>call Exec('version')<CR>
 "function! Gut(bb) 
 "exec 'cd '.expand('%:p:h')
 "<CMD>GutentagsUpdate

@@ -18,7 +18,6 @@ let g:shellpipe=&shellpipe
 let g:shq=&shellquote
 let g:shxq=&shellxquote
 
-
 let g:ver=ver
 "allows ctrl-c I think
 set allowrevins
@@ -164,9 +163,12 @@ function! SetAltFone()
     set guifont=JetBrains\ Mono\ Medium:h
 endfunction    
 function! SetFont()
+
     if exists('g:GuiLoaded')
-        :GuiFont! Fira\ Code:h12
-        set guifont=Fira\ Code:h12
+        ":GuiFont! Fira\ Code:h12
+        "set guifont=Fira\ Code:h12
+        "set guifont =GoMono\ Nerd\ Font:h12 
+        set guifont=Hasklug\ Nerd\ Font:h12
     endif
 endfunction
 ":GuiTabline 0
@@ -177,7 +179,7 @@ function! OnLoad()
     "Lazy reload vim-arpeggio
     "Lazy reload quic-kscope 
     
-    sleep 700ms
+    "sleep 700ms
     call PyAS()
     "silent !copy ~\.vim\profile ~\.vim\profile2
     "silent !del ~\.vim\profile
@@ -193,199 +195,12 @@ function! OnLoad()
     :silent Arpeggio nnoremap kl i
     :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
     if exists('g:GuiLoaded')
-        :GuiFont! Fira\ Code:h12
+        ":GuiFont! Fira\ Code:h12
+        set guifont=Hasklug\ Nerd\ Font:h12
     endif
     "set guifont=JetBrains\ Mono\ Medium:h11
 
-    sleep 500ms
-    "echom "onload"
-    cd ~/.vim
-":profile start /Users/eyalkarni/ab.log
-":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
-"call ToggleVerbose() 
-    "!cp /Users/eyalkarni/vimpy3/.git/cs_workspaces /tmp/onload 
-". '~/vimpy3/'
-":exe ":silent CtrlSpaceAddProjectRoot ". g:vimloc
-	if !has('nvim')
-		return
-	endif 
-	call MakeItFaster(0)
-	if g:on_ek_computer
-		let g:SessionFile = ($HOME."\\.vim\\session_file") 
-		if exists('g:GuiLoaded') || ( g:on_vimr) || exists(':GonvimWorkspaceNew')
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspaces")
-		else
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspacesCWD")
-        endif 
-		let g:overrideCWD=1
-	endif
-	
-	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
-    "if expand("%:p:t")=="special"
-        norm mb
-        ":CtrlSpaceLoadWorkspace default
-    "endif 
-	if argc()==0
-		"PY import vim
-		"PY import os
-		"PY pid=os.getpid()
-		"PY kk=os.popen('ps -o ppid= -p ' + str(pid)).read()
-		"PY kk=kk.replace('\n','')
-		"PY tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
-		"PY vim.command(tt)
-		"let uuA=substitute(uu,"^.\\{-}\/","",'g')
-		"let uu="bash"
-		"PY kk=os.popen('ps -o ppid= -p ' + str(kk)).read()
-		"PY kk=kk.replace('\n','')
-		""if it is 1 then fail 
-		"PY if kk!=1: tt=("let uu=system('ps ax | grep \""+kk + "\" | grep -v grep')")
-		"PY vim.command(tt)
-		"let uu=substitute(uu,"^.\\{-}\/","",'g')
-		"if (uu=~".*bash.*")
-			""too much indentation
-			"let uu=uuA
-		"endif
-
- 
-		""echom 'cmdline: '.uu
-		
-		""for neovim-qt
-		"let uu=substitute(uu," -psn.\\{-}$","",'g')
-		"PY vim.command('let uu='+str(vim.eval('uu').replace('\n','').find(' ')))
-
-		"if uu==-1
-			""echom "loading"
-			"":CocDisable
-			"":CtrlSpaceLoadWorkspace default
-		"endif
-	endif
-	"if exists('g:GuiLoaded') || ( g:on_vimr)
-		"imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
-	"endif 
-	"if exists('g:GuiLoaded') || exists(':GonvimWorkspaceNew') || ( g:on_vimr)
-		"imap <c-s> <esc>:let g:EasyMotion_add_search_history=0<CR>i<c-o><Plug>(easymotion-sn)
-	"else
-		"nnoremap <c-s> :w<CR>
-	"endif
-	"nvimQT
-	
-let g:GuiLoaded=1  
-        "echom "exists"
-		"set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h12
-        "set guifont=Inconsolata-dz\ for\ powerline:h14
-		"if !exists(':GonvimWorkspaceNew')
-			":GuiTabline 0
-			""source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
-			""it started to act normal
-			"imap <M-ß> :w<CR>
-			"nmap <D-W> :q<CR>
-			"nmap <D-w> :q<CR>
-			"nnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>
-			"inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
-			"vnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
-			"if g:on_ek_computer
-
-
-                ""source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-				""nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
-				""nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
-				""nmap <leader>rv mwd:sleep 1<CR>:exec '!start \"powershell  ps \| Where-Object -Property ProcessName  -Like \"*goneovim*\" \| \%{Write-Host $_.Id ,$_.ProcessName ;$_.Kill()} ;  C:\Users\ekarni\Downloads\Goneovim-v0.4.12-win64\goneovim.exe\"'
-			"endif
-		"else
-			""~/nvimMACfiles/macmap042.vim
-		"endif 
-    if 1
-        if g:on_ek_computer
-            nmap <leader>rv :wshada!<CR>:exec "!start powershell ResetNeo"<CR>
-
-            "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-        endif
-        set shell=cmd 
-
-        exec "silent !echo ". v:servername . " > c:\\temp\\listen.txt"
-        "override
-        nmap <D-f> <Plug>(easymotion-s2) 
-
-        "imap <D-v> <c-o>P
-        nnoremap <Home> ^
-        vnoremap <Home> ^
-		"set guifont=Meslo\ LG\ S\ for\ Powerline:h14
-"		set guifont=Monaco\ for\ Powerline:h12 
-		set mouse+=a
-        inoremap <c-p> <c-v>
-        cnoremap <c-p> <c-v>
-        inoremap <c-v> <c-r><c-p>+
-        inoremap <c-v> <c-r><c-p>+
-        cnoremap <c-v> <c-r>+
-		nnoremap <c-v> p
-        nnoremap <M-v> <c-v>
-        nnoremap <M-a> ggVG
-		"nmap <D-v> p
-		"imap <D-V> 
-		"imap <D-v> 
-		"vmap <D-V> p
-		"vmap <D-v> p
-		"vmap <D-C> y
-		"vmap <D-c> y
-		"vmap <D-X> d
-		"vmap <D-x> d
-		"cmap <D-V> <c-r>+
-		"cmap <D-v> <c-r>+
-	else
-
-		if g:on_ek_computer
-			nmap <leader>rv mwd:!osascript -e 'do shell script "sh /users/eyalkarni/vimpy3/vimr.sh"'<CR>
-		endif
-	endif
-	"echom "ignore this no such mapping"
-if getcwd()=='/' || getcwd()=="c:\\Windows\\system32"
-    cd ~
-    "normal \ov
-endif
-	if !exists('g:dirs')
-		call LoadDir()
-		let g:lastdir=''
-	endif
-":GitGutterEnable
-let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
-let g:timerb=timer_start(3000,'TimerFuncB',{'repeat':-1})
-let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
-let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
-let tt = timer_start(1000,'LazyIt',{'repeat':1})
-"for solving ctags bug
-"au! GonvimAu OptionSet
-set mouse=a
-au! gutentags_detect 
-set ut=3000
-endfunction
-function! OnLoad()
-    "sleev 500
-    
-    "Lazy reload vim-airline
-    "Lazy reload vim-arpeggio
-    "Lazy reload quic-kscope 
-    
-    sleep 700ms
-    call PyAS()
-    "silent !copy ~\.vim\profile ~\.vim\profile2
-    "silent !del ~\.vim\profile
-
-
-
-
-    :call DefineMapping()
-    set ambiwidth=single
-    :silent Arpeggio inoremap jk  <Esc>
-    :silent   Arpeggio inoremap kl  <Esc>
-    :silent Arpeggio nnoremap jk i
-    :silent Arpeggio nnoremap kl i
-    :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
-    if exists('g:GuiLoaded')
-        :GuiFont! Fira\ Code:h12
-    endif
-    "set guifont=JetBrains\ Mono\ Medium:h11
-
-    sleep 500ms
+    "sleep 500ms
     "echom "onload"
     cd ~/.vim
 ":profile start /Users/eyalkarni/ab.log
@@ -547,6 +362,7 @@ au! gutentags_detect
 set ut=3000
 nunmap ,tt
 nunmap ,t
+"call SetFont()
 endfunction
 
 function! LazyIt(a)

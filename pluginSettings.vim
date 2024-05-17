@@ -3,6 +3,7 @@
 "includes special functions/adaptations of the plugins
 """
 "
+"let g:airline_theme="tokyonight"
 
 if executable('pyls')
     " pip install python-language-server

@@ -11,11 +11,19 @@ require("lazy").setup(
   },
 -- , performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
   spec = {
+        --{import = "plugins.noice" },
         {import = "plugins" },
+        { "rafamadriz/friendly-snippets" },
         --{import = "plugins" },
       --{import="plugged/noice"},
       --{import="plugins"},
       --{import="noice"},
+--[[      {]]
+          --[["folke/tokyonight.nvim",]]
+          --[[lazy = false,]]
+          --[[priority = 1000,]]
+          --[[opts = {},]]
+      --[[},]]
     {"equalsraf/neovim-gui-shim",version="*", config = function () vim.cmd("colorscheme onedark") end,priority=10000},
     {'vim-airline/vim-airline',priority=1000    },
     --{'vim-airline/vim-airline',priority=3},
