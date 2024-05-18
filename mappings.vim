@@ -5,7 +5,7 @@ while i <= 9
 endwhile
 
 "mouse 
-"<CMD>redraw<CR>
+":redraw<CR>
 "nmap <MiddleMouse> i
 "imap <MiddleMouse> <ESC>
 "
@@ -15,6 +15,8 @@ nmap <RightMouse> <F12>
 imap <RightMouse> <ESC>
 inoremap <S-TAB> <esc><<^i
 nmap <Home> ^
+nmap <c-CR> <CMD>noh<CR><CMD>Noice dismiss<CR>
+nmap L: :lua 
 
 map __ <Plug>NERDCommenterComment
 map <leader>Cu <Plug>NERDCommenterUncomment
@@ -42,6 +44,7 @@ nnoremap <leader>' ``
 
 
 "recall command
+nmap m/ <CMD>set noignorecase<CR><CMD>set noincsearch<CR>/
 noremap m? <CMD>set incsearch<CR><CMD>set hlsearch<CR>?
 function! ToggleSearch()
 if &incsearch
@@ -63,9 +66,9 @@ nnoremap mS <CMD>call ToggleSearch()<CR>
 :nnoremap [0 )<CR>
 "qw inserts char after
 
-"nmap s :<C-U>call InsertBefore(v:count1)<CR>
+nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
-"nmap S :<C-U>call InsertAfter(v:count1)<CR>
+nmap S :<C-U>call InsertAfter(v:count1)<CR>
 "nnoremap q t
 
 "The <M-t> provides omni tl-search 
@@ -105,7 +108,7 @@ nnoremap <leader>F F
 vnoremap <end> $h
 
 
-nmap <nowait> , <CMD>Leaderf line<CR>
+nmap <nowait> , <CMD>Leaderf line --popup<CR>
 "nmap <nowait> , <CMD>Telescope current_buffer_fuzzy_find<CR>
 "nmap <nowait> , <CMD>call Lff()<CR>
 "function! Lff()
@@ -261,7 +264,7 @@ endif
 endfunction
 
 
-"!!!   Movements !!! 
+"!!! insert mode   Movements !!! 
 "
 " in insert mode M is same line , and <c-.> . Use <c-.> 
 " in normal mode M is same line
@@ -270,24 +273,61 @@ endfunction
 imap <silent><script><expr> <C-j> copilot#Accept("")
 imap <silent><script><expr> <M-j> copilot#Next()
 let g:copilot_no_tab_map = v:true
-
-function! FF()
-call quick_scope#Wallhacks()
-return "\<c-o>\<Plug>(easymotion-sl)"
+function! FF_Forward()
+call quick_scope#Wallhacks('f')
+return "\<c-o>\<Plug>Lightspeed_t"
 endfunction
-"imap <expr> <c-.> FF()
+imap <expr> <c-'> FF_Forward()
 
-"move to both directions 
-imap <expr> <c-'> FF()
+function! FF_MF()
+call quick_scope#Wallhacks('t')
+return "\<c-o>\<Plug>Lightspeed_F"
+endfunction
+imap <expr> <m-'> FF_MF()
 
-"move forward 
-imap <c-/> <c-o><Plug>Lightspeed_f
-"move la
-imap <M-/> <c-o><Plug>Lightspeed_T
-imap <c-\> <c-o>f
-imap <c-p> <c-o>T
-imap <c-t> <c-o>t 
-imap <c-,> <c-o>f
+function! FF_f()
+call quick_scope#Wallhacks('f')
+return "\<c-o>\<Plug>Lightspeed_f"
+endfunction
+imap <expr> <c-/> FF_f()
+
+function! FF_T()
+call quick_scope#Wallhacks('t')
+return "\<c-o>\<Plug>Lightspeed_T"
+endfunction
+imap <expr> <M-/> FF_T()
+
+function! FF_TT3()
+call quick_scope#Wallhacks('f')
+return "\<Plug>Lightspeed_t"
+endfunction
+nmap <expr> <c-t> FF_TT3()
+
+function! FF_MF2()
+call quick_scope#Wallhacks('t')
+return "\<Plug>Lightspeed_F"
+endfunction
+nmap <expr> <m-'> FF_MF2()
+
+function! FF_f2()
+call quick_scope#Wallhacks('f')
+return "\<Plug>Lightspeed_f"
+endfunction
+nmap <expr> <c-/> FF_f2()
+
+function! FF_T2()
+call quick_scope#Wallhacks('t')
+return "\<Plug>Lightspeed_T"
+endfunction
+nmap <expr> <m-/> FF_T2()
+
+
+
+
+"imap <c-\> <c-o>f
+"imap <c-p> <c-o>T
+""imap <c-t> <c-o>t
+"imap <c-,> <c-o>f
 
 autocmd FileType * inoremap <expr> <c-]> IsRegular() ? "<c-o><Plug>Lightspeed_s" : "<c-]>"
 autocmd FileType * nnoremap <expr> <c-]> IsRegular() ? "<Plug>Lightspeed_s" : "<c-]>"
@@ -327,9 +367,10 @@ function! Ffn()
 call quick_scope#Wallhacks('f')
 return "\<Plug>Lightspeed_f"
 endfunction
+nmap <expr> <Plug>(arpeggio-default:f) Ffn()
 "nmap F <Plug>cusF
-nmap s <Plug>Lightspeed_s
-nmap S <Plug>Lightspeed_S
+"nmap s <Plug>Lightspeed_s
+"nmap S <Plug>Lightspeed_S
 "nmap s <plug>Sneak_s
 "nmap S <plug>Sneak_S
 
@@ -364,7 +405,7 @@ nmap ? <Plug>(easymotion-sl)
 "<M-t>
 
 "finds the best next item and complete up to it. in Vim!
-"<CMD>imap <c-,> <c-X><c-V>
+":imap <c-,> <c-X><c-V>
 "imap <c-,> <c-o><Plug>(easymotion-bd-t)
 
 "imap <c-c> <c-o><Plug>(easymotion-dineanywhere) 
@@ -589,7 +630,7 @@ noremap mc <CMD>cd %:p:h<CR>
 nnoremap md <CMD>diffupdate<CR>
 nnoremap mf <CMD>!start %:p:h<CR>
 nnoremap mF <CMD>exec '!open '.getcwd()<CR>
-nmap mF vaF<F2>
+nmap mF vaf<F2>
 
 
 "go to the current selection in rg"xy<CMD>call feedkeys("\<C-a>g" . @x)<CR>
@@ -822,40 +863,41 @@ nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExisti
 "nmap <bar> <CMD>Telescope buffers<CR>
 "nnoremap <silent> <C-a>b <CMD>Leaderf buffers<CR>
 "
-"nnoremap <silent> <C-z> <CMD>call FZFOpen('<CMD>Buffers')<CR>
+"nnoremap <silent> <C-z> <CMD>call FZFOpen('Buffers')<CR>
 
 nnoremap <silent> <C-a>g <CMD>LeaderfRgInteractive<CR>
+nnoremap <silent> <C-a>G <CMD>FzfLua live_grep<CR>
 "nnoremap <silent> <C-a>g <CMD>Telescope live_grep<CR>
-nnoremap <silent> <C-a>G <CMD>lua require('git_grep').live_grep( {additional_args = { "--","*.py"}} )<CR>
-"nnoremap <silent> <C-a>g <CMD>call FZFOpen('<CMD>FzfRg!')<CR>
+"nnoremap <silent> <C-a>G <CMD>lua require('git_grep').live_grep( {additional_args = { "--","*.py"}} )<CR>
+"nnoremap <silent> <C-a>g <CMD>call FZFOpen('FzfRg!')<CR>
 "nnoremap <silent> <C-a>G <CMD>Leaderf rg -tpy<CR>
 
 "for exact
-"nnoremap <silent> <C-a>G <CMD>call FZFOpen('<CMD>FzfRg! -e')<CR>
-nnoremap <silent> <C-a>C <CMD>call FZFOpen('<CMD>Commands')<CR>
-"nnoremap <silent> <C-a>l <CMD>call FZFOpen('<CMD>BLines')<CR>
+"nnoremap <silent> <C-a>G <CMD>call FZFOpen('FzfRg! -e')<CR>
+nnoremap <silent> <C-a>C <CMD>FzfLua commands<CR>
+"nnoremap <silent> <C-a>l <CMD>call FZFOpen('BLines')<CR>
 "c-l is lines in insert mode aaa
 nnoremap <silent> <C-a>l <CMD>call GetAllInsertsForCurrentBufs()<CR>
 nnoremap <silent> <C-a>L m'<CMD>LeaderfLineAll<CR>
 nnoremap <silent> <C-a>r <CMD>Leaderf --recall<CR>
 nnoremap <silent> <C-a>R <CMD>LeaderfRgRecall<CR>
 "files current dir
-"nnoremap <silent> <C-a>f <CMD>call FZFOpen('<CMD>Files')<CR>
+nnoremap <silent> <C-a>f <CMD>FzfLua files<CR>
 "nnoremap <c-a>f <CMD>CtrlPCurWD<CR>
-"nnoremap <silent> <C-a>f <CMD>exe "<CMD>LeaderfFile ".getcwd()<CR>
-nnoremap <c-a>f <CMD>Telescope find_files<CR>
+"nnoremap <silent> <C-a>f <CMD>exe ":LeaderfFile ".getcwd()<CR>
+nnoremap <c-a>F <CMD>Telescope find_files<CR>
 nnoremap <c-a>j <CMD>lua require('telescope.builtin').jumplist({fname_width=80 , layout_config = {      preview_width = 0.6,       width = 0.9     }})<CR>
 "files current file
 "66444
-nnoremap <silent> <C-a>F <CMD>exe "<CMD>LeaderfFile " . expand('%:p:h')<CR>
-nnoremap <silent> <C-a>h <CMD>call FZFOpen('<CMD>History')<CR>
+nnoremap <silent> <C-a>F <CMD>exe ":LeaderfFile " . expand('%:p:h')<CR>
+nnoremap <silent> <C-a>h <CMD>call FZFOpen(':History')<CR>
 nmap <silent> <C-a>H <CMD>call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
-nnoremap <silent> <C-a>a <CMD>call FZFOpen('<CMD>Ag')<CR>
+nnoremap <silent> <C-a>a <CMD>call FZFOpen(':Ag')<CR>
 nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
-nnoremap <silent> <C-a>w <CMD>call FZFOpen('<CMD>Windows')<CR>
+nnoremap <silent> <C-a>w <CMD>call FZFOpen(':Windows')<CR>
 nnoremap <silent> <C-a>b <CMD>Leaderf window<CR>
-nnoremap <silent> <C-a>s <CMD>call FZFOpen('<CMD>Snippets')<CR>
+nnoremap <silent> <C-a>s <CMD>call FZFOpen(':Snippets')<CR>
 "use it to increase
 nnoremap <silent> <C-a><C-a> <C-a>
 
@@ -918,9 +960,10 @@ map <silent> <leader>? <Plug>(IPy-WordObjInfo)
 "
 noremap  <leader>od <CMD>exec ":vs " . getcwd()<CR>
 "nnoremap <leader>em <CMD>call Exec("messages")<CR>
-nnoremap <leader>em <CMD>NoiceHistory<CR>
+"nnoremap <leader>em <CMD>NoiceHistory<CR>
+nnoremap <expr> <leader>em exists(":NoiceHistory") ? "<CMD>NoiceHistory<CR>" : "<CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm \"xp<CR>"
 nnoremap <leader>EM <CMD>NoiceTelescope<CR>
-"nnoremap <leader>EM <CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm "xp<CR>
+nnoremap <leader>EM <CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm "xp<CR>
 
 "enable save
 nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
@@ -1011,6 +1054,16 @@ function! OnRight()
     let k=getwininfo(win_getid())[0]
     return (k['wincol']!=1)
 endfunction 
+function! GoRight(a)
+    for k in getwininfo()
+        if k['winrow']<=2 && k['wincol']>1
+            "look no further
+            let id=k['winid']
+            call win_gotoid(id)
+            return
+        endif
+    endfor
+endfunction 
 function! SwitchKeepRight()
 
     if OnRight() 
@@ -1100,11 +1153,13 @@ function! TermO()
 endfunction
 
 "open terminal in new tab
-nnoremap <leader>ot <CMD>tabnew <bar> :call TermO()<CR><CMD>call feedkeys("i")<CR>
+nnoremap <leader>ot <CMD>tabnew <bar> :call TermO()<CR>:startinsert<CR>
 "open terminal in new window
-nmap <leader>tt <CMD>call TermOV(0)<CR>li
-nmap <leader>Tt <CMD>call TermOV(1)<CR>li
-nmap <leader>gt <CMD>call TermLOV()<CR>li
+nmap <leader>tt <CMD>call TermOV(0)<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
+
+
+nmap <leader>Tt <CMD>call TermOV(1)<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
+nmap <leader>gt <CMD>call TermLOV()<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
 nmap <leader>ge <CMD>VimscriptLastError<CR>
 
 nnoremap <leader>vL :TN ~/.vim/vimlog.log<CR>
@@ -1128,9 +1183,9 @@ nmap <leader>vr        :call vimspector#Reset()<CR>
 "nnoremap <leader>c :only<CR>
 ""closes other tabs
 "noremap Q :call SaveLastWindow()<CR> :close<CR>
-noremap Q :close<CR>
-nnoremap <leader>q :tabo!<CR><CMD>call CloseAllBuffersButCurrent()<CR>
-nnoremap <leader>Q :q!<CR>
+noremap Q <CMD>close<CR>
+nnoremap <leader>q <CMD>tabo!<CR><CMD>call CloseAllBuffersButCurrent()<CR>
+nnoremap <leader>Q <CMD>q!<CR>
 "closes other buffer same tab
 nnoremap <nowait> <leader>c <CMD>call CloseAllWindowsButCurrent()<CR>
 nnoremap <nowait> <leader>C <CMD>call CloseAllNR()<CR>
@@ -1171,12 +1226,12 @@ function! InsertBefore(count) range
                         break
                 endif
         let @z= t
-        "<CMD>normal "zp
+        ":normal "zp
         if l>1
-                exec "<CMD>normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+                exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
     else
-                exec "<CMD>normal i"."\<c-r>=nr2char(".t.")\<ESC>"
-                "exec "<CMD>normal i"."\<c-r>='".nr2char(t)."'"."\<ESC>"
+                exec ":normal i"."\<c-r>=nr2char(".t.")\<ESC>"
+                "exec ":normal i"."\<c-r>='".nr2char(t)."'"."\<ESC>"
     endif
                 "redraw
         endfor 
@@ -1211,8 +1266,8 @@ function! InsertAfter(count) range
                         break
                 endif
         let @z= t
-        "<CMD>normal "zp
-                exec "<CMD>normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+        ":normal "zp
+                exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
                 "redraw
         endfor 
 endfunction
@@ -1274,7 +1329,7 @@ noremap <leader>yy "zyy
 noremap <leader>y "zy
 noremap <leader>Y "zyi
 "let g:jedi#completions_command='<leader>a'
-"let g:jedi#usages_command='<leader>gn'
+"let g:jedi#usagescmand='<leader>gn'
 
 "Bare mappings
 "changes current argument
@@ -1331,7 +1386,7 @@ function! GoOther()
 :exec "norm ".GetOther()
 endfunction
 "Move line to terminal
-nmap mz my<CMD>exec "<CMD>T ".  @" ."\r\n" <cr>
+nmap mz my<CMD>exec ":T ".  @" ."\r\n" <cr>
 vmap mz <CMD>:'<,'>g/./norm mz<CR>
 nmap <c-F5> mz
 
@@ -1368,8 +1423,8 @@ else
         " copy line from $
 endif
 "esc only in neoterm
-au filetype neoterm <CMD>tnoremap <buffer> <Esc> <C-\><C-n>
-au filetype neoterm <CMD>tnoremap <buffer> <C-BS> <ESC>
+"au filetype neoterm <CMD>tnoremap <buffer> <Esc> <C-\><C-n>
+"au filetype neoterm <CMD>tnoremap <buffer> <C-BS> <ESC>
 "make Y act like M
 
 
@@ -1382,7 +1437,7 @@ runtime ftplugin/man.vim " adds Man command
 
 
 "let cmd=['export PYTHONPATH="$PYTHONPATH;/Users/eyalkarni/utils/jmpacket"']
-"<CMD>CtrlSpaceLoadWorkspace default
+":CtrlSpaceLoadWorkspace default
 "call ctrlspace#workspaces#LoadWorkspace(0,'default')
 
 
@@ -1451,7 +1506,7 @@ nnoremap <silent> _s  <CMD>Telescope lsp_workspace_symbols<CR>
 "silent! call repeat#set("H", -1)
 
 
-"<CMD>call UltiSnips#ExpandSnippet()<CR>
+":call UltiSnips#ExpandSnippet()<CR>
 "strange that I have to change this
 "function! ChangeOrder()
 "envdebug_keymap
@@ -1498,9 +1553,9 @@ noremap <leader>gl <CMD>YcmCompleter GoToDeclaration<CR>
 "set runtimepath^=~/vimpy3/plugged/coc-pythom
 
 "function! SetupPython()
-        "<CMD>CocCommand python.setInterpreter
-        "<CMD>sleep 5
-        "<CMD>call feedkeys('5')
+        ":CocCommand python.setInterpreter
+        ":sleep 5
+        ":call feedkeys('5')
 "endfunction
 
 nmap <M-C-Q> <CMD>qa!
@@ -1511,8 +1566,8 @@ nmap <M-C-Q> <CMD>qa!
 "let g:Lf_CommandMp = {'<C-K>': ['<Up>'], '<C-J>': ['<Down>']}
 " I did the switch in code manager.py
 "
-"<CMD>inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
-"<CMD>inoremap <S-b> <C-R>=STab_Or_Complete()<CR>
+":inoremap <Tab> <C-R>=Tab_Or_Complete()<CR>
+":inoremap <S-b> <C-R>=STab_Or_Complete()<CR>
 
 
 
@@ -1600,16 +1655,16 @@ autocmd  FileType * omap <nowait> <buffer> aF <Plug>(textobj-function-a)
 omap aF <Plug>(textobj-function-a)
 omap iF <Plug>(textobj-function-i)
 "call popsikey#register('<leader>g', [
-        "\ #{key: 'g', info: 'status', action: "<CMD>Gstatus\<CR>", flags: 'n'},
-        "\ #{key: 'c', info: 'commit', action: "<CMD>Gcommit\<CR>", flags: 'n'},
+        "\ #{key: 'g', info: 'status', action: ":Gstatus\<CR>", flags: 'n'},
+        "\ #{key: 'c', info: 'commit', action: ":Gcommit\<CR>", flags: 'n'},
 "n
 "
 "v
         "\ ],
         "\ {})
 "call popsikey#register('mZ', [ 
-"            \ {'key': 'g', 'info': 'status', 'action': "<CMD>Gstatus\<CR>", 'flags': 'n'},
-"    \ {'key': 'c', 'info': 'commit', 'action': "<CMD>Gcommit\<CR>", 'flags': 'n'}], {})
+"            \ {'key': 'g', 'info': 'status', 'action': ":Gstatus\<CR>", 'flags': 'n'},
+"    \ {'key': 'c', 'info': 'commit', 'action': ":Gcommit\<CR>", 'flags': 'n'}], {})
 
 "to call at the end
 function! DefineMapping()
@@ -1798,7 +1853,7 @@ endfunction
 nmap <leader>vv <CMD>call Exec('version')<CR>
 "function! Gut(bb) 
 "exec 'cd '.expand('%:p:h')
-"<CMD>GutentagsUpdate
+":GutentagsUpdate
 "endfunction 
 "au filetype * command! -buffer GutenTagRun <CMD>call gutentags#setup_gutentags() <bar> <CMD>call timer_start(15,'Gut')<CR>
 command! -nargs=1 LfExt <CMD>Leaderf rg --live --glob <q-args><CR>
@@ -1835,7 +1890,7 @@ vmap <leader>gr "xy<CMD>call GitFPat(".*py$",0,@x)<CR>
 
 vnoremap <c-a>g "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 vmap <c-y> <leader>GR
-vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
+"vnoremap <leader>gr "xy<CMD>call feedkeys( ":LfGitGen .*\\.py$\<lt>CR>". @x . "\<lt>CR>")<CR>
 
 map mr <leader>gr
 map mR <leader>gR
@@ -1845,7 +1900,7 @@ map Mr <leader>Gr
 "nmap mR <CMD>call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
 "nmap <leader>gs <CMD>call DoTag()<CR>
-nmap gs <CMD>luafile c:\Users\ekarni\.vim\aa.v<CR>
+"nmap gs <CMD>luafile c:\Users\ekarni\.vim\aa.v<CR>
 ""~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
 
 
@@ -2028,7 +2083,7 @@ function! DDa()
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
-nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|is not defined/<CR>
+nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined/<CR>
 
 "restore cfilter
 nnoremap <leader>XR <CMD>lolder<CR>

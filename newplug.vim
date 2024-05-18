@@ -30,8 +30,8 @@ Plugit 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plugit 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
 Plugit 'tamago324/nlsp-settings.nvim'
-Plugit 'williamboman/mason.nvim'
-Plugit 'williamboman/mason-lspconfig.nvim'
+"Plugit 'williamboman/mason.nvim'
+"Plugit 'williamboman/mason-lspconfig.nvim'
 
 
 " Vim Script
@@ -181,7 +181,8 @@ Plugit 'ctrlpvim/ctrlp.vim'
 Plugit 'mbbill/undotree'
 Plugit 'tpope/vim-fugitive' 
 " Git
-Plugit 'joshdick/onedark.vim'
+"Plugit 'joshdick/onedark.vim'
+Plug 'navarasu/onedark.nvim'
 "Plugit 'dense-analysis/ale'
 "syntax highlight
 Plugit 'slim-template/vim-slim'
@@ -207,7 +208,7 @@ Plugit  'mg979/vim-visual-multi'
 
 Plugit 'nvim-tree/nvim-tree.lua'
 Plugit 'nvim-tree/nvim-web-devicons'
-Plug 'ryanoasis/vim-devicons'
+"Plug 'ryanoasis/vim-devicons'
 Plugit 'jeetsukumaran/vim-pythonsense'
 if !has('nvim')
 	Plugit 'powerline/powerline'

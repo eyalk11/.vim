@@ -313,8 +313,6 @@ let g:EasyMotion_off_screen_search = 1
         "exec "inoremap <silent> " . g:UltiSnipsJumpOrExpandTrigger . " <C-R>=UltiSnips#JumpOrExpandSnippet()<cr>"
         "exec "snoremap <silent> " . g:UltiSnipsJumpOrExpandTrigger . " <Esc>:call UltiSnips#JumpOrExpandSnippet()<cr>"
     "elseif g:UltiSnipsExpandTrigger == g:UltiSnipsJumpForwardTrigger
-        "exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippetOrJump()<cr>"
-        "exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>"
     "else
         "exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippet()<cr>"
         "exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippet()<cr>"
@@ -337,7 +335,11 @@ let g:EasyMotion_off_screen_search = 1
     let g:UltiSnipsExpandTrigger = '<c-g>'
     let  g:UltiSnipsJumpForwardTrigger   =     '<c-j>'
     let  g:UltiSnipsJumpBackwardTrigger  =     '<c-k>'
-    let g:UltiSnipsListSnippets = '\ulv'
+    let g:UltiSnipsListSnippets = '<leader>ul'
+    exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=UltiSnips#ExpandSnippetOrJump()<cr>"
+    exec "snoremap <silent> " . g:UltiSnipsExpandTrigger . " <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>"
+    exec "inoremap <silent> " . g:UltiSnipsListSnippets . " <C-R>=UltiSnips#ListSnippets()<cr>"
+    exec "snoremap <silent> " . g:UltiSnipsListSnippets . " <Esc>:call UltiSnips#ListSnippets()<cr>"
     "
     "
 

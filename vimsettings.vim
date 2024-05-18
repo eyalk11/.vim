@@ -19,6 +19,7 @@ let g:shq=&shellquote
 let g:shxq=&shellxquote
 
 let g:ver=ver
+set ignorecase
 "allows ctrl-c I think
 set allowrevins
 if has('nvim')
@@ -173,6 +174,15 @@ function! SetFont()
 endfunction
 ":GuiTabline 0
 function! OnLoad()
+    let g:onedark_config = {
+                \ 'style': 'darker',
+                \ 'toggle_style_key': '<leader>ts',
+                \ 'ending_tildes': v:true,
+                \ 'diagnostics': {
+                \ 'background': v:false,
+                \ },
+                \ }
+    set nocursorline
     "sleev 500
     
     "Lazy reload vim-airline
@@ -189,10 +199,11 @@ function! OnLoad()
 
     :call DefineMapping()
     set ambiwidth=single
-    :silent Arpeggio inoremap jk  <Esc>
-    :silent   Arpeggio inoremap kl  <Esc>
-    :silent Arpeggio nnoremap jk i
-    :silent Arpeggio nnoremap kl i
+let g:keys = ['jk',  'sd','kl', 'as','df']
+for key in g:keys
+    execute 'silent Arpeggio inoremap ' key '<Esc>'
+    execute 'silent Arpeggio nnoremap ' key 'i'
+endfor
     :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
     if exists('g:GuiLoaded')
         ":GuiFont! Fira\ Code:h12
@@ -390,6 +401,7 @@ endfunction
 function! PyAS()
     autocmd filetype python let b:auto_save = 1
     autocmd filetype ps1 let b:auto_save = 1
+    autocmd filetype lua let b:auto_save = 1
 endfunction
 
 command! Pyauto call PyAS()
@@ -414,15 +426,21 @@ command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert t
 command! -nargs=*  -complete=help Help vert :help <args>
 
 " search
-set noincsearch
+set incsearch
 :noh
-set nohlsearch
+set hlsearch
 
-augroup vimrc-noincsearch-highlight
-    autocmd!
-    autocmd CmdlineLeave / :set noincsearch | :noh
-augroup END
+"augroup vimrc-noincsearch-highlight
+    "autocmd!
+    "autocmd CmdlineLeave :echo "zzz" | :set noincsearch | :noh
+"augroup END
 
 let g:no_spec_maps=1
-autocmd BufEnter,FocusGained * checktime
+function! Aa()
+if mode() != 'n' ||  getcmdwintype() != ''
+    return
+endif 
+checktime
+endf 
+autocmd BufEnter,FocusGained *  call Aa()
 "set noautoread #don't reload it when changed outside vim and no vim changes. 
