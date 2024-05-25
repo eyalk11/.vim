@@ -440,6 +440,8 @@ imap <c-a> <c-o><c-a>
 "
 
 "Insert mode actions
+imap <Insert> <ESC>
+nmap <Insert> <CMD>call StartSpecialInsert()<CR>i
 
 imap <c-w> <c-o>db
 imap <M-Right> <c-o>W
@@ -1389,7 +1391,8 @@ endfunction
 nmap mz my<CMD>exec ":T ".  @" ."\r\n" <cr>
 vmap mz <CMD>:'<,'>g/./norm mz<CR>
 nmap <c-F5> mz
-
+"Get-Content -Path "C:\Users\ekarni\.vim\mappings.vim" |
+"Set-Content -Path "C:\Users\ekarni\.vim\mmmm.vim" -Encoding ASCII
 "nmap mz <CMD>TREPLSendLine<CR>
 "vmap mz <CMD>TREPLSendSelection<CR>
 "move between two panels (left and right) 
@@ -1707,10 +1710,10 @@ nnoremap <Plug>spleader :set opfunc=SpecialFindLeader<CR>g@
 
 "xmap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "omap F :call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
-nmap ]d :lua vim.diagnostic.goto_next()<CR>
-nmap [d :lua vim.diagnostic.goto_prev()<CR>
+nmap ]d <CMD>lua vim.diagnostic.goto_next()<CR>
+nmap [d <CMD>lua vim.diagnostic.goto_prev()<CR>
 
-for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'], ['~','!']]
+for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'], ['~','!'],['%','g%']]
     call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
@@ -2131,3 +2134,6 @@ nmap A <CMD>call StartSpecialInsert()<CR>i
 
 nnoremap <leader>A A
 
+nmap % <Plug>(MatchMetaN)
+
+nnoremap R q

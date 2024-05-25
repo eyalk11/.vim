@@ -174,6 +174,7 @@ function! SetFont()
 endfunction
 ":GuiTabline 0
 function! OnLoad()
+
     let g:onedark_config = {
                 \ 'style': 'darker',
                 \ 'toggle_style_key': '<leader>ts',
@@ -236,7 +237,7 @@ endfor
 	
 	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
     "if expand("%:p:t")=="special"
-        norm mb
+        norm \<c-O>
         ":CtrlSpaceLoadWorkspace default
     "endif 
 	if argc()==0
@@ -371,8 +372,8 @@ let tt = timer_start(1000,'LazyIt',{'repeat':1})
 set mouse=a
 au! gutentags_detect 
 set ut=3000
-nunmap ,tt
-nunmap ,t
+silent! nunmap ,tt
+silent! nunmap ,t
 "call SetFont()
 endfunction
 

@@ -115,7 +115,7 @@ Plugit 'PeterRincker/vim-argumentative'
 "Plugit 'andymass/vim-matchup'
 "Plugit 'scrooloose/nerdtree'
 "match strings 
-Plugit 'airblade/vim-matchquote'
+"Plugit 'airblade/vim-matchquote'
 "Plugit 'ggvgc/vim-fuzzysearch'
 "Plugit 'benknoble/popsikey'
 "Plugit 'jacob-ogre/vim-syncr' RSYNC
@@ -223,6 +223,7 @@ Plugit 'eiginn/netrw'
 Plugit 'ipod825/vim-bookmark'
 "Plugit 'beeender/Comrade'
 Plugit 'Houl/vim-repmo' 
+Plugit 'andymass/vim-matchup'
 "call LoadPlugitOnEvent('quick-scope', 'VimEnter')
 "call LoadPlugitOnEvent('airline', 'VimEnter')
 "repeat moves

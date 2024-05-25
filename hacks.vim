@@ -1,4 +1,6 @@
 "Last windows names
+"
+"
 exec 'source ' . g:vimloc . "/inserts.vim"
 call EnableTrackInserts(0)
 let g:lastWindows= []
@@ -432,7 +434,7 @@ nnoremap <silent> "<c-r> :call fzf#run({
       \   'sink':    function('<sid>register_insert'),
       \   'options': "+m",
       \   'down':    len(<sid>register_list()) + 2,
-      \ })<CR>
+      \ })<CR>s:
 
 
 
@@ -1027,3 +1029,35 @@ function! SourceCustoms(...)
         endtry
     endfor
 endfunction
+
+
+
+let s:quotes = ['"', '''', '`']
+
+function! s:matchquote()
+  normal! m'
+
+  " character_at_cursor
+  let c = matchstr(getline('.'), '\%'.col('.').'c.')
+
+  if index(s:quotes, c) >= 0
+
+    let num = len(split(getline('.'), c, 1)) - 1
+    if num % 2 == 1
+      return
+    endif
+
+    " is quotation mark under cursor odd or even?
+    let col = getpos('.')[2]
+    let num = len(split(getline('.')[0:col-1], c, 1)) - 1
+
+    let mvmt = num % 2 == 0 ? 'F' : 'f'
+    execute 'normal!' mvmt.c
+  else
+    " fallback
+    execute "normal \<plug>(matchup-%)"
+  endif
+
+endfunction
+
+nnoremap <silent> <Plug>(MatchMetaN) :call <SID>matchquote()<CR>
