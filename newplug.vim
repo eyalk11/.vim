@@ -49,7 +49,7 @@ Plugit 'davvid/telescope-git-grep.nvim'
 "Plugit 'python-rope/ropevim'
 Plugit 'ThePrimeagen/refactoring.nvim'
 Plugit 'AndrewRadev/sideways.vim'
-Plugit 'jose-elias-alvarez/null-ls.nvim'
+Plugit 'nvimtools/none-ls.nvim'
 "Plugit 'mfussenegger/nvim-lint'
 Plugit 'ludovicchabant/vim-gutentags'
 Plugit 'nvim-telescope/telescope-live-grep-args.nvim'
@@ -64,7 +64,7 @@ Plugit 'relastle/vim-nayvy'
 "Plugit 'sickill/vim-pasta'
 "Plugit 'xiyaowong/transparent.nvim'
 Plugit 'blblb/speech-to-text.nvim'
-Plugit 'sbdchd/neoformat'
+"Plugit 'sbdchd/neoformat'
 Plugit 'MunifTanjim/nui.nvim' , {'event': 'VeryLazy'}
 Plugit 'jackMort/ChatGPT.nvim' , {'event': 'VeryLazy'}
 Plugit 'kosayoda/nvim-lightbulb'
@@ -222,7 +222,7 @@ Plugit 'eiginn/netrw'
 "Plugit 'Shougo/deoplete.nvim' , { 'do': ':UpdateRemotePlugits' }
 Plugit 'ipod825/vim-bookmark'
 "Plugit 'beeender/Comrade'
-Plugit 'Houl/vim-repmo' 
+"Plugit 'Houl/vim-repmo' 
 Plugit 'andymass/vim-matchup'
 "call LoadPlugitOnEvent('quick-scope', 'VimEnter')
 "call LoadPlugitOnEvent('airline', 'VimEnter')

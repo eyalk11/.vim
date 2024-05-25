@@ -605,17 +605,14 @@ imap <M-l> <plug>(fzf-complete-line)
 "nnoremap <m-s> :w<CR>
 "inoremap <m-s> <esc>:w<CR>
 
-nmap [a <CMD>ALEPrevious<CR>
-nmap ]a <CMD>ALENext<CR>
-nmap ]E <Plug>(coc-diagnostic-next)
-nmap [E <Plug>(coc-diagnostic-prev)
-nmap ]e <Plug>(coc-diagnostic-next-error)
-nmap [e <Plug>(coc-diagnostic-prev-error)
+"nmap [a <CMD>ALEPrevious<CR>
+"nmap ]a <CMD>ALENext<CR>
+"nmap ]E <Plug>(coc-diagnostic-next)
+"nmap [E <Plug>(coc-diagnostic-prev)
+"nmap ]e <Plug>(coc-diagnostic-next-error)
+"nmap [e <Plug>(coc-diagnostic-prev-error)
 nmap [h <Plug>(GitGutterPrevHunk)
 nmap ]h <Plug>(GitGutterNextHunk)
-"map <expr><buffer> ]M repmo#Key('<plug>(PythonsenseEndOfPythonFunction)', '<plug>(PythonsenseEndOfPreviousPythonFunction)')|sunmap <buffer> ]M
-
-"map <expr><buffer> [M repmo#Key('<plug>(PythonsenseEndOfPreviousPythonFunction)', '<plug>(PythonsenseEndOfPythonFunction)')|sunmap <buffer> [M
 """ g mapping 
 "makesure we are powershell
 nmap gp <CMD>exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
@@ -1412,7 +1409,6 @@ if has('vim')
         :tnoremap <C-X> <C-W>NT$ly$i " copy line from $
         :tnoremap <C-Z> <C-W>Nyi
 else
-        
         :tnoremap <C-v> <C-\><c-N>pi
         :tnoremap <C-y> <C-\><c-N>yyi
         :tnoremap <C-X> <C-\><c-N>T$ly$i
@@ -1675,17 +1671,17 @@ function! DefineMapping()
 
 
 nmap <c-;> ;
-map  <expr> ; repmo#LastKey(';')|sunmap ;
-map  <expr> <C-\> repmo#LastRevKey(',')
+"map  <expr> ; repmo#LastKey(';')|sunmap ;
+"map  <expr> <C-\> repmo#LastRevKey(',')
 
-map  <expr> <tab> repmo#ZapKey('<Plug>Lightspeed_s')
+"map  <expr> <tab> repmo#ZapKey('<Plug>Lightspeed_s')
 "|ounmap s|sunmap s
-map  <expr> <S-tab> repmo#ZapKey('<Plug>Lightspeed_S')
+"map  <expr> <S-tab> repmo#ZapKey('<Plug>Lightspeed_S')
 "|ounmap S|sunmap S
-"omap <expr> z repmo#ZapKey('<Plug>Sneak_s')
-"omap <expr> Z repmo#ZapKey('<Plug>Sneak_S')
-"map  <expr> f repmo#ZapKey('<Plug>cusnf')|sunmap f
-"map  <expr> F repmo#ZapKey('<Plug>cusnF')
+""omap <expr> z repmo#ZapKey('<Plug>Sneak_s')
+""omap <expr> Z repmo#ZapKey('<Plug>Sneak_S')
+""map  <expr> f repmo#ZapKey('<Plug>cusnf')|sunmap f
+""map  <expr> F repmo#ZapKey('<Plug>cusnF')
 
 "nmap  } <Plug>Lightspeed_t
 "nmap  { <Plug>Lightspeed_T
@@ -1701,8 +1697,8 @@ nmap  T  <Plug>spleader
 
 nnoremap <Plug>spleader :set opfunc=SpecialFindLeader<CR>g@
 "nmap <esc> :call clever_f#_reset_all()<CR> 
-"map  <expr> t repmo#ZapKey('<Plug>Sneak_t')|sunmap t
-"map  <expr> T repmo#ZapKey('<Plug>Sneak_T')|sunmap T
+""map  <expr> t repmo#ZapKey('<Plug>Sneak_t')|sunmap t
+""map  <expr> T repmo#ZapKey('<Plug>Sneak_T')|sunmap T
 
 "nmap f <Plug>(QuickScopef)
 "omap f <Plug>(QuickScopef)
@@ -1714,7 +1710,7 @@ nmap ]d <CMD>lua vim.diagnostic.goto_next()<CR>
 nmap [d <CMD>lua vim.diagnostic.goto_prev()<CR>
 
 for keys in [[']E','[E'],[']a','[a'],[']d','[d'],[']e','[e'],[']h','[h'],['&','z&'], ["\<F4>","\<F3>"], [']=','[='], [']+','[+'], [']-','[-'],  [']c', '[c'], ['~','!'],['%','g%']]
-    call RepRemap(keys[0],keys[1])
+    "call RepRemap(keys[0],keys[1])
 endfor
 " Now following can also be repeated with `,` and `;`:
 " ,['<M-K>','<A-J>']
@@ -1722,10 +1718,10 @@ endfor
 "for keys in [['l','h'],['k','j'], ['[[', ']]'], ['[]', ']['], [']m', '[m'], [']M', '[M'], [']c', '[c'] ,  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ], ['<F4>','<F3>'],['<M-K>','<A-J>'],['{','}'],['(',')']]
 "Not to mess with vim-tex [']]','[[']
 for keys in [['[]', ']['], [']m', '[m'], [']M', '[M'],['l','h'],['k','j'],  [ 'w','b' ] ,[ 'W','B' ] ,[ 'e','ge' ] ,[ 'E','gE' ],['(',')']]
-    execute 'silent noremap <expr> '.keys[0]." repmo#SelfKey('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
-    execute 'silent noremap <expr> '.keys[1]." repmo#SelfKey('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
-    "execute 'noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."')|sunmap ".keys[0]
-    "execute 'noremap <expr> '.keys[1]." repmo#Key('".keys[1]."', '".keys[0]."')|sunmap ".keys[1]
+    "execute 'silent noremap <expr> '.keys[0]." repmo#SelfKey('".keys[0]."', '".keys[1]."') |sunmap ".keys[0]
+    "execute 'silent noremap <expr> '.keys[1]." repmo#SelfKey('".keys[1]."', '".keys[0]."') |sunmap ".keys[1] 
+    ""execute 'noremap <expr> '.keys[0]." repmo#Key('".keys[0]."', '".keys[1]."')|sunmap ".keys[0]
+    ""execute 'noremap <expr> '.keys[1]." repmo#Key('".keys[1]."', '".keys[0]."')|sunmap ".keys[1]
 endfor
 endfunction
 
@@ -1993,8 +1989,8 @@ nnoremap <silent>       <LocalLeader>rr <CMD>MagmaEvaluateLine<CR>
 xnoremap <silent>       <LocalLeader>r  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <LocalLeader>rc <CMD>MagmaReevaluateCell<CR>
 nmap gw <CMD>Wtf<CR>
-nmap <leader>ms <Plug>(GitGutterStageHunk)
-nmap <leader>mu <Plug>(GitGutterUndoHunk)
+nmap <leader>hs <Plug>(GitGutterStageHunk)
+nmap <leader>hu <Plug>(GitGutterUndoHunk)
 
 function! StashME()
  let stash = input('Enter name: ')
@@ -2136,4 +2132,6 @@ nnoremap <leader>A A
 
 nmap % <Plug>(MatchMetaN)
 
+inoremap <m-b> <c-v>
+cnoremap <m-b> <c-v>
 nnoremap R q
