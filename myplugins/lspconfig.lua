@@ -32,10 +32,10 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gR", vim.lsp.buf.rename, bufopts)
 	vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 	--vim.keymap.set("v", "<c-y>", live_grep_args_shortcuts.grep_visual_selection)
-    local function format()
-        vim.lsp.buf.format({ timeout_ms = 2000 })
-    end
-	vim.keymap.set("n", "_f", format, bufopts)
+	--local function format()
+	--vim.lsp.buf.format({ timeout_ms = 2000 })
+	--end
+	--vim.keymap.set("n", "_f", format, bufopts)
 	--vim.keymap.set('n', 'gi', vim.lsp.buf.__, bufopts)
 	--vim.keymap.set('n', '_f', vim.lsp.buf.formatting, bufopts)
 	----vim.keymap.set('n','gW',require('navigator.workspace').workspace_symbol_live())
@@ -67,17 +67,29 @@ return {
 			--{ "antosha417/nvim-lsp-file-operations", config = true },
 		},
 		config = function()
-			require("mason").setup()
-			require("mason-lspconfig").setup()
-			--local nlspsettings = require("nlspsettings")
+			local mason = require("mason")
+			local mason_lspconfig = require("mason-lspconfig")
+			local lspconfig = require("lspconfig")
+			local nlspsettings = require("nlspsettings")
+			--require("mason").setup()
+			--require("mason-lspconfig").setup()
 
-			--nlspsettings.setup({
-			--config_home = vim.fn.stdpath('config') .. '/nlsp-settings',
-			--local_settings_dir = ".nlsp-settings",
-			--local_settings_root_markers_fallback = { '.git' },
-			--append_default_schemas = true,
-			--loader = 'json'})
+			nlspsettings.setup({
+				config_home = vim.fn.stdpath("config") .. "/nlsp-settings",
+				local_settings_dir = ".nlsp-settings",
+				local_settings_root_markers_fallback = { ".git" },
+				append_default_schemas = true,
+				loader = "json",
+			})
+			local global_capabilities = vim.lsp.protocol.make_client_capabilities()
+			global_capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+			lspconfig.util.default_config = vim.tbl_extend("force", lspconfig.util.default_config, {
+				capabilities = global_capabilities,
+			})
+
+			mason.setup()
+			mason_lspconfig.setup()
 			local capabilities = vim.tbl_deep_extend(
 				"force",
 				vim.lsp.protocol.make_client_capabilities(),
@@ -87,11 +99,11 @@ return {
 				-- This is the default in Nvim 0.7+
 				debounce_text_changes = 150,
 			}
-			require("lspconfig")["tsserver"].setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-				flags = lsp_flags,
-			})
+			--require("lspconfig")["tsserver"].setup({
+				--capabilities = capabilities,
+				--on_attach = on_attach,
+				--flags = lsp_flags,
+			--})
 			require("lspconfig")["rust_analyzer"].setup({
 				on_attach = on_attach,
 				flags = lsp_flags,
@@ -147,6 +159,17 @@ return {
 					},
 				},
 			})
+			require("lspconfig")["html_lsp"].setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				flags = lsp_flags,
+			})
+
+			--require("lspconfig")['htmlbeautifier'].setup({
+			--capabilities = capabilities,
+			--on_attach = on_attach,
+			--flags = lsp_flags,
+			--})
 			require("lspconfig")["pyright"].setup({
 				capabilities = capabilities,
 				on_attach = function(client, bufnr)
@@ -168,17 +191,30 @@ return {
 				--verboseOutput = true
 				--settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
 			})
-			require("lspconfig").lua_ls.setup({
-				capabilities = capabilities,
-				on_attach = on_attach,
-				flags = lsp_flags,
-			})
+			--require("lspconfig").lua_ls.setup({
+				--capabilities = capabilities,
+				--on_attach = on_attach,
+				--flags = lsp_flags,
+			--})
 
 			--require("lspconfig").vimls.setup{
 			--capabilities = capabilities,
 			--on_attach = on_attach,
 			--}
-			require("lspconfig").jsonls.setup({})
+			require("lspconfig").jsonls.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				flags = lsp_flags,
+			})
+			mason_lspconfig.setup_handlers({
+				function(server_name)
+					lspconfig[server_name].setup({
+						capabilities = capabilities,
+						on_attach = on_attach,
+						flags = lsp_flags,
+					})
+				end,
+			})
 		end,
 	},
 }

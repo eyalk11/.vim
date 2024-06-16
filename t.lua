@@ -10,7 +10,7 @@ require("lazy").setup(
   },
  --, performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
   spec = {
-        --{import = "plugins.noice" },
+        {import = "plugins.noice" },
         {import = "plugins.repmo" },
         {import = "plugins.lspconfig" },
         {
@@ -51,11 +51,12 @@ require("lazy").setup(
           --[[priority = 1000,]]
           --[[opts = {},]]
       --[[},]]
-    {"equalsraf/neovim-gui-shim",version="*", config = function () vim.cmd("colorscheme onedark") end,priority=10000},
+    --{"equalsraf/neovim-gui-shim",version="*", config = function () vim.cmd("colorscheme onedark") end,priority=10000},
     {'vim-airline/vim-airline',priority=1000    },
     {'unblevable/quick-scope',lazy=true,event="VeryLazy"},
     {'kana/vim-textobj-function', event="VeryLazy"} ,
-    { 'rcarriga/nvim-notify'},
+    {'vim-ctrlspace/vim-ctrlspace',priority=10000},
+    { 'rcarriga/nvim-notify', config = function () vim.cmd("colorscheme onedark") end,priority=10000}, -- just for the colorscheme
       LazyPlugSpecs,
       }
   } )

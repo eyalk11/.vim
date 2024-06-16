@@ -4,10 +4,13 @@ while i <= 9
     let i = i + 1
 endwhile
 
+nmap <S-Space> <CMD>CtrlSpace<CR>w
+
+
 "mouse 
 ":redraw<CR>
 "nmap <MiddleMouse> i
-"imap <MiddleMouse> <ESC>
+"imap <MiddleMouse> <ESCi>
 "
 "
 "speical insert
@@ -15,7 +18,7 @@ nmap <RightMouse> <F12>
 imap <RightMouse> <ESC>
 inoremap <S-TAB> <esc><<^i
 nmap <Home> ^
-nmap <c-CR> <CMD>noh<CR><CMD>Noice dismiss<CR>
+nmap <c-CR> <CMD>noh<CR><CMD>silent! Noice dismiss<CR>
 nmap L: :lua 
 
 map __ <Plug>NERDCommenterComment
@@ -145,6 +148,7 @@ nmap _- <CMD>cd -<CR>
 nmap _P <CMD>wprevious<CR>
 nmap _N <CMD>wnext<CR>
 nmap _wo <CMD>WorkspacesOpen<CR>
+nmap _f <CMD>lua vim.lsp.buf.format({ timeout_ms = 2000 })<CR>
 
 "do comment out
 map __ <leader>Cc
@@ -452,9 +456,9 @@ imap <M-Down> <c-o><Plug>(easymotion-bd-wl)
 "completes one char or  from dict 
 inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o><CMD>call RecallInserts(0)<CR>"
 "inoremap <expr> <C-b>  pumvisible()? "<c-b>" : "<c-o><CMD>call RecallInserts(0)<CR>"
-imap <c-b> <c-o><CMD>call RecallInserts(0)<CR>
-
-
+"imap <c-b> <c-o><CMD>call RecallInserts(0)<CR>
+inoremap <c-b> <c-o><CMD>call GetAllInserts()<CR>
+inoremap <c-end> <c-v>
 "does chars 
 
 inoremap <m-c-k> <c-x><c-k>
@@ -921,8 +925,8 @@ nmap mg <CMD>GCWD<CR>
 nmap MG <CMD>unlet b:git_dir<CR><CMD>G<CR>
 
 
-map <leader>g2 <CMD>diffget \\2<CR>
-map <leader>g3 <CMD>diffget \\3<CR>
+map <leader>g2 :diffget \\2<CR>
+map <leader>g3 :diffget \\3<CR>
 nnoremap <leader>Gs <CMD>Gdiff --staged<CR>
 nnoremap <leader>Gc <CMD>Git commit -v -q<CR>
 nnoremap <leader>GC <CMD>Git commit --amend --no-verify<CR>
@@ -1871,21 +1875,23 @@ command! -nargs=1 LfGitGen <CMD>call GitF(<f-args>,0)<CR>
 :    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
 
-
+func! GetExtPat()
+    return "." . split(expand('%:t'),'\.')[1]. "$"
+endfunction 
 
 "Use current workspace git py  
-nmap <leader>gr <CMD>call GitF(".*py$",0)<CR>
+nmap <leader>gr <CMD>call GitF(GetExtPat() ,0)<CR>
 "Use current workspace git all 
 nmap <leader>gR <CMD>call GitF("",0)<CR>
 "Use current file  git py  
-nmap <leader>Gr <CMD>call GitF(".*py$",1)<CR>
+nmap <leader>Gr <CMD>call GitF(GetExtPat() ,1)<CR>
 "Use current file  git all  
 nmap <leader>GR <CMD>call GitF("",1)<CR>
 
-vmap <leader>Gr "xy<CMD>call GitFPat(".*py$",1,@x)<CR>
+vmap <leader>Gr "xy<CMD>call GitFPat(GetExtPat() ,1,@x)<CR>
 vmap <leader>GR "xy<CMD>call GitFPat("",1,@x)<CR>
 vmap <leader>gR "xy<CMD>call GitFPat("",0,@x)<CR>
-vmap <leader>gr "xy<CMD>call GitFPat(".*py$",0,@x)<CR>
+vmap <leader>gr "xy<CMD>call GitFPat(GetExtPat(),0,@x)<CR>
 
 vnoremap <c-a>g "xy<CMD>call feedkeys( ":LeaderfRgInteractive\<lt>CR>". @x . "\<lt>CR>\<lt>CR>")<CR>
 vmap <c-y> <leader>GR

@@ -272,11 +272,12 @@ let g:ctrlp_max_depth=40
 
 
 "ctrlspace
+let g:CtrlSpaceDefaultMappingKey = "<C-space> "
 
-let g:CtrlSpaceLoadLastWorkspaceOnStart = 0
+let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 "endif
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 0
-let g:CtrlSpaceSaveWorkspaceOnExit = 0
+let g:CtrlSpaceSaveWorkspaceOnExit = 1
 "let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 "display registers in the status bar
 
