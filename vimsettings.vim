@@ -326,7 +326,7 @@ let g:GuiLoaded=1
         vnoremap <Home> ^
 		"set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 "		set guifont=Monaco\ for\ Powerline:h12 
-		set mouse+=a
+		set mouse=a
         inoremap <c-p> <c-v>
         cnoremap <c-p> <c-v>
         inoremap <c-v> <c-r><c-p>+
@@ -445,3 +445,5 @@ checktime
 endf 
 autocmd BufEnter,FocusGained *  call Aa()
 "set noautoread #don't reload it when changed outside vim and no vim changes. 
+set synmaxcol=300
+"

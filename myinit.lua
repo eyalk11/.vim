@@ -27,6 +27,16 @@ function GotoMap()
 	end
 end
 
+function _G.BufIsBig(bufnr)
+	local max_filesize = 100 * 1024 -- 100 KB
+	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+	if ok and stats and stats.size > max_filesize then
+		return true
+	else
+		return false
+	end
+end
+
 function _G.set_workspace_dir(dir)
 	vim.lsp.buf.add_workspace_folder(dir)
 	local folders = vim.lsp.buf.list_workspace_folders()
@@ -275,27 +285,22 @@ cmp.setup({
 		{ name = "nvim_lsp", priority = 200 },
 	}),
 })
-local bufIsBig = function(bufnr)
-	local max_filesize = 100 * 1024 -- 100 KB
-	local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
-	if ok and stats and stats.size > max_filesize then
-		return true
-	else
-		return false
-	end
-end
 vim.api.nvim_create_autocmd("BufReadPre", {
 	callback = function(t)
-		if not bufIsBig(t.buf) then
+		if not BufIsBig(t.buf) then
 			sources = cmp.config.sources({
 				{ name = "buffer", priority = 1 },
-				{ name = "path", proiority = 5 },
+				{ name = "path", priority = 5 },
 				{ name = "nvim_lsp", priority = 200 },
 			})
 		else
+            vim.lsp.stop_client(vim.lsp.get_clients())
 			cmp.setup.buffer({
 				sources = {},
 			})
+            print("Buffer is big, stopping clients and setting up empty sources")  -- added here
+            vim.api.nvim_echo({{'Buffer is big, stopping clients and setting up empty sources', 'Normal'}}, true, {})  -- added here
+
 		end
 	end,
 })

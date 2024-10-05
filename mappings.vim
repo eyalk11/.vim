@@ -459,6 +459,7 @@ inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o><CMD>call RecallInserts(0)<
 "imap <c-b> <c-o><CMD>call RecallInserts(0)<CR>
 inoremap <c-b> <c-o><CMD>call GetAllInserts()<CR>
 inoremap <c-end> <c-v>
+nmap <Leader>gm :lua GotoMap()<CR>
 "does chars 
 
 inoremap <m-c-k> <c-x><c-k>
@@ -883,6 +884,7 @@ nnoremap <silent> <C-a>C <CMD>FzfLua commands<CR>
 nnoremap <silent> <C-a>l <CMD>call GetAllInsertsForCurrentBufs()<CR>
 nnoremap <silent> <C-a>L m'<CMD>LeaderfLineAll<CR>
 nnoremap <silent> <C-a>r <CMD>Leaderf --recall<CR>
+nmap <c-u> <c-a>r
 nnoremap <silent> <C-a>R <CMD>LeaderfRgRecall<CR>
 "files current dir
 nnoremap <silent> <C-a>f <CMD>FzfLua files<CR>
@@ -1359,7 +1361,10 @@ vnoremap <C-J> "xy:<CMD>call HandleCJ()<CR>
 
 "nnoremap <C-K> :call RegsToggle()<CR>
 "vnoremap <C-K> <CMD>:call RegsToggle()<CR>
-nnoremap <c-k> <CMD>:ChatGPT<CR>
+map <leader>pc <CMD>ChatGPT<CR>
+inoremap <c-u> <c-v>
+vmap <c-k> "xy<CMD>:ChatGPT<CR><esc>"xpa
+nnoremap <c-k> <CMD>:ChatGPT<CR>i
 nmap <leader>pC <CMD>ChatGPT<CR>:Voice<CR>
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
@@ -1490,15 +1495,15 @@ nmap <BS> call Show_documentation()<CR>
 "nnoremap <silent> _p  :<C-u>CocListResume<CR>
 :endif
 
-nnoremap _d <CMD>Telescope diagnostics<CR>
-nmap _d <CMD>TroubleToggle<CR>
+"nnoremap _d <CMD>Telescope diagnostics<CR>
+"nmap _d <CMD>TroubleToggle<CR>
 nnoremap _o <CMD>Telescope lsp_document_symbols<CR>
 nnoremap _O <CMD>Telescope lsp_workspace_symbols<CR>
 nnoremap _r <CMD>Telescope lsp_references<CR>
 nnoremap _a <CMD>Telescope lsp_code_actions<CR>
 nmap <nowait> <leader>s <CMD>Navbuddy<CR>
 
-nnoremap <silent> _s  <CMD>Telescope lsp_workspace_symbols<CR>
+"nnoremap <silent> _s  <CMD>Telescope lsp_workspace_symbols<CR>
 
 "map <silent> <C-c> <Plug>(coc-cursors-position)
 "nmap <silent> <C-d> <Plug>(coc-cursors-word)*
@@ -1957,7 +1962,6 @@ nmap z; <Plug>EnhancedJumpsFarChangeOlder
 nmap z, <Plug>EnhancedJumpsFarChangeNewer
 
 command! -nargs=1 ReloadPackage <CMD>exe "cd c:/users/ekarni/.vim" <bar> lua require('funcs').reload_package(<f-args>)
-nmap <leader>pc <CMD>ChatGPT<CR>
 
 "function! GetVoice()
     "return py3eval('recognize_voice()')

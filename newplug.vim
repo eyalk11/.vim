@@ -154,6 +154,7 @@ Plugit 'honza/vim-snippets'
 Plugit 'mhinz/neovim-remote'
 Plugit 'SirVer/ultisnips'
 Plugit 'lervag/vimtex'
+"for better .
 Plugit 'tpope/vim-repeat'
 
 "Plugit 'Shougo/neco-vim'
@@ -213,7 +214,7 @@ Plugit 'jeetsukumaran/vim-pythonsense'
 if !has('nvim')
 	Plugit 'powerline/powerline'
 else
-	Plugit 'vim-airline/vim-airline-themes' 
+	"Plugit 'vim-airline/vim-airline-themes' 
     ", {lazy= false} 
 	"Plugit 'vim-airline/vim-airline'
 endif
@@ -233,6 +234,7 @@ Plugit 'andymass/vim-matchup'
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
 Plugit 'powerman/vim-plugin-AnsiEsc'
+PlugIt 'vim-scripts/LargeFile'
 if !has('nvim')
     call plug#end()
 endif

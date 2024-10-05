@@ -839,3 +839,13 @@ let g:pymode_syntax_slow_sync = 0
 let g:pymode_syntax_all = 0
 let g:pymode_folding = 0
 let g:pymode_debug = 0
+
+
+
+let g:copilot_filetypes = {
+      \ '*': v:false,
+      \ 'python': v:true,
+      \ 'vim': v:true,
+      \ 'lua': v:true,
+      \ }
+
