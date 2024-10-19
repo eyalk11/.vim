@@ -56,7 +56,8 @@ require("noice").setup({
                         { find = 'GoNext' },
                         { find = 'GoPrev' },
                         { find = 'ON_ATTACH_ERROR' } ,
-                        { find = 'Cannot close last window'}
+                        { find = 'Cannot close last window'},
+                        { find = 'LSP client '}
                     },
                 },
                 opts = { skip = true },

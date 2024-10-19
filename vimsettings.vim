@@ -192,7 +192,7 @@ function! OnLoad()
     
     "sleep 700ms
     call PyAS()
-    "silent !copy ~\.vim\profile ~\.vim\profile2
+    "silent !aqcopy ~\.vim\profile ~\.vim\profile2
     "silent !del ~\.vim\profile
 
 
@@ -424,7 +424,7 @@ autocmd filetype vim let b:auto_save = 1
 "commands
 "
 command! -nargs=* -complete=file C call CloseAllNR()<bar>:sleep 200m<bar>:vert topleft split <args>
-command! -nargs=*  -complete=help Help vert :help <args>
+command! -nargs=*  -complete=help VHelp vert :help <args>
 
 " search
 set incsearch

@@ -222,7 +222,7 @@ endfunction
 function GetBufName()
     let t=expand("%:p")
     if len(t)==0
-        if &cinkeys=="chatgpt"
+        if &cinkeys=~"chatgpt."
             let t="chatgpt"
         else 
             let t="unknown"

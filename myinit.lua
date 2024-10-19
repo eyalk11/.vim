@@ -20,6 +20,7 @@ function GotoMap()
 				if source_file and line_number then
 					-- Check if the source file exists
 					api.nvim_command("edit " .. source_file)
+                    
 					api.nvim_command(tostring(line_number) .. ":")
 				end
 			end
@@ -471,13 +472,15 @@ require("chatgpt").setup({
 	["chat.sessions_window.buf_options.cinkeys"] = "chatgpt",
 	["popup_window.buf_options.cinkeys"] = "chatgpt",
 	["settings_window.buf_options.cinkeys"] = "chatgpt",
-	["popup_input.buf_options.cinkeys"] = "chatgpt",
+	["popup_input.buf_options.cinkeys"] = "chatgptp",
 	log_file = "C:\\users\\ekarni\\chatgptn.log",
 })
 
 local chatgpt = require("chatgpt")
 wk = require("which-key")
-wk.setup({ plugins = { presets = { operators = false } } })
+wk.setup({ plugins = { presets = { operators = false } }, 
+triggers_blacklist = { c = { "*" ,"%"} } 
+})
 wk.register({
 	p = {
 		name = "ChatGPT",

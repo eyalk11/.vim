@@ -845,6 +845,9 @@ let g:pymode_debug = 0
 let g:copilot_filetypes = {
       \ '*': v:false,
       \ 'python': v:true,
+      \ 'ps1': v:true,
+      \ 'txt': v:true,
+      \ 'md': v:true,
       \ 'vim': v:true,
       \ 'lua': v:true,
       \ }

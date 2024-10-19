@@ -327,8 +327,14 @@ function! TimerFuncB(a)
     py3 import pyperclip
     
 try 
-    if g:last_copied!=py3eval('pyperclip.paste()') && getreg('*')!=getreg('@')
-        "from o to w
+    let tm=getreg('*') 
+    if len(tm) > 10000
+        return 
+    end 
+
+    if g:last_copied!=tm && tm!=getreg('"')
+        "from o to w contextmanager&& tm!=getreg('"') 
+        "external copy
         "echo "xx"
         for i in range(char2nr('v'),char2nr('o'),-1)
             exe "let @".nr2char(i+1)." = @". nr2char(i) 
@@ -1059,5 +1065,26 @@ function! s:matchquote()
   endif
 
 endfunction
+function! GoToWindowWithCinkeys()
+" Save the current window number
+let l:current_win = winnr()
+
+" Loop over all windows
+for l:win in range(1, winnr('$'))
+    " Select the window
+    execute l:win . 'wincmd w'
+
+    " Check if the 'cinkeys' option equals 'chatgptp'
+    if &cinkeys == 'chatgptp'
+        " Found the window, return
+        return
+    endif
+endfor
+
+" If we didn't find the window, go back to the original window
+execute l:current_win . 'wincmd w'
+endfunction
+
+" Call the function
 
 nnoremap <silent> <Plug>(MatchMetaN) :call <SID>matchquote()<CR>

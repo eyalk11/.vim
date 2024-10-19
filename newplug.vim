@@ -234,7 +234,7 @@ Plugit 'andymass/vim-matchup'
 "Plug 'IngoHeimbach/neco-vim'
 "Plug 'inkarkat/vim-mark'
 Plugit 'powerman/vim-plugin-AnsiEsc'
-PlugIt 'vim-scripts/LargeFile'
+
 if !has('nvim')
     call plug#end()
 endif

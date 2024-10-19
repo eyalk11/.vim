@@ -68,10 +68,10 @@ nnoremap mS <CMD>call ToggleSearch()<CR>
 :nnoremap [) (<CR>
 :nnoremap [0 )<CR>
 "qw inserts char after
-
+nmap <Plug>(arpeggio-default:s) <CMD>call InsertBefore(v:count1)<CR>
 nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
-nmap S :<C-U>call InsertAfter(v:count1)<CR>
+nmap S <CMD>call InsertAfter(v:count1)<CR>
 "nnoremap q t
 
 "The <M-t> provides omni tl-search 
@@ -112,6 +112,7 @@ vnoremap <end> $h
 
 
 nmap <nowait> , <CMD>Leaderf line --popup<CR>
+nmap <m-,> <CMD>Telescope lsp_document_symbols<CR>
 "nmap <nowait> , <CMD>Telescope current_buffer_fuzzy_find<CR>
 "nmap <nowait> , <CMD>call Lff()<CR>
 "function! Lff()
@@ -1233,9 +1234,9 @@ function! InsertBefore(count) range
         let @z= t
         ":normal "zp
         if l>1
-                exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+                exec "normal a"."\<c-r>=nr2char(".t.")\<ESC>"
     else
-                exec ":normal i"."\<c-r>=nr2char(".t.")\<ESC>"
+                exec "normal i"."\<c-r>=nr2char(".t.")\<ESC>"
                 "exec ":normal i"."\<c-r>='".nr2char(t)."'"."\<ESC>"
     endif
                 "redraw
@@ -1257,7 +1258,7 @@ function! MJoin()
     return res
 endfunction 
 
-vmap mjoin "xdi<C-r>=MJoin()<CR>
+"vmap mjoin "xdi<C-r>=MJoin()<CR>
 
 function! InsertAfter(count) range
         if a:count==0
@@ -1272,7 +1273,7 @@ function! InsertAfter(count) range
                 endif
         let @z= t
         ":normal "zp
-                exec ":normal a"."\<c-r>=nr2char(".t.")\<ESC>"
+                exec "normal a"."\<c-r>=nr2char(".t.")\<ESC>"
                 "redraw
         endfor 
 endfunction
@@ -1361,11 +1362,16 @@ vnoremap <C-J> "xy:<CMD>call HandleCJ()<CR>
 
 "nnoremap <C-K> :call RegsToggle()<CR>
 "vnoremap <C-K> <CMD>:call RegsToggle()<CR>
-map <leader>pc <CMD>ChatGPT<CR>
-inoremap <c-u> <c-v>
-vmap <c-k> "xy<CMD>:ChatGPT<CR><esc>"xpa
-nnoremap <c-k> <CMD>:ChatGPT<CR>i
+
+"translates
+nmap <leader><c-t> vaw:<CMD>Trans<CR>
+
+nmap <leader>pc <CMD>ChatGPT<CR>
 nmap <leader>pC <CMD>ChatGPT<CR>:Voice<CR>
+inoremap <c-u> <c-v>
+vmap <c-k> "xy<CMD>:ChatGPT<CR><Cmd>if &insertmode<Bar>stopinsert<Bar>endif<CR><CMD>%d _<CR>"xpgg^i
+vmap <m-k> "xy<CMD>:ChatGPT<CR><Cmd>if &insertmode<Bar>stopinsert<Bar>endif<CR>"xpgg^i
+nnoremap <c-k> <CMD>:ChatGPT<CR>i
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
 vnoremap <Space> zf
 
@@ -2006,7 +2012,15 @@ function! StashME()
  let stash = input('Enter name: ')
 exec "!git stash push -m \"". stash . '" --keep-index '. expand('%') 
 endfunction 
+function! StashAll() 
+    let stash = input('Enter name: ')
+    exec "powershell -Command 'StashAll ". stash . "'"
+endfunction 
+
+
+
 nmap <leader>GS <CMD>call StashME()<CR>
+nmap <leader>Gs <CMD>call StashAll()<CR>
 nmap <leader>gp <CMD>exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
 nmap <leader>gc <CMD>cd ~/compare-my-stocks<CR>
 function! LfFil(a)
@@ -2026,8 +2040,8 @@ nmap <leader>Gw mc:Gw<CR>\Gc
 nnoremap <leader>w <CMD>Gwrite<CR>
 nmap <leader>gC <CMD>call GitF("",0)<CR>
 "#save and push  
-nmap Zp ZZ:Git push<CR>
-nmap ZP ZZ:Git push --force<CR>
+nmap Zp ZZ<CMD>redraw<CR><CMD>Git push<CR>
+nmap ZP ZZ<CMD>redraw<CR><CMD>Git push --force<CR>
 " Get the directory of a file
 " - On Ex command lines, returns the directory of the file ('./' for new files)
 " - On other command lines (/,?) returns the keymap used to trigger it
@@ -2092,7 +2106,7 @@ function! DDa()
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
-nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined/<CR>
+nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined\\|is unknown/<CR>
 
 "restore cfilter
 nnoremap <leader>XR <CMD>lolder<CR>
@@ -2116,6 +2130,7 @@ nnoremap <leader>Gw <CMD>Gwrite<CR>
 nnoremap <leader>GA <CMD>Git commit  -a --amend --no-verify --no-edit<CR>
 
 nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
+nnoremap <leader>Gh <CMD>DiffviewFileHistory %<CR>
 
 
 
@@ -2145,3 +2160,4 @@ nmap % <Plug>(MatchMetaN)
 inoremap <m-b> <c-v>
 cnoremap <m-b> <c-v>
 nnoremap R q
+cabbr %G Gvdiffsplit

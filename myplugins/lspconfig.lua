@@ -160,7 +160,10 @@ return {
             }
             require("lspconfig").pylsp.setup({
                 capabilities = capabilities,
-                on_attach = on_attach,
+                 on_attach = function(client, bufnr)
+                    client.server_capabilities.completionProvider = false
+                    on_attach(client, bufnr)
+                end,
                 settings = {
                     pylsp = {
                         plugins = {
@@ -172,7 +175,7 @@ return {
                                 enabled = false,
                             },
                             pylint = { enabled = false },
-                            rope = { enabled = false, ropefolder = "C:\\temp\\rope" },
+                            rope = { enabled = true, ropefolder = "C:\\temp\\rope" },
                             --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
                             --rope_autoimport = {enabled = false, {completions = {enabled = false}, {code_actions = {enabled = false}}}},
                             jedi_symbols = {
@@ -203,7 +206,7 @@ return {
             require("lspconfig")["pyright"].setup({
                 capabilities = capabilities,
                 on_attach = function(client, bufnr)
-                    client.server_capabilities.completionProvider = false
+                    --client.server_capabilities.completionProvider = false
                     on_attach(client, bufnr)
                 end,
                 flags = lsp_flags,
@@ -238,7 +241,7 @@ return {
             })
             mason_lspconfig.setup_handlers({
                 function(server_name)
-                    local ignore_list = { "lua_ls", "lua-language-server" }
+                    local ignore_list = { "lua_ls", "lua-language-server", "sourcery" }
                     local ignore = false
 
                     for _, v in ipairs(ignore_list) do

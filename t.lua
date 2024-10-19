@@ -9,8 +9,10 @@ require("lazy").setup({
     --, performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},
     spec = {
         { import = "plugins.noice" },
-        { import = "plugins.repmo" },
+        --{ import = "plugins.repmo" },
         { import = "plugins.lspconfig" },
+        { "girishji/pythondoc.vim" },
+        {'vim-scripts/LargeFile'},
         {
             "rcarriga/nvim-dap-ui",
             dependencies = "mfussenegger/nvim-dap",
