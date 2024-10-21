@@ -215,11 +215,11 @@ endfor
     "sleep 500ms
     "echom "onload"
     cd ~/.vim
-":profile start /Users/eyalkarni/ab.log
-":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
-"call ToggleVerbose() 
+    ":profile start /Users/eyalkarni/ab.log
+    ":profile file /Users/eyalkarni/vimpy3/plugged/vim-ctrlspace/autoload/ctrlspace/workspaces.vim
+    "call ToggleVerbose() 
     "!cp /Users/eyalkarni/vimpy3/.git/cs_workspaces /tmp/onload 
-". '~/vimpy3/'
+    ". '~/vimpy3/'
 ":exe ":silent CtrlSpaceAddProjectRoot ". g:vimloc
 	if !has('nvim')
 		return
@@ -417,7 +417,7 @@ autocmd filetype vim let b:auto_save = 1
 
 
 
-"let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH
+"let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH 
 "let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
 "autocmd! TermEnter * :startinsert
 
