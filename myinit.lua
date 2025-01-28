@@ -295,7 +295,7 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 				{ name = "nvim_lsp", priority = 200 },
 			})
 		else
-            vim.lsp.stop_client(vim.lsp.get_clients())
+            --vim.lsp.stop_client(vim.lsp.get_clients())
 			cmp.setup.buffer({
 				sources = {},
 			})
@@ -479,7 +479,7 @@ require("chatgpt").setup({
 local chatgpt = require("chatgpt")
 wk = require("which-key")
 wk.setup({ plugins = { presets = { operators = false } }, 
-triggers_blacklist = { c = { "*" ,"%"} } 
+triggers_blacklist = { c = { "*" ,"%"}, v= { "c" } } 
 })
 wk.register({
 	p = {

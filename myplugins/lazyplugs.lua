@@ -18,6 +18,13 @@ return {
                 dapui.close()
             end
         end,
+        keys = {
+            { "<leader>Dc", function() require("dap").continue() end, desc = "DAP Continue" },
+            { "<leader>Db", function() require("dap").toggle_breakpoint() end, desc = "DAP Toggle Breakpoint" },
+            { "<leader>Do", function() require("dap").step_over() end, desc = "DAP Step Over" },
+            { "<leader>Di", function() require("dap").step_into() end, desc = "DAP Step Into" },
+            { "<leader>Du", function() require("dapui").toggle() end, desc = "DAP UI Toggle" },
+        },
     },
     {
         "mfussenegger/nvim-dap",
@@ -34,9 +41,10 @@ return {
             "nvim-neotest/nvim-nio",
         },
         config = function(_, opts)
-            local path =
-            [[ C:\Users\ekarni\AppData\Local\nvim-data\mason\packages\debugpy\venv\Scripts\python.exe ]]     --"~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
-            require("dap-python").setup(path)
+            --local path =
+
+            --[[ C:\Users\ekarni\.pyenv\pyenv-win\versions\3.10\python.exe ]]     --"~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+            require("dap-python").setup("python")
             --require("core.utils").load_mappings("dap_python")
         end,
     },

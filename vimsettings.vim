@@ -200,7 +200,7 @@ function! OnLoad()
 
     :call DefineMapping()
     set ambiwidth=single
-let g:keys = ['jk',  'sd','kl', 'as','df']
+let g:keys = ['jk',  'sd','kl' ]
 for key in g:keys
     execute 'silent Arpeggio inoremap ' key '<Esc>'
     execute 'silent Arpeggio nnoremap ' key 'i'
@@ -228,9 +228,9 @@ endfor
 	if g:on_ek_computer
 		let g:SessionFile = ($HOME."\\.vim\\session_file") 
 		if exists('g:GuiLoaded') || ( g:on_vimr) || exists(':GonvimWorkspaceNew')
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspaces")
+			let g:CtrlSpaceWorkspaceFile = ($HOME."\\.vim\\workspaces\\.cs_workspaces")
 		else
-			let g:ctrlspaceWorkspace = ($HOME."\\.vim\\workspaces\\.cs_workspacesCWD")
+			let g:CtrlSpaceWorkspaceFile = ($HOME."\\.vim\\workspaces\\.cs_workspacesCWD")
         endif 
 		let g:overrideCWD=1
 	endif

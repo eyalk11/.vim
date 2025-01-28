@@ -136,8 +136,11 @@ nmap m, <CMD>LeaderfEnablePreview<CR><CMD>Leaderf line --popup<CR>
 
 "
 " _ mappings 
-noremap _g <CMD>diffget<CR>
-noremap _p <CMD>diffput<CR>
+nmap _g <CMD>diffget<CR>
+nmap _p <CMD>diffput<CR>
+vmap _g :'<,'>diffget<CR>
+vmap _p :'<,'>diffput<CR>
+
 nmap _u <CMD>LastWindow<CR>
 
 if g:on_ek_computer
@@ -1881,7 +1884,7 @@ command! -nargs=1 LfGitGen <CMD>call GitF(<f-args>,0)<CR>
 ":endfun
 "```vim
 :com! -nargs=1 -bang -complete=customlist,EditFileComplete
-        \ EditFile exec "edit<bang> ". expand("%:p:h")."/<args>"
+        \ Ef exec "edit<bang> ". expand("%:p:h")."/<args>"
 :fun! EditFileComplete(A,L,P)
 :    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
@@ -2014,7 +2017,7 @@ exec "!git stash push -m \"". stash . '" --keep-index '. expand('%')
 endfunction 
 function! StashAll() 
     let stash = input('Enter name: ')
-    exec "powershell -Command 'StashAll ". stash . "'"
+    exec "!pwsh -command 'StashAll ". stash . "'"
 endfunction 
 
 
@@ -2106,7 +2109,7 @@ function! DDa()
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
-nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined\\|is unknown/<CR>
+nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined\\|is unknown/\\|unexpected<CR>
 
 "restore cfilter
 nnoremap <leader>XR <CMD>lolder<CR>
