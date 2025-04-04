@@ -577,6 +577,7 @@ function! CloseAllWindowsButCurrent()
         let ft= getbufvar(winbufnr(winnr), '&filetype')
         if and(winnr!=curwin,or((ft!~'NvimTree'),last2))
             execute ':'.winnr.'close!'
+            return
         endif
     endfor
 endfunction

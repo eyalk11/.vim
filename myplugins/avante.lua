@@ -6,8 +6,31 @@ return {
   opts = {
       debug= true,
       provider = "claude",
-      auto_suggestions_provider = "copilot",
+      cursor_applying_provider = 'openai',
+      behaviour = {
+      --- ... existing behaviours
+      enable_cursor_planning_mode = false, -- enable cursor planning mode!
+  },
+       claude = {
+      model = "claude-3-7-sonnet-20250219",
+
+  },
+  grok = { 
+      model= "grok-2-latest",
+      endpoint="https://api.x.ai/v1",
+      api_key_name ="GROK_API_KEY",
+    max_tokens = 131072
+  },
+      auto_suggestions_provider = nil,--"copilot",
     -- add any opts here
+    web_search_engine = {
+      provider = "google", -- tavily, serpapi, searchapi, google or kagi
+    },
+    rag_service = {
+      enabled = false, -- Enables the rag service, requires OPENAI_API_KEY to be set
+    },
+
+-- 
   },
   keys = {
     { "<leader>ac", ":AvanteClear<CR>", desc = "Clear Avante" }

@@ -242,7 +242,7 @@ return {
             mason_lspconfig.setup_handlers({
                 function(server_name)
                     --local ignore_list = { "lua_ls", "lua-language-server", "sourcery" }
-                    local ignore_list = {  "sourcery" }
+                    local ignore_list = {  "sourcery","jedi-language-server" }
                     local ignore = false
 
                     for _, v in ipairs(ignore_list) do

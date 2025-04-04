@@ -3,7 +3,7 @@
 local api = vim.api
 function GotoMap()
 	local str = vim.fn.input("Enter the mapping: ")
-	local output = vim.api.nvim_exec("verbose nmap" .. str, true)
+	local output = vim.api.nvim_exec("verbose nmap " .. str, true)
 	local lines = {}
 	for s in output:gmatch("[^\r\n]+") do
 		table.insert(lines, s)
@@ -479,7 +479,7 @@ require("chatgpt").setup({
 local chatgpt = require("chatgpt")
 wk = require("which-key")
 wk.setup({ plugins = { presets = { operators = false } }, 
-triggers_blacklist = { c = { "*" ,"%"}, v= { "c" } } 
+triggers_blacklist = { c = { "*" ,"%"}, v= { "*" } } 
 })
 wk.register({
 	p = {

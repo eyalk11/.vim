@@ -83,8 +83,8 @@ Plugit 'sindrets/diffview.nvim'
 Plugit 'natecraddock/workspaces.nvim', {'event': 'VeryLazy'}
 Plugit 'brymer-meneses/grammar-guard.nvim'
 "Plugit 'kyazdani42/nvim-web-devicons'
-Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
-Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
+"Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
+"Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
 "Plugit 'nvim-treesitter/nvim-treesitter-refactor'
 "Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
 Plugit 'nvim-lua/plenary.nvim'
@@ -238,3 +238,5 @@ Plugit 'powerman/vim-plugin-AnsiEsc'
 if !has('nvim')
     call plug#end()
 endif
+
+

@@ -360,11 +360,6 @@ omap <M-t> <Plug>(QuickScopet)
 "map <Plug>cusF <CMD>call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "map <Plug>cusnf <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
 "map <Plug>cusnF <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
-function! JJJ()
-call feedkeys("mo\<C-B>")
-endfunction 
-nmap <plug>ttt <CMD>call JJJ()<CR>
-nmap <expr> <c-b> "<plug>ttt"
 function! FFn()
 call quick_scope#Wallhacks('t')
 return "\<Plug>Lightspeed_F"
@@ -661,7 +656,7 @@ noremap mM <CMD>Mru<CR>
 "newline
 
 nnoremap mn o<ESC>D
-noremap H ~
+"noremap H ~
 noremap \H H
 noremap \L L
 "nnoremap <leader>H H
@@ -759,6 +754,13 @@ call Matches(@x)
 endfunction
 
 nnoremap M <CMD>set opfunc=SpecialFind<CR>g@
+
+nnoremap H <CMD>set opfunc=SpecialFindMR<CR>g@
+function! SpecialFindMR(type)
+let &selection = "inclusive"
+exec 'normal! `[v`]"xy'
+call GitFPat(GetExtPat(),1,@x)
+endfunction 
 "vmap T 
 nmap Mm Miw
 nmap MM MiW
@@ -1011,7 +1013,20 @@ nnoremap <leader>rd <c-L>
 
 "todo FZF
 nnoremap <leader>oc <CMD>copen<CR>
-
+function! CloseVisibleNvimTreeBuffers()
+    " Get the list of all windows
+    let winlist = getwininfo()
+    " Iterate through each window
+    for win in winlist
+        " Get the buffer number for this window
+        let bufnr = win['bufnr']
+        " Check if the buffer has the filetype 'NvimTree'
+        if getbufvar(bufnr, '&ft') ==# 'NvimTree'
+            " Close the buffer
+            execute 'bd' bufnr
+        endif
+    endfor
+endfunction
 
 function! CloseVspIfNeed()
     let max_wincol = -1
@@ -1019,7 +1034,7 @@ function! CloseVspIfNeed()
     let ll=0 
     "counts real buffers
 
-    for k in getwininfo()
+    for k in getwininfo(win_getid())
         let win_id=k['winid']
 
         let winnr=win_id2win(win_id)
@@ -1091,7 +1106,13 @@ endfunction
 "opens file
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
-nmap mo <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
+nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<CMD>Buffers<CR>
+nmap mO <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
+function! JJJ()
+call feedkeys("mO\<C-b>")
+endfunction 
+nmap <plug>ttt <CMD>call JJJ()<CR>
+nmap <expr> <c-b> "<plug>ttt"
 "<c-b> the same with tab
 "swaps right and left window
 nmap mO <c-w><c-r> 
@@ -1921,8 +1942,44 @@ map Mr <leader>Gr
 "nmap <leader>gs <CMD>call DoTag()<CR>
 "nmap gs <CMD>luafile c:\Users\ekarni\.vim\aa.v<CR>
 ""~\compare-my-stocks\src\come_my_stocks\input\inputprocessorinterface.py:2" 15L, 350B
+"new
+"C:\users\ekarni\.vim\plugged/avante.nvim/lua/avante/sidebar.lua:3167:
 
-
+function! DoGF()
+    let f = expand('<cfile>')
+    let sec = expand('<cWORD>')
+    let line = substitute(sec, '^.*(\(.*\),.*):.*$', '\1', '')
+    let arr = split(f, ':')
+    let ff = getline('.')
+    " Check if the current line matches the expected format
+    if ff =~? '^.*File "\([^"]\+\)", line \(\d\+\).*'
+        let arr = [matchstr(ff, '"\zs[^"]\+\ze"'), matchstr(ff, 'line \zs\d\+')]
+    endif
+    " Handle cases where arr might have only one element
+    if len(arr) == 1
+        let arr = [arr[0] . ':' . arr[1]] + arr[2:]
+    endif
+    " Check if we have a valid file and line number
+    if len(arr) > 1
+        let file_path = expandcmd(arr[0])
+        if filereadable(file_path) == 0
+            echoerr arr[0] . " File does not exist"
+            return
+        endif
+        " Open the file
+        execute 'edit ' . file_path
+        " If the second part is a valid line number, go to that line
+        if arr[1] =~# '^\d\+$'
+            execute ':' . arr[1]
+        endif
+    else
+        " Fallback to normal gf command
+        norm! gf
+        if line =~# '^\d\+$'
+            execute ':' . line
+        endif
+    endif
+endfunction
 
 function! DoGF()
     let f=expand('<cfile>')
@@ -1930,6 +1987,9 @@ function! DoGF()
     let line= substitute(sec,'^.*(\(.*\),.*):.*$','\1','')
     let arr=split(f,':')
     let ff = getline('.')
+    echo line
+    echo arr
+
 
     if ff=~?'^.*File "\([^"]\+\)", line \(\d\+\).*'
         let arr = [matchstr(ff, '"\zs[^"]\+\ze"'),matchstr(ff, 'line \zs\d\+') ]
@@ -2017,7 +2077,7 @@ exec "!git stash push -m \"". stash . '" --keep-index '. expand('%')
 endfunction 
 function! StashAll() 
     let stash = input('Enter name: ')
-    exec "!pwsh -command 'StashAll ". stash . "'"
+    exec "!pwsh -command \"StashAll ". stash . "\""
 endfunction 
 
 
@@ -2143,20 +2203,20 @@ nnoremap msS <CMD>%s/\s//g<CR>
 
 "remove dumplicate lines
 
-nnoremap msd <CMD>silent! %s/\r\r/\r/g<CR><CMD>silent! %s/\n\n/\r/g<CR>
+nnoremap msd <CMD>silent! %s/\r\r/\r/g<CR><CMD>silent! %s/\n\n/\r/g<CR><CMD>silent! %s/^M/^M/g<CR>
 
 
 
 nmap mst <CMD>s/ //g<CR>
 
 
-nmap I <CMD>call StartSpecialInsert()<CR>i
+"nmap I <CMD>call StartSpecialInsert()<CR>i
 
-nnoremap <leader>I I
+"nnoremap <leader>I I
 
-nmap A <CMD>call StartSpecialInsert()<CR>i
+"nmap A <CMD>call StartSpecialInsert()<CR>i
 
-nnoremap <leader>A A
+"nnoremap <leader>A A
 
 nmap % <Plug>(MatchMetaN)
 
@@ -2164,3 +2224,4 @@ inoremap <m-b> <c-v>
 cnoremap <m-b> <c-v>
 nnoremap R q
 cabbr %G Gvdiffsplit
+nmap <leader>AC <CMD>AvanteAsk /clear<CR>
