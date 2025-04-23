@@ -1,3 +1,203 @@
+function! AlignWithTopLine() range
+    " Handle case when selection is at the start of the file
+    if a:firstline <= 1
+        " If at the start of file, use default indentation (0)
+        let reference_indent = 0
+        let above_line = ""
+    else
+        " Find the first non-empty line above the selection
+        let above_line_num = a:firstline - 1
+        while above_line_num >= 1 && getline(above_line_num) =~ '^\s*$'
+            let above_line_num = above_line_num - 1
+        endwhile
+        
+        " If we couldn't find a non-empty line, use default indentation
+        if above_line_num < 1
+            let reference_indent = 0
+            let above_line = ""
+        else
+            let above_line = getline(above_line_num)
+            let reference_indent = indent(above_line_num)
+        endif
+    endif
+    
+    " Check characteristics of the line above (if it exists)
+    let ends_with_colon = !empty(above_line) && above_line =~# ':$'
+    let starts_with_special = !empty(above_line) && above_line =~# '^\s*\(with\|await\|if\|for\|while\|def\|class\)'
+    let is_continuation = !empty(above_line) && above_line =~# '\((\|\[\|{\).*\(,\|\\\)$'
+    
+    " Determine target indentation
+    let target_indent = reference_indent
+    
+    " Handle different cases for alignment
+    if ends_with_colon || starts_with_special
+        " For block starts or special constructs, add one level of indentation
+        let target_indent = reference_indent + &shiftwidth
+    elseif is_continuation
+        " For line continuations (ending with comma or backslash), align with extra indent
+        let target_indent = reference_indent + &shiftwidth
+    endif
+    
+    " Get the first line's current indentation as reference for relative shifts
+    let first_line = getline(a:firstline)
+    let first_line_indent = indent(a:firstline)
+    let first_line_content = substitute(first_line, '^\s*', '', '')
+    
+    " Check if the first line of selection is a continuation of a previous statement
+    let first_line_is_continuation = !empty(above_line) && 
+                                   \ (above_line =~# '\((\|\[\|{\|\\$\|,$\)' && 
+                                   \ first_line_content !~# '^\()\|]\|}\)')
+    
+    " Calculate the indentation shift needed
+    let indent_shift = 0
+    if first_line_is_continuation
+        let indent_shift = target_indent - first_line_indent
+    else
+        let indent_shift = target_indent - first_line_indent
+    endif
+    
+    " Apply the indentation to all lines in the selection
+    for lineno in range(a:firstline, a:lastline)
+        let line = getline(lineno)
+        let current_indent = indent(lineno)
+        let current_line_content = substitute(line, '^\s*', '', '')
+        
+        " Skip empty lines
+        if current_line_content == ''
+            continue
+        endif
+        
+        " Calculate new indentation preserving relative structure
+        let new_indent = current_indent + indent_shift
+        
+        " Special handling for closing brackets/braces/parentheses
+        if current_line_content =~# '^\()\|]\|}\)'
+            " Closing brackets align with the opening line (one level back)
+            let new_indent = max([0, target_indent - &shiftwidth])
+        endif
+        
+        " Ensure indentation is never negative
+        let new_indent = max([0, new_indent])
+        
+        " Create the new line with proper indentation
+        let new_line = repeat(' ', new_indent) . current_line_content
+        
+        call setline(lineno, new_line)
+    endfor
+endfunction
+
+function! ConditionalAlign()
+    if &filetype == 'python'
+        " Store the original selection boundaries
+        let l:start_line = a:firstline
+        let l:end_line = a:lastline
+        
+        " Apply indent to the selection. autopep8 will not align if 
+        " with xx: 
+        " dosomethin 
+        " if there are not indentation 
+        norm gv4>
+        
+        " Run autopep8 on the selection, assume indentation = 0 
+        silent execute l:start_line . ',' . l:end_line . '!autopep8 -'
+        " Re-indent to above line
+        
+        silent execute l:start_line . ',' . l:end_line . 'call AlignWithTopLine()'
+    else
+        normal! gv=
+    endif
+endfunction
+
+vnoremap = :'<,'>call ConditionalAlign()<CR>
+
+function! FormatCurrentBlock()
+    " Determine the current block based on indentation
+    let current_line = line('.')
+    let current_indent = indent(current_line)
+    let current_content = getline(current_line)
+    
+    " Check if current line is a block starter (ends with colon)
+    let is_block_starter = current_content =~ ':\s*$'
+    
+    " Find the start of the block
+    let start_line = current_line
+    
+    " If current line is a block starter, use it as the start
+    if is_block_starter
+        " Use current line as start
+    else
+        " Look for block start by going up
+        while start_line > 1
+            let prev_line = start_line - 1
+            let prev_indent = indent(prev_line)
+            let prev_content = getline(prev_line)
+            
+            " Check if previous line is a block starter
+            let prev_is_starter = prev_content =~ ':\s*$'
+            
+            " Stop if we find a block starter or a line with less indentation
+            if prev_is_starter || prev_indent < current_indent
+                if prev_is_starter
+                    let start_line = prev_line
+                endif
+                break
+            endif
+            
+            " Stop if we find an empty line
+            if prev_content =~ '^\s*$'
+                break
+            endif
+            
+            let start_line = prev_line
+        endwhile
+    endif
+    
+    " Find the end of the block
+    let end_line = current_line
+    let last_line = line('$')
+    
+    " If current line is a block starter, we need to find its body
+    if is_block_starter
+        let expected_indent = current_indent + &shiftwidth
+        let end_line = current_line + 1
+        
+        " Find the first line with proper indentation
+        while end_line <= last_line
+            let next_indent = indent(end_line)
+            let next_content = getline(end_line)
+            
+            if next_content !~ '^\s*$' && next_indent >= expected_indent
+                break
+            endif
+            
+            let end_line += 1
+        endwhile
+    endif
+    
+    " Continue finding the end of the block
+    while end_line < last_line
+        let next_line = end_line + 1
+        let next_indent = indent(next_line)
+        let next_content = getline(next_line)
+        
+        " Stop if we find a line with less indentation than our block
+        " For block starters, compare with expected indentation
+        let compare_indent = is_block_starter ? (current_indent + &shiftwidth) : current_indent
+        
+        if next_indent < compare_indent || next_content =~ '^\s*$'
+            break
+        endif
+        
+        let end_line = next_line
+    endwhile
+    
+    " Apply formatting to the determined block
+    execute start_line . ',' . end_line . 'call ConditionalAlign()'
+endfunction
+
+" Map == to format the current block
+nnoremap == :call FormatCurrentBlock()<CR>
+
 let i = 1
 while i <= 9
     execute 'nnoremap <Leader>' . i . ' <CMD>' . i . 'tabn<CR>'
@@ -1027,15 +1227,18 @@ function! CloseVisibleNvimTreeBuffers()
         endif
     endfor
 endfunction
-
 function! CloseVspIfNeed()
     let max_wincol = -1
     let argmax_win_id = -1
     let ll=0 
+    let nvim=0
     "counts real buffers
 
-    for k in getwininfo(win_getid())
-        let win_id=k['winid']
+    let tabs = gettabinfo(tabpagenr())
+    "echo tabs[0]['windows']
+    for k in tabs[0]['windows']
+        let win_id=k
+        let k= getwininfo(k)[0]
 
         let winnr=win_id2win(win_id)
         let ft= getbufvar(winbufnr(winnr), '&filetype')
@@ -1046,19 +1249,52 @@ function! CloseVspIfNeed()
         endif
         if (ft=~'NvimTree')
             let ll=ll-1
+            let nvim=win_id 
+            "let argmax_win_id=win_id
+            "break
         endif
 
     endfor
+    if ll==1 && nvim!=0 
+
+        let ll=2 
+        let argmax_win_id=nvim
+    endif 
 
     if argmax_win_id != -1 && ll>1
-        if OnRight()
-            call GoOther()
-        endif
-        call win_gotoid(win_id)
+        "if OnRight()
+            "call GoOther()
+        "endif
+        call win_gotoid(argmax_win_id)
         :close
         call CloseVspIfNeed()
     endif
 endfunction
+
+
+ function! CompareRightLeft(se)
+     let g=GetBuffRightNu() 
+     echo "%s/" .a:se . "/\\=submatch(0) . Comp(submatch(1),".g.")" 
+     exec "%s/" .a:se . "/\\=submatch(0) . Comp(submatch(1),".g.")" 
+ endfunction 
+ 
+ function! GetBuffRightNu()
+     for k in getwininfo()
+         if k['winrow']<=2 && k['wincol']>1
+             "look no further
+             let id=k['winid']
+             let winnr=win_id2win(id)
+             return winbufnr(winnr)
+         endif
+     endfor
+ endfunction 
+ function! FormatJson()
+ %!wsl jq
+ endfunction 
+ function! GetVersionForGithub()
+     let @* =  MinExec('version') . "\nWindows 10"
+ endfunction 
+ 
 function! VspIfNeed()
     "let x = tabpagebuflist()
     "if len(x)==1
@@ -1106,16 +1342,16 @@ endfunction
 "opens file
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
-nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<CMD>Buffers<CR>
+nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<CMD>LeaderfBuffer<CR>
 nmap mO <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 function! JJJ()
-call feedkeys("mO\<C-b>")
+call feedkeys("mo\<C-b>")
 endfunction 
 nmap <plug>ttt <CMD>call JJJ()<CR>
 nmap <expr> <c-b> "<plug>ttt"
 "<c-b> the same with tab
 "swaps right and left window
-nmap mO <c-w><c-r> 
+nmap mO <c-w><c-r>
 nmap <leader>og <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>LeaderfFile<CR>
 nmap <leader>OF <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR>mm
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('LfFil'),'options': '-m'})<CR>
@@ -1833,62 +2069,184 @@ function! RunFiles(torun,onlypy)
         endfor
         :exec argdo "source ".a:torun
 endfunction
-function! GitF(regfilter,curfile) 
-    if (a:curfile)
-
-    let tmp=getcwd()
-    :exe ":cd ". expand("%:p:h")
-endif 
-    let top = systemlist("git rev-parse --show-toplevel")[0]
-    "echo top
-    :exe ':cd '. top
-    let a=systemlist("git ls-files --full-name" )
-    :if len(a:regfilter)>0
-    let a = filter(a,{idx,val -> (val =~ a:regfilter)})
-    let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
-    :endif 
-    ":echo a
-    :call writefile(a,'c:\temp\filelist.txt')
-    try
-        echohl Question
-        let pattern = input("Search pattern: ")
-        let pattern = escape(pattern,'"')
-    finally
-        echohl None
-    endtry
-    exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
-    if (a:curfile)
-
-        :exe ':cd '.tmp
-    endif 
-
-endfunction
-
-function! GitFPat(regfilter,curfile,pattern) 
-    let pattern= a:pattern
-    if (a:curfile)
-
-    let tmp=getcwd()
-    :exe ":cd ". expand("%:p:h")
-endif 
-    let top = systemlist("git rev-parse --show-toplevel")[0]
-    "echo top
-    :exe ':cd '. top
-    let a=systemlist("git ls-files --full-name" )
-    :if len(a:regfilter)>0
-    let a = filter(a,{idx,val -> (val =~ a:regfilter)})
-    let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
-    :endif 
-    ":echo a
-    :call writefile(a,'c:\temp\filelist.txt')
-    exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
-    if (a:curfile)
-
-        :exe ':cd '.tmp
-    endif 
-
-endfunction
+ function! FillQFGitF(regfilter,curfile) 
+     " Store original directory if needed
+     let tmp = getcwd()
+     if (a:curfile)
+         exe "cd " . expand("%:p:h")
+     endif
+ 
+     " Get git root directory
+     let git_cmd = systemlist("git rev-parse --show-toplevel")
+     if v:shell_error
+         echo "Not in a git repository"
+         return -1
+     endif
+     let top = git_cmd[0]
+     exe 'cd ' . top
+ 
+     " Get git files
+     let files = systemlist("git ls-files --full-name 2>NUL")
+     if v:shell_error
+         echo "Failed to get git files"
+         return -1
+     endif
+ 
+     " Filter files if regex provided
+     if len(a:regfilter)>0
+         let files = filter(files, {idx,val -> (val =~ a:regfilter && val !~# ".*warning.*")})
+     endif
+ 
+     " Convert to full paths
+     let files = map(files, {idx,fname -> fnamemodify(fname, ':p')})
+ 
+     " Build quickfix entries
+     let qf_list = []
+     for file in files
+         " Only add if file exists
+         if filereadable(file)
+             call add(qf_list, {
+                         \ 'filename': file,
+                         \ 'lnum': 1,
+                         \ 'col': 1,
+                         \ 'text': 'Git tracked file',
+                         \ 'type': ' ',
+                         \ 'valid': 1
+                         \ })
+         endif
+     endfor
+ 
+     " Set quickfix list with title
+     call setqflist([], 'r', {
+                 \ 'title': 'Git Files' . (len(a:regfilter) > 0 ? ' (' . a:regfilter . ')' : ''),
+                 \ 'items': qf_list
+                 \ })
+ 
+     " Restore original directory
+     exe 'cd ' . tmp
+ 
+     " Open quickfix window if we have entries
+     if !empty(qf_list)
+         copen
+     else
+         echo "No matching files found"
+     endif
+ 
+     return 0
+ endfunction
+ function! GitF(regfilter,curfile) 
+     if (a:curfile)
+ 
+     let tmp=getcwd()
+     :exe ":cd ". expand("%:p:h")
+ endif 
+     let top = systemlist("git rev-parse --show-toplevel")[0]
+     "echo top
+     :exe ':cd '. top
+     let a=systemlist("git ls-files --full-name  2>NUL" )
+     :if len(a:regfilter)>0
+     let a = filter(a,{idx,val -> (val =~ a:regfilter)})
+     let a = filter(a,{idx,val -> (val !~# ".*warning.*")})
+     let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
+     :endif 
+     ":echo a
+     :call writefile(a,'c:\temp\filelist.txt')
+     try
+         echohl Question
+         let pattern = input("Search pattern: ")
+         let pattern = escape(pattern,'"')
+     finally
+         echohl None
+     endtry
+     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     if (a:curfile)
+ 
+         :exe ':cd '.tmp
+     endif 
+ 
+ endfunction
+ function GitFLast(curfile)
+     if (a:curfile)
+ 
+     let tmp=getcwd()
+     :exe ":cd ". expand("%:p:h")
+ endif 
+     let top = systemlist("git rev-parse --show-toplevel")[0]
+     "echo top
+     :exe ':cd '. top
+     try
+         echohl Question
+         let pattern = input("Search pattern: ")
+         let pattern = escape(pattern,'"')
+     finally
+         echohl None
+     endtry
+     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     if (a:curfile)
+ 
+         :exe ':cd '.tmp
+     endif 
+ endfunction 
+ function! ReplaceInFiles(path, pattern)
+     let f=readfile('c:\temp\filelist.txt')
+     " Validate pattern format /search/replace/
+     if a:pattern !~ '^/.*/.*/\?$'
+         echoerr "Invalid pattern format. Use /search/replace/"
+         return
+     endif
+ 
+     " Extract search and replace terms
+     let parts = split(a:pattern[1:-1], '/')
+     if len(parts) < 2
+         echoerr "Invalid pattern format. Use /search/replace/"
+         return
+     endif
+     
+     let search = parts[0]
+     let replace = parts[1]
+     
+     " Build command
+     let cmd = "args " . a:path . "/**/*"
+     execute cmd
+     
+     " Perform replacement
+     execute 'argdo %s/' . search . '/' . replace . '/ge | update'
+     echo "Replacement complete"
+ endfunction
+ 
+ function! GitFPat(regfilter,curfile,pattern) 
+     let pattern= a:pattern
+     if (a:curfile)
+ 
+     let tmp=getcwd()
+     :exe ":cd ". expand("%:p:h")
+ endif 
+     let top = systemlist("git rev-parse --show-toplevel")[0]
+     "echo top
+     :exe ':cd '. top
+     let a=systemlist("git ls-files --full-name 2>NUL" )
+     :if len(a:regfilter)>0
+     let a = filter(a,{idx,val -> (val =~ a:regfilter)})
+     let a = filter(a,{idx,val -> (val !~# ".*warning.*")})
+     ":echo a
+     let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
+     :endif 
+     ":echo a
+     :call writefile(a,'c:\temp\filelist.txt')
+     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     if (a:curfile)
+ 
+         :exe ':cd '.tmp
+     endif 
+ 
+ endfunction
 nmap <leader>vv <CMD>call Exec('version')<CR>
+
+nmap <c-p> <cmd>call JJH()<CR>
+function! JJH()
+call feedkeys("|\<C-B>")
+endfunction
+
 "function! Gut(bb) 
 "exec 'cd '.expand('%:p:h')
 ":GutentagsUpdate
@@ -1904,8 +2262,10 @@ command! -nargs=1 LfGitGen <CMD>call GitF(<f-args>,0)<CR>
 ":    return split(glob(expand("%:p:h").'\*'.(len(a:A)>1 ? a:A . "*" : '')), "\n")
 ":endfun
 "```vim
-:com! -nargs=1 -bang -complete=customlist,EditFileComplete
-        \ Ef exec "edit<bang> ". expand("%:p:h")."/<args>"
+ :com! -nargs=1 -bang -complete=customlist,EditFileComplete
+             \ Vf call CloseVspIfNeed() <bar> exec "vsplit ". expand("%:p:h")."/<args>"
+ :com! -nargs=1 -bang -complete=customlist,EditFileComplete
+             \ Ef exec "edit<bang> ". expand("%:p:h")."/<args>"
 :fun! EditFileComplete(A,L,P)
 :    return map(filter(split(glob(expand("%:p:h").'/*'.(len(a:A)>1 ? a:A . "*" : '')), "\n"),'filewritable(v:val) != 2' ),'fnamemodify(v:val, ":t")' )
 :endfun
@@ -1936,6 +2296,13 @@ map mr <leader>gr
 map mR <leader>gR
 map MR <leader>GR
 map Mr <leader>Gr
+
+nmap ML <CMD>call GitFLast(1)<CR>
+nmap <leader>mr "xy<CMD>call FillQFGitF(GetExtPat(),0)<CR>
+nmap <leader>mR "xy<CMD>call FillQFGitF("",0)<CR>
+nmap <leader>Mr "xy<CMD>call FillQFGitF(GetExtPat(),1)<CR>
+nmap <leader>MR "xy<CMD>call FillQFGitF("",1)<CR>
+
 "nmap mr <CMD>call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 "nmap mR <CMD>call nvim_set_current_dir(expand('%:p:h'))<CR><leader>gr 
 
@@ -2169,7 +2536,7 @@ function! DDa()
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
-nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /syntax\\|not defined\\|is unknown/\\|unexpected<CR>
+ nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cundefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>
 
 "restore cfilter
 nnoremap <leader>XR <CMD>lolder<CR>
@@ -2225,3 +2592,4 @@ cnoremap <m-b> <c-v>
 nnoremap R q
 cabbr %G Gvdiffsplit
 nmap <leader>AC <CMD>AvanteAsk /clear<CR>
+nmap <leader>rF <CMD>source %<CR>
