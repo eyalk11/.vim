@@ -19,7 +19,6 @@ let g:shq=&shellquote
 let g:shxq=&shellxquote
 
 let g:ver=ver
-set ignorecase
 "allows ctrl-c I think
 set allowrevins
 if has('nvim')
@@ -114,7 +113,7 @@ set hidden
 "
 " default file /Users/eyalkarni/.local/share/nvim/shada/main.shada . save
 " marks.
-set shada=!,'100,<50,s10,h,f1,s100,%
+set shada=!,'100,<50,s10,h,s100,%
 "exec "set shadafile=".g:vimloc . "/shada"
 set history=10000
 " insert mode
@@ -374,6 +373,8 @@ au! gutentags_detect
 set ut=3000
 silent! nunmap ,tt
 silent! nunmap ,t
+norm! `M
+silent! nunmap @Þ
 "call SetFont()
 endfunction
 

@@ -1,202 +1,259 @@
-function! AlignWithTopLine() range
-    " Handle case when selection is at the start of the file
-    if a:firstline <= 1
-        " If at the start of file, use default indentation (0)
-        let reference_indent = 0
-        let above_line = ""
-    else
-        " Find the first non-empty line above the selection
-        let above_line_num = a:firstline - 1
-        while above_line_num >= 1 && getline(above_line_num) =~ '^\s*$'
-            let above_line_num = above_line_num - 1
-        endwhile
-        
-        " If we couldn't find a non-empty line, use default indentation
-        if above_line_num < 1
-            let reference_indent = 0
-            let above_line = ""
-        else
-            let above_line = getline(above_line_num)
-            let reference_indent = indent(above_line_num)
-        endif
-    endif
-    
-    " Check characteristics of the line above (if it exists)
-    let ends_with_colon = !empty(above_line) && above_line =~# ':$'
-    let starts_with_special = !empty(above_line) && above_line =~# '^\s*\(with\|await\|if\|for\|while\|def\|class\)'
-    let is_continuation = !empty(above_line) && above_line =~# '\((\|\[\|{\).*\(,\|\\\)$'
-    
-    " Determine target indentation
-    let target_indent = reference_indent
-    
-    " Handle different cases for alignment
-    if ends_with_colon || starts_with_special
-        " For block starts or special constructs, add one level of indentation
-        let target_indent = reference_indent + &shiftwidth
-    elseif is_continuation
-        " For line continuations (ending with comma or backslash), align with extra indent
-        let target_indent = reference_indent + &shiftwidth
-    endif
-    
-    " Get the first line's current indentation as reference for relative shifts
-    let first_line = getline(a:firstline)
-    let first_line_indent = indent(a:firstline)
-    let first_line_content = substitute(first_line, '^\s*', '', '')
-    
-    " Check if the first line of selection is a continuation of a previous statement
-    let first_line_is_continuation = !empty(above_line) && 
-                                   \ (above_line =~# '\((\|\[\|{\|\\$\|,$\)' && 
-                                   \ first_line_content !~# '^\()\|]\|}\)')
-    
-    " Calculate the indentation shift needed
-    let indent_shift = 0
-    if first_line_is_continuation
-        let indent_shift = target_indent - first_line_indent
-    else
-        let indent_shift = target_indent - first_line_indent
-    endif
-    
-    " Apply the indentation to all lines in the selection
-    for lineno in range(a:firstline, a:lastline)
-        let line = getline(lineno)
-        let current_indent = indent(lineno)
-        let current_line_content = substitute(line, '^\s*', '', '')
-        
-        " Skip empty lines
-        if current_line_content == ''
-            continue
-        endif
-        
-        " Calculate new indentation preserving relative structure
-        let new_indent = current_indent + indent_shift
-        
-        " Special handling for closing brackets/braces/parentheses
-        if current_line_content =~# '^\()\|]\|}\)'
-            " Closing brackets align with the opening line (one level back)
-            let new_indent = max([0, target_indent - &shiftwidth])
-        endif
-        
-        " Ensure indentation is never negative
-        let new_indent = max([0, new_indent])
-        
-        " Create the new line with proper indentation
-        let new_line = repeat(' ', new_indent) . current_line_content
-        
-        call setline(lineno, new_line)
-    endfor
-endfunction
-
-function! ConditionalAlign()
-    if &filetype == 'python'
-        " Store the original selection boundaries
-        let l:start_line = a:firstline
-        let l:end_line = a:lastline
-        
-        " Apply indent to the selection. autopep8 will not align if 
-        " with xx: 
-        " dosomethin 
-        " if there are not indentation 
-        norm gv4>
-        
-        " Run autopep8 on the selection, assume indentation = 0 
-        silent execute l:start_line . ',' . l:end_line . '!autopep8 -'
-        " Re-indent to above line
-        
-        silent execute l:start_line . ',' . l:end_line . 'call AlignWithTopLine()'
-    else
-        normal! gv=
-    endif
-endfunction
-
-vnoremap = :'<,'>call ConditionalAlign()<CR>
-
-function! FormatCurrentBlock()
-    " Determine the current block based on indentation
-    let current_line = line('.')
-    let current_indent = indent(current_line)
-    let current_content = getline(current_line)
-    
-    " Check if current line is a block starter (ends with colon)
-    let is_block_starter = current_content =~ ':\s*$'
-    
-    " Find the start of the block
-    let start_line = current_line
-    
-    " If current line is a block starter, use it as the start
-    if is_block_starter
-        " Use current line as start
-    else
-        " Look for block start by going up
-        while start_line > 1
-            let prev_line = start_line - 1
-            let prev_indent = indent(prev_line)
-            let prev_content = getline(prev_line)
-            
-            " Check if previous line is a block starter
-            let prev_is_starter = prev_content =~ ':\s*$'
-            
-            " Stop if we find a block starter or a line with less indentation
-            if prev_is_starter || prev_indent < current_indent
-                if prev_is_starter
-                    let start_line = prev_line
-                endif
-                break
-            endif
-            
-            " Stop if we find an empty line
-            if prev_content =~ '^\s*$'
-                break
-            endif
-            
-            let start_line = prev_line
-        endwhile
-    endif
-    
-    " Find the end of the block
-    let end_line = current_line
-    let last_line = line('$')
-    
-    " If current line is a block starter, we need to find its body
-    if is_block_starter
-        let expected_indent = current_indent + &shiftwidth
-        let end_line = current_line + 1
-        
-        " Find the first line with proper indentation
-        while end_line <= last_line
-            let next_indent = indent(end_line)
-            let next_content = getline(end_line)
-            
-            if next_content !~ '^\s*$' && next_indent >= expected_indent
-                break
-            endif
-            
-            let end_line += 1
-        endwhile
-    endif
-    
-    " Continue finding the end of the block
-    while end_line < last_line
-        let next_line = end_line + 1
-        let next_indent = indent(next_line)
-        let next_content = getline(next_line)
-        
-        " Stop if we find a line with less indentation than our block
-        " For block starters, compare with expected indentation
-        let compare_indent = is_block_starter ? (current_indent + &shiftwidth) : current_indent
-        
-        if next_indent < compare_indent || next_content =~ '^\s*$'
-            break
-        endif
-        
-        let end_line = next_line
-    endwhile
-    
-    " Apply formatting to the determined block
-    execute start_line . ',' . end_line . 'call ConditionalAlign()'
-endfunction
-
-" Map == to format the current block
-nnoremap == :call FormatCurrentBlock()<CR>
+nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/<CR>   
+ "nnoremap <leader>xf <CMD>lua vim.diagnostic.setqflist()<CR><CMD>Cfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>   
+ function! DiagnosticsGitOnly() abort
+     " First get all diagnostics
+     lua vim.diagnostic.setqflist()
+     
+     " Get list of git files
+     let tmp = getcwd()
+     let git_cmd = systemlist("git rev-parse --show-toplevel")
+     if v:shell_error
+         echo "Not in a git repository"
+         return
+     endif
+     
+     let top = git_cmd[0]
+     exe 'cd ' . top
+     let git_files = systemlist("git ls-files --full-name 2>NUL")
+     exe 'cd ' . tmp
+     
+     " Convert git files to full paths and create a dictionary for fast lookup
+     let git_files_dict = {}
+     let diag_list = {} 
+     for file in git_files
+         " Handle Windows paths by replacing forward slashes with backslashes
+         let full_path = fnamemodify(top . '/' . file, ':p')
+         let git_files_dict[full_path] = 1
+     endfor
+     
+     " Filter quickfix list to only include git files
+     let qf_list = getqflist()
+     let filtered_list = []
+     
+     for item in qf_list
+         let file_path = bufname(item.bufnr)
+         let full_path = fnamemodify(file_path, ':p')
+         let file_path = substitute(full_path, '\\', '/', 'g')
+         let file_path = substitute(full_path, '\', '/', 'g')
+ 
+         let diag_list[file_path] =1
+         " Check if file is in git files dictionary
+         if has_key(git_files_dict, file_path)
+             call add(filtered_list, item)
+         endif
+     endfor
+     
+     echom keys(diag_list)
+     " Update quickfix list with filtered results
+     call setqflist([], 'r', {'items': filtered_list, 'title': 'LSP Diagnostics (Git files only)'})
+ 
+     
+     " Apply the existing filter pattern
+ endfunction
+ 
+ nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>Cfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/<CR>
+ 
+ imap <c-l> <c-o>u
+ cnoremap <c-y> <c-v>
+ function! AlignWithTopLine() range
+ " Handle case when selection is at the start of the file
+ if a:firstline <= 1
+     " If at the start of file, use default indentation (0)
+     let reference_indent = 0
+     let above_line = ""
+ else
+     " Find the first non-empty line above the selection
+     let above_line_num = a:firstline - 1
+     while above_line_num >= 1 && getline(above_line_num) =~ '^\s*$'
+         let above_line_num = above_line_num - 1
+     endwhile
+     
+     " If we couldn't find a non-empty line, use default indentation
+     if above_line_num < 1
+         let reference_indent = 0
+         let above_line = ""
+     else
+         let above_line = getline(above_line_num)
+         let reference_indent = indent(above_line_num)
+     endif
+ endif
+ 
+ " Check characteristics of the line above (if it exists)
+ let ends_with_colon = !empty(above_line) && above_line =~# ':$'
+ let starts_with_special = !empty(above_line) && above_line =~# '^\s*\(with\|await\|if\|for\|while\|def\|class\)'
+ let is_continuation = !empty(above_line) && above_line =~# '\((\|\[\|{\).*\(,\|\\\)$'
+ 
+ " Determine target indentation
+ let target_indent = reference_indent
+ 
+ " Handle different cases for alignment
+ if ends_with_colon || starts_with_special
+     " For block starts or special constructs, add one level of indentation
+     let target_indent = reference_indent + &shiftwidth
+ elseif is_continuation
+     " For line continuations (ending with comma or backslash), align with extra indent
+     let target_indent = reference_indent + &shiftwidth
+ endif
+ 
+ " Get the first line's current indentation as reference for relative shifts
+ let first_line = getline(a:firstline)
+ let first_line_indent = indent(a:firstline)
+ let first_line_content = substitute(first_line, '^\s*', '', '')
+ 
+ " Check if the first line of selection is a continuation of a previous statement
+ let first_line_is_continuation = !empty(above_line) && 
+                                \ (above_line =~# '\((\|\[\|{\|\\$\|,$\)' && 
+                                \ first_line_content !~# '^\()\|]\|}\)')
+ 
+ " Calculate the indentation shift needed
+ let indent_shift = 0
+ if first_line_is_continuation
+     let indent_shift = target_indent - first_line_indent
+ else
+     let indent_shift = target_indent - first_line_indent
+ endif
+ 
+ " Apply the indentation to all lines in the selection
+ for lineno in range(a:firstline, a:lastline)
+     let line = getline(lineno)
+     let current_indent = indent(lineno)
+     let current_line_content = substitute(line, '^\s*', '', '')
+     
+     " Skip empty lines
+     if current_line_content == ''
+         continue
+     endif
+     
+     " Calculate new indentation preserving relative structure
+     let new_indent = current_indent + indent_shift
+     
+     " Special handling for closing brackets/braces/parentheses
+     if current_line_content =~# '^\()\|]\|}\)'
+         " Closing brackets align with the opening line (one level back)
+         let new_indent = max([0, target_indent - &shiftwidth])
+     endif
+     
+     " Ensure indentation is never negative
+     let new_indent = max([0, new_indent])
+     
+     " Create the new line with proper indentation
+     let new_line = repeat(' ', new_indent) . current_line_content
+     
+     call setline(lineno, new_line)
+ endfor
+ endfunction
+ 
+ function! ConditionalAlign()
+ if &filetype == 'python'
+     " Store the original selection boundaries
+     let l:start_line = a:firstline
+     let l:end_line = a:lastline
+     
+     " Run autopep8 on the selection, assume indentation = 0 . we add def for
+     " indention to work in global scopre
+    let stat='!cat - | sh -c "' . "echo 'def xxaa():' && cat -  ". '"'
+    echo l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
+     silent execute l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
+     norm gv<
+     silent execute l:start_line . ',' . l:end_line . 'call AlignWithTopLine()'
+ else
+     normal! gv=
+ endif
+ endfunction
+ 
+ 
+ vnoremap = :'<,'>call ConditionalAlign()<CR>
+ 
+ function! FormatCurrentBlock()
+     " Determine the current block based on indentation
+     let current_line = line('.')
+     let current_indent = indent(current_line)
+     let current_content = getline(current_line)
+     
+     " Check if current line is a block starter (ends with colon)
+     let is_block_starter = current_content =~ ':\s*$'
+     
+     " Find the start of the block
+     let start_line = current_line
+     
+     " If current line is a block starter, use it as the start
+     if is_block_starter
+         " Use current line as start
+     else
+         " Look for block start by going up
+         while start_line > 1
+             let prev_line = start_line - 1
+             let prev_indent = indent(prev_line)
+             let prev_content = getline(prev_line)
+             
+             " Check if previous line is a block starter
+             let prev_is_starter = prev_content =~ ':\s*$'
+             
+             " Stop if we find a block starter or a line with less indentation
+             if prev_is_starter || prev_indent < current_indent
+                 if prev_is_starter
+                     let start_line = prev_line
+                 endif
+                 break
+             endif
+             
+             " Stop if we find an empty line
+             if prev_content =~ '^\s*$'
+                 break
+             endif
+             
+             let start_line = prev_line
+         endwhile
+     endif
+     
+     " Find the end of the block
+     let end_line = current_line
+     let last_line = line('$')
+     
+     " If current line is a block starter, we need to find its body
+     if is_block_starter
+         let expected_indent = current_indent + &shiftwidth
+         let end_line = current_line + 1
+         
+         " Find the first line with proper indentation
+         while end_line <= last_line
+             let next_indent = indent(end_line)
+             let next_content = getline(end_line)
+             
+             if next_content !~ '^\s*$' && next_indent >= expected_indent
+                 break
+             endif
+             
+             let end_line += 1
+         endwhile
+     endif
+     
+     " Continue finding the end of the block
+     while end_line < last_line
+         let next_line = end_line + 1
+         let next_indent = indent(next_line)
+         let next_content = getline(next_line)
+         
+         " Stop if we find a line with less indentation than our block
+         " For block starters, compare with expected indentation
+         let compare_indent = is_block_starter ? (current_indent + &shiftwidth) : current_indent
+         
+         if next_indent < compare_indent || next_content =~ '^\s*$'
+             break
+         endif
+         
+         let end_line = next_line
+     endwhile
+     
+     " Apply formatting to the determined block
+     execute start_line . ',' . end_line . 'call ConditionalAlign()'
+ endfunction
+ 
+ " Map == to format the current block
+ nnoremap <expr> ==  &filetype == 'python'  ? "\<plug>fff" : "=="
+ nmap <plug>fff :call FormatCurrentBlock()<CR>
+ 
+ 
 
 let i = 1
 while i <= 9
@@ -287,7 +344,7 @@ nmap <M-f> <Plug>(easymotion-s2)
 "nmap S <Plug>(easymotion-s2)
 "endif
 "meaning u would be like search everywhere
-vmap s <Plug>(easymotion-sl)
+"vmap s <Plug>(easymotion-sl)
 "omap U <Plug>(easymotion-bd-tl)
 vmap u <Plug>(easymotion-bd-fl)
 "vmap U <Plug>(easymotion-bd-tl)
@@ -505,11 +562,11 @@ return "\<c-o>\<Plug>Lightspeed_T"
 endfunction
 imap <expr> <M-/> FF_T()
 
-function! FF_TT3()
-call quick_scope#Wallhacks('f')
-return "\<Plug>Lightspeed_t"
-endfunction
-nmap <expr> <c-t> FF_TT3()
+"function! FF_TT3()
+"call quick_scope#Wallhacks('f')
+"return "\<Plug>Lightspeed_t"
+"endfunction
+"nmap <expr> <c-t> FF_TT3()
 
 function! FF_MF2()
 call quick_scope#Wallhacks('t')
@@ -881,13 +938,13 @@ imap <C-i> <c-o><cmd>norm mP<CR>
 
 
 function! PasteFormat(x)
-let l=@+
+    let l=@+
     let l=len(split(l,"\n"))-1
     return a:x."V".string(l).'j='
 endfunction
 
-nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
-nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
+nmap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
+nmap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
 "nnoremap <silent>]p <cmd>call Putline("]p")<CR>
 
 function! Putline(how)
@@ -1130,7 +1187,7 @@ endfunction
 command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'git_dir': GitDir() })
 
 nmap mg <CMD>GCWD<CR>
-nmap MG <CMD>unlet b:git_dir<CR><CMD>G<CR>
+nmap mG <CMD>unlet b:git_dir<CR><CMD>G<CR>
 
 
 map <leader>g2 :diffget \\2<CR>
@@ -1227,49 +1284,49 @@ function! CloseVisibleNvimTreeBuffers()
         endif
     endfor
 endfunction
-function! CloseVspIfNeed()
-    let max_wincol = -1
-    let argmax_win_id = -1
-    let ll=0 
-    let nvim=0
-    "counts real buffers
-
-    let tabs = gettabinfo(tabpagenr())
-    "echo tabs[0]['windows']
-    for k in tabs[0]['windows']
-        let win_id=k
-        let k= getwininfo(k)[0]
-
-        let winnr=win_id2win(win_id)
-        let ft= getbufvar(winbufnr(winnr), '&filetype')
-        if k['winrow']<=2 && k['wincol']>max_wincol
-            let ll=ll+1
-            let max_wincol=k['wincol']
-            let argmax_win_id=win_id
-        endif
-        if (ft=~'NvimTree')
-            let ll=ll-1
-            let nvim=win_id 
-            "let argmax_win_id=win_id
-            "break
-        endif
-
-    endfor
-    if ll==1 && nvim!=0 
-
-        let ll=2 
-        let argmax_win_id=nvim
-    endif 
-
-    if argmax_win_id != -1 && ll>1
-        "if OnRight()
-            "call GoOther()
-        "endif
-        call win_gotoid(argmax_win_id)
-        :close
-        call CloseVspIfNeed()
-    endif
-endfunction
+ function! CloseVspIfNeed()
+     let max_wincol = -1
+     let argmax_win_id = -1
+     let ll=0 
+     let nvim=0
+     "counts real buffers
+ 
+     let tabs = gettabinfo(tabpagenr())
+     "echo tabs[0]['windows']
+     for k in tabs[0]['windows']
+         let win_id=k
+         let k= getwininfo(k)[0]
+ 
+         let winnr=win_id2win(win_id)
+         let ft= getbufvar(winbufnr(winnr), '&filetype')
+         if k['winrow']<=2 && k['wincol']>max_wincol
+             let ll=ll+1
+             let max_wincol=k['wincol']
+             let argmax_win_id=win_id
+         endif
+         if (ft=~'NvimTree')
+             let ll=ll-1
+             let nvim=win_id 
+             "let argmax_win_id=win_id
+             "break
+         endif
+ 
+     endfor
+     if ll==1 && nvim!=0 
+ 
+         let ll=2 
+         let argmax_win_id=nvim
+     endif 
+ 
+     if argmax_win_id != -1 && ll>1
+         "if OnRight()
+             "call GoOther()
+         "endif
+         call win_gotoid(argmax_win_id)
+         :close
+         call CloseVspIfNeed()
+     endif
+ endfunction
 
 
  function! CompareRightLeft(se)
@@ -2242,7 +2299,9 @@ endfunction
  endfunction
 nmap <leader>vv <CMD>call Exec('version')<CR>
 
-nmap <c-p> <cmd>call JJH()<CR>
+nmap <c-p> mc<leader>gf
+nmap <m-p> :Telescope lsp_document_symbols<CR>
+nmap <c-t> <CMD>call JJH()<CR>
 function! JJH()
 call feedkeys("|\<C-B>")
 endfunction
@@ -2312,75 +2371,52 @@ nmap <leader>MR "xy<CMD>call FillQFGitF("",1)<CR>
 "new
 "C:\users\ekarni\.vim\plugged/avante.nvim/lua/avante/sidebar.lua:3167:
 
-function! DoGF()
-    let f = expand('<cfile>')
-    let sec = expand('<cWORD>')
-    let line = substitute(sec, '^.*(\(.*\),.*):.*$', '\1', '')
-    let arr = split(f, ':')
-    let ff = getline('.')
-    " Check if the current line matches the expected format
-    if ff =~? '^.*File "\([^"]\+\)", line \(\d\+\).*'
-        let arr = [matchstr(ff, '"\zs[^"]\+\ze"'), matchstr(ff, 'line \zs\d\+')]
-    endif
-    " Handle cases where arr might have only one element
-    if len(arr) == 1
-        let arr = [arr[0] . ':' . arr[1]] + arr[2:]
-    endif
-    " Check if we have a valid file and line number
-    if len(arr) > 1
-        let file_path = expandcmd(arr[0])
-        if filereadable(file_path) == 0
-            echoerr arr[0] . " File does not exist"
-            return
-        endif
-        " Open the file
-        execute 'edit ' . file_path
-        " If the second part is a valid line number, go to that line
-        if arr[1] =~# '^\d\+$'
-            execute ':' . arr[1]
-        endif
-    else
-        " Fallback to normal gf command
+ function! DoGF()
+     let file=expand('<cfile>')
+     let sec =expand('<cWORD>')
+     let st='^.\{-}\([[:alnum:]-_\\\.~\/]*\):\(\d\+\).\{-}$'
+     if filereadable(expand(expandcmd(file)))!=0
+     else 
+         let file= substitute(sec,st,'\1','')
+     endif 
+     let ff = getline('.')
+     let prevfile=""
+     if filereadable(expand(expandcmd(file)))==0
+         let prevfile=file
+         let file= substitute(ff,st,'\1','')
+         let line= substitute(ff,st,'\2','')
+     else 
+         let line= substitute(sec,st,'\2','')
+     endif 
+ 
+     let arr=[expand(expandcmd(file)),line]
+ 
+ 
+     if ff=~?'^.File "\([^"]\+\)", line \(\d\+\).'
+         let arr = [matchstr(ff, '"\zs[^"]\+\ze"'),matchstr(ff, 'line \zs\d\+') ]
+     endif
+ 
+     if len(arr)>1
+         if  filereadable(expand(expandcmd(arr[0])))==0
+             if prevfile 
+                 echoerr  prevfile . " / " . arr[0] . " -  File doesn't exists"
+             else 
+                 echoerr arr[0] . " - File doesn't exists"
+ 
+             endif 
+             return
+         endif
+         :exe ':e '.arr[0]
+  
+         if arr[1] =~# '^\d\+$'
+             :exe ':'.arr[1]
+         endif
+     else
         norm! gf
         if line =~# '^\d\+$'
-            execute ':' . line
-        endif
-    endif
-endfunction
-
-function! DoGF()
-    let f=expand('<cfile>')
-    let sec =expand('<cWORD>')
-    let line= substitute(sec,'^.*(\(.*\),.*):.*$','\1','')
-    let arr=split(f,':')
-    let ff = getline('.')
-    echo line
-    echo arr
-
-
-    if ff=~?'^.*File "\([^"]\+\)", line \(\d\+\).*'
-        let arr = [matchstr(ff, '"\zs[^"]\+\ze"'),matchstr(ff, 'line \zs\d\+') ]
-    endif
-
-    if len(arr[0])==1
-        let arr=[arr[0].':'.arr[1]]+arr[2:]
-    endif
-    if len(arr)>1
-        if  filereadable(expandcmd(arr[0]))==0
-            echoerr arr[0] . " File not exists"
-            return
-        endif
-        :exe ':e '.arr[0]
- 
-        if arr[1] =~# '^\d\+$'
-            :exe ':'.arr[1]
-        endif
-    else
-       norm! gf
-       if line =~# '^\d\+$'
-            :exe ':'.line
-        endif 
-    endif
+             :exe ':'.line
+         endif 
+     endif
 endfunction
  
 
@@ -2464,6 +2500,7 @@ nmap <leader>mo <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function(
 nmap <leader>MO <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('DoMGf')})<CR>
 
 command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
+command! -nargs=0 -bang  AmendAll   :Git commit --amend -a -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 
 nmap <leader>GWP mc:Gw<CR>:!git commit --amend --no-edit<CR>:!git push --force<CR>
 nmap <leader>Gw mc:Gw<CR>\Gc
@@ -2536,7 +2573,7 @@ function! DDa()
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
 "check file
- nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cundefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>
+ "nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cundefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>
 
 "restore cfilter
 nnoremap <leader>XR <CMD>lolder<CR>
@@ -2560,7 +2597,10 @@ nnoremap <leader>Gw <CMD>Gwrite<CR>
 nnoremap <leader>GA <CMD>Git commit  -a --amend --no-verify --no-edit<CR>
 
 nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
-nnoremap <leader>Gh <CMD>DiffviewFileHistory %<CR>
+
+nmap <leader>GH :DiffviewFileHistory %<CR>
+nmap <leader>Gh :DiffviewFileHistory --base=LOCAL%<CR>
+nmap <leader>gh :DiffviewFileHistory --base=LOCAL %<CR> 
 
 
 

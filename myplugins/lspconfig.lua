@@ -161,7 +161,7 @@ return {
             require("lspconfig").pylsp.setup({
                 capabilities = capabilities,
                  on_attach = function(client, bufnr)
-                    client.server_capabilities.completionProvider = false
+                    --client.server_capabilities.completionProvider = false
                     on_attach(client, bufnr)
                 end,
                 settings = {
@@ -203,27 +203,27 @@ return {
             --on_attach = on_attach,
             --flags = lsp_flags,
             --})
-            --require("lspconfig")["pyright"].setup({
-                --capabilities = capabilities,
-                --on_attach = function(client, bufnr)
-                    ----client.server_capabilities.completionProvider = false
-                    --on_attach(client, bufnr)
-                --end,
-                --flags = lsp_flags,
-                --settings = {
-                    --python = {
-                        --analysis = {
-                            --autoSearchPaths = true,
-                            --useLibraryCodeForTypes = true,
-                            --diagnosticMode = "openFilesOnly",
-                            ----logLevel = "Trace",
-                        --},
-                    --},
-                --},
-                ----root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
-                ----verboseOutput = true
-                ----settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
-            --})
+            require("lspconfig")["pyright"].setup({
+                capabilities = capabilities,
+                on_attach = function(client, bufnr)
+                    --client.server_capabilities.completionProvider = false
+                    on_attach(client, bufnr)
+                end,
+                flags = lsp_flags,
+                settings = {
+                    python = {
+                        analysis = {
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                            diagnosticMode = "openFilesOnly",
+                            --logLevel = "Trace",
+                        },
+                    },
+                },
+                --root_dir = function() vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1]) end
+                --verboseOutput = true
+                --settings = { extraPaths = { 'C:\\gitproj\\Auto-GPT','c:/gitproj/Auto-GPT' } }
+            })
             --require("lspconfig").lua_ls.setup({
             --capabilities = capabilities,
             --on_attach = on_attach,

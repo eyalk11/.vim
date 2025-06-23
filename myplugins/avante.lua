@@ -4,23 +4,47 @@ return {
   lazy = false,
   version = false, -- set this if you want to always pull the latest change
   opts = {
-      debug= true,
+      debug= false,
       provider = "claude",
       cursor_applying_provider = 'openai',
+      vendors = {
+    },
+    providers= {
+        ggrok = {
+            __inherited_from = "openai",
+            model= "grok-2-latest",
+            endpoint="https://api.x.ai/v1",
+            api_key_name ="GROK_API_KEY",
+            max_tokens = 131072
+        },
+        claude37 = {
+
+        __inherited_from = "claude",
+        model = "claude-3-7-sonnet-latest",
+        disable_tools = true,
+
+        },
+
+        claude = {
+            disable_tools = true,
+
+            model = "claude-opus-4-20250514",
+
+        },
+
+    },
       behaviour = {
       --- ... existing behaviours
       enable_cursor_planning_mode = false, -- enable cursor planning mode!
   },
-       claude = {
-      model = "claude-3-7-sonnet-20250219",
+  
 
-  },
-  grok = { 
-      model= "grok-2-latest",
-      endpoint="https://api.x.ai/v1",
-      api_key_name ="GROK_API_KEY",
-    max_tokens = 131072
-  },
+  --grok = { 
+      --model= "grok-2-latest",
+      --endpoint="https://api.x.ai/v1",
+      --api_key_name ="GROK_API_KEY",
+    --max_tokens = 131072
+  --},
       auto_suggestions_provider = nil,--"copilot",
     -- add any opts here
     web_search_engine = {

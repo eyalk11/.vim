@@ -436,9 +436,10 @@ null_ls.setup({
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.formatting.isort,
 		null_ls.builtins.formatting.black,
+		null_ls.builtins.formatting.jq,
         null_ls.builtins.formatting.prettier,
-        null_ls.builtins.completion.spell,
-	},
+        --null_ls.builtins.completion.spell,
+    },
 })
 --require('lint').linters_by_ft = {
 --py = {'black','mypy','isort',}
@@ -661,7 +662,7 @@ require("wtf").setup()
 -- your configuration comes here
 -- or leave it empty to use the default settings
 -- refer to the configuration section below
---}
+--}C:\Users\ekarni\Neovim\bin
 
 require("workspaces").setup({
 	path = vim.fn.stdpath("data") .. "/workspaces",
@@ -673,6 +674,7 @@ require("workspaces").setup({
 	},
 })
 require("actions-preview").setup({})
+--require('mouse').setup()
 --local configs = require'nvim-treesitter.configs'
 --require'nvim-treesitter.configs'.setup {
     --matchup = {
