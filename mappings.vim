@@ -1,5 +1,9 @@
-nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/<CR>   
- "nnoremap <leader>xf <CMD>lua vim.diagnostic.setqflist()<CR><CMD>Cfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>   
+
+let fil="/\caccess attribute\\|access member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/"
+"let fil="/\caccess member\|undefined \|expected \|syntax\|not defined\|Arguments missing\|No Parameter\|Expected.*arguments/"
+nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>exe "Lfilter " . fil<CR>   
+nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>exe "Cfilter " . fil<CR>
+"nnoremap <leader>xf <CMD>lua vim.diagnostic.setqflist()<CR><CMD>Cfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>   
  function! DiagnosticsGitOnly() abort
      " First get all diagnostics
      lua vim.diagnostic.setqflist()
@@ -38,12 +42,17 @@ nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cacce
  
          let diag_list[file_path] =1
          " Check if file is in git files dictionary
+         "echo git_files_dict
+         "echo file_path
+         "echo has_key(git_files_dict, file_path)
          if has_key(git_files_dict, file_path)
+             if item.type!='W'
              call add(filtered_list, item)
+         endif
          endif
      endfor
      
-     echom keys(diag_list)
+     "echom (filtered_list)
      " Update quickfix list with filtered results
      call setqflist([], 'r', {'items': filtered_list, 'title': 'LSP Diagnostics (Git files only)'})
  
@@ -51,7 +60,6 @@ nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cacce
      " Apply the existing filter pattern
  endfunction
  
- nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>Cfilter /\caccess member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/<CR>
  
  imap <c-l> <c-o>u
  cnoremap <c-y> <c-v>
@@ -1004,20 +1012,7 @@ exec 'normal! `[v`]"xy'
 "call Matches(@x)
 endfunction
 
-function! SpecialFind(type)
-let &selection = "inclusive"
-exec 'normal! `[v`]"xy'
-call Matches(@x)
-endfunction
 
-nnoremap M <CMD>set opfunc=SpecialFind<CR>g@
-
-nnoremap H <CMD>set opfunc=SpecialFindMR<CR>g@
-function! SpecialFindMR(type)
-let &selection = "inclusive"
-exec 'normal! `[v`]"xy'
-call GitFPat(GetExtPat(),1,@x)
-endfunction 
 "vmap T 
 nmap Mm Miw
 nmap MM MiW
@@ -1198,9 +1193,10 @@ nnoremap <leader>GC <CMD>Git commit --amend --no-verify<CR>
 nnoremap <leader>Ga <CMD>sil Git add %<CR>
 nnoremap <leader>Gt <CMD>Git commit -v -q %<CR>
 nnoremap <leader>Gd <CMD>Gvdiffsplit<CR>
+nnoremap <leader>GDh <CMD>Gvdiffsplit HEAD^<CR>
 
 nnoremap <leader>GD <CMD>Gvdiffsplit!<CR>
-nmap <leader>GD Git! diff<CR>
+"nmap <leader>GD <CMD>Gvdiffsplit diff<CR>
 nnoremap <leader>Ge <CMD>Gedit<CR>
 nnoremap <leader>Gr <CMD>Gread<CR>
 nnoremap <leader>Gmo Git merge --strategy-option ours origin/master<CR>
@@ -1663,7 +1659,7 @@ noremap <leader>Y "zyi
 
 " for ansi keyboard
 "nnoremap ± :set incsearch<CR>/
-nnoremap Y <CMD>set incsearch<CR>/\c
+"nnoremap Y <CMD>set incsearch<CR>/\c
 "nnoremap , :set incsearch<CR>/\c
 "nnoremap <C-[> :set incsearch<CR>/\c
 vnoremap <nowait> af <Plug>(textobj-function-a) 
@@ -2028,6 +2024,22 @@ nmap  T  <Plug>spleader
 "nmap t :echo exists('g:lightspeed_active')<CR>
 
 nnoremap <Plug>spleader :set opfunc=SpecialFindLeader<CR>g@
+
+nnoremap M <CMD>set opfunc=SpecialFind<CR>g@
+
+function! SpecialFind(type)
+let &selection = "inclusive"
+exec 'normal! `[v`]"xy'
+call Matches(@x)
+endfunction
+
+nnoremap H <CMD>set opfunc=SpecialFindMR<CR>g@
+
+function! SpecialFindMR(type)
+    let &selection = "inclusive"
+    exec 'normal! `[v`]"xy'
+    call GitFPat(GetExtPat(),1,@x)
+endfunction 
 "nmap <esc> :call clever_f#_reset_all()<CR> 
 ""map  <expr> t repmo#ZapKey('<Plug>Sneak_t')|sunmap t
 ""map  <expr> T repmo#ZapKey('<Plug>Sneak_T')|sunmap T
@@ -2301,7 +2313,9 @@ nmap <leader>vv <CMD>call Exec('version')<CR>
 
 nmap <c-p> mc<leader>gf
 nmap <m-p> :Telescope lsp_document_symbols<CR>
-nmap <c-t> <CMD>call JJH()<CR>
+nmap <c-i> <CMD>call JJH()<CR>
+nnoremap <m-i> <c-i>
+
 function! JJH()
 call feedkeys("|\<C-B>")
 endfunction
@@ -2599,8 +2613,8 @@ nnoremap <leader>GA <CMD>Git commit  -a --amend --no-verify --no-edit<CR>
 nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
 nmap <leader>GH :DiffviewFileHistory %<CR>
-nmap <leader>Gh :DiffviewFileHistory --base=LOCAL%<CR>
-nmap <leader>gh :DiffviewFileHistory --base=LOCAL %<CR> 
+nmap <leader>Gh :DiffviewFileHistory --base=LOCAL %<CR>
+nmap <leader>gh :DiffviewFileHistory --base=LOCAL %<CR>
 
 
 
@@ -2633,3 +2647,21 @@ nnoremap R q
 cabbr %G Gvdiffsplit
 nmap <leader>AC <CMD>AvanteAsk /clear<CR>
 nmap <leader>rF <CMD>source %<CR>
+
+
+nnoremap <leader>ti A  # pyright: ignore<Esc>
+nmap <m-.> <CMD>norm @a<CR>
+" Define mapping as @a . you can also repeat it with <c-.>
+nmap <leader>tm <CMD>call DoTM()<CR>
+function! DoTM() abort
+    let comman = input("enter mapping ")
+    let @a= ":norm ". comman . "\<CR>"
+    let x=":norm @a\<CR>"
+    call feedkeys(x,'t')
+endfunction
+
+function! CreateList() range
+execute a:firstline . ',' . a:lastline . 's/^\(.*\)$/"\1",/'
+execute a:firstline . ',' . a:lastline . 'join'
+norm $x
+ endfunction
