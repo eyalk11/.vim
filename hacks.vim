@@ -158,9 +158,9 @@ command! -nargs=1 TP call TogglePS()
 command! -nargs=* VG call Matches2(<q-args>)
 
 command! -nargs=1 MESC call MatchesF(<q-args>)
-command! -nargs=1 MC call Matches(<q-args>)
+command! -nargs=1 M call Matches(<q-args>)
 command! -nargs=1 MW call Matches('\<'.<q-args>.'\>')
-command! -nargs=1 M call InMatches(<q-args>)
+command! -nargs=1 MC call InMatches(<q-args>)
 ca Y M
 
 function! InMatches(pat)
@@ -286,6 +286,7 @@ function! TimerFunc(a)
 endif 
 
     try
+    norm! mM
     checktime
     ":profile dump 
     "updates shada files to keep current commands
@@ -1089,3 +1090,62 @@ endfunction
 " Call the function
 
 nnoremap <silent> <Plug>(MatchMetaN) :call <SID>matchquote()<CR>
+function! GenerateMappings(functions, const_prefix)
+    " Generate mappings for a list of functions using const_prefix
+    " Only creates mappings for functions that don't already have mappings
+    "
+    " Args:
+    "   functions: List of function names to map
+    "   const_prefix: Prefix for all key mappings (e.g., '<Leader>f')
+    "
+    " Example usage:
+    "   :call GenerateMappings(['Diffwidg', 'MyFunc'], '<Leader>f')
+
+    let l:mapped_keys = {}
+
+    " Get existing mappings
+    redir => l:map_output
+    silent map
+    redir END
+
+    " Parse existing mappings to find what's already mapped
+    for l:line in split(l:map_output, "\n")
+        let l:parts = split(l:line)
+        if len(l:parts) >= 2
+            " Extract the key from mapping line
+            let l:key = l:parts[1]
+            let l:mapped_keys[l:key] = 1
+        endif
+    endfor
+
+    " Generate new mappings for functions
+    let l:available_keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    let l:key_index = 0
+
+    for l:func in a:functions
+        " Find an unmapped key
+        while l:key_index < len(l:available_keys)
+            let l:key = l:available_keys[l:key_index]
+            let l:mapping = a:const_prefix . l:key
+
+            " Check if this key combination is already mapped
+            if !has_key(l:mapped_keys, l:mapping)
+                " Create the mapping
+                execute "nnoremap " . l:mapping . " :call " . l:func . "()<CR>"
+                echo "Mapped " . l:mapping . " to function " . l:func
+                break
+            endif
+
+            let l:key_index += 1
+        endwhile
+
+        " Check if we ran out of available keys
+        if l:key_index >= len(l:available_keys)
+            echo "Warning: Ran out of available keys for mapping function " . l:func
+        else
+            let l:key_index += 1  " Move to next key for next function
+        endif
+    endfor
+
+    echo "Mapping generation complete"
+endfunction

@@ -160,7 +160,9 @@ nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>exe "Cfilter " . fil<
      " Run autopep8 on the selection, assume indentation = 0 . we add def for
      " indention to work in global scopre
     let stat='!cat - | sh -c "' . "echo 'def xxaa():' && cat -  ". '"'
-    echo l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
+    "echo l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
+    silent execute l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
+    "sh -c "tail -n +2"'
      silent execute l:start_line . ',' . l:end_line . stat . ' | autopep8 - | sh -c "tail -n +2"'
      norm gv<
      silent execute l:start_line . ',' . l:end_line . 'call AlignWithTopLine()'
@@ -170,7 +172,7 @@ nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>exe "Cfilter " . fil<
  endfunction
  
  
- vnoremap = :'<,'>call ConditionalAlign()<CR>
+ "vnoremap = :'<,'>call ConditionalAlign()<CR>
  
  function! FormatCurrentBlock()
      " Determine the current block based on indentation
@@ -258,7 +260,7 @@ nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>exe "Cfilter " . fil<
  endfunction
  
  " Map == to format the current block
- nnoremap <expr> ==  &filetype == 'python'  ? "\<plug>fff" : "=="
+ "nnoremap <expr> ==  &filetype == 'python'  ? "\<plug>fff" : "=="
  nmap <plug>fff :call FormatCurrentBlock()<CR>
  
  
@@ -1700,7 +1702,8 @@ function! IfTerm()
     if &bt=="terminal"
        call feedkeys('i') 
     endif
-endfunc 
+endfunction
+
 function! GetOther()
     if OnRight()
         return "\<c-w>h"
@@ -1757,7 +1760,8 @@ endif
 
 
 "map NT <CMD>NERDTree
-nnoremap TN <CMD>tabnew<CR>
+nnoremap TN <nowait> <CMD>tabnew<CR>
+nmap \tn <CMD>tabnew<CR>
 
 runtime ftplugin/man.vim " adds Man command
 
@@ -2608,7 +2612,7 @@ nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
 
 nnoremap <leader>Gw <CMD>Gwrite<CR>
 
-nnoremap <leader>GA <CMD>Git commit  -a --amend --no-verify --no-edit<CR>
+nnoremap <leader>GA <CMD>Gwrite<CR><CMD>Git commit  -a --amend --no-verify --no-edit<CR>
 
 nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
@@ -2664,4 +2668,5 @@ function! CreateList() range
 execute a:firstline . ',' . a:lastline . 's/^\(.*\)$/"\1",/'
 execute a:firstline . ',' . a:lastline . 'join'
 norm $x
- endfunction
+endfunction
+nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>

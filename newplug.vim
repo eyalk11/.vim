@@ -199,7 +199,7 @@ Plugit 'PProvost/vim-ps1'
 Plugit 'slim-template/vim-slim'
 Plugit 'octol/vim-cpp-enhanced-highlight'
 "Plugit 'WolfgangMehner/bash-support'
-"Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "Plugit 'nvim-treesitter/nvim-treesitter-refactor'
 "Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 "Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
@@ -223,6 +223,7 @@ Plugit 'puremourning/vimspector'
 Plugit 'rbtnn/vim-vimscript_lasterror'
 Plugit 'blblb/speech-to-text.nvim'
 Plugit 'brymer-meneses/grammar-guard.nvim'
+Plugit 'Sheker/mouse_scrolling'
 "Plugit 'rhysd/vim-grammarous'
 "Plugit 'inkarkat/vim-SpellCheck'
 "Plugit 'echuraev/translate-shell.vim', { 'do': 'wget -O ~/.vim/trans git.io/trans && chmod +x ~/.vim/trans' }

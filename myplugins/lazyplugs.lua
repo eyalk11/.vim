@@ -64,13 +64,13 @@ return {
             require("diagnostic_manipulation").setup({
                 blacklist = {
                     function(diagnostic)
-                        return string.find(diagnostic.message, "Undefined global `vim`")
+                        return string.find(diagnostic.message, "Undefined global `vim`") or string.find(diagnostic.message, "is not a known attribute of \"None\"")
                     end,
                     --require("diagnostic_manipulation.builtin.tsserver").tsserver_codes({ 6133, 6196 })
                 },
                 whitelist = {
                     -- Your whitelist here
-                },
+},
             })
         end,
     },

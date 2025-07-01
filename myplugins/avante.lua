@@ -5,7 +5,7 @@ return {
   version = false, -- set this if you want to always pull the latest change
   opts = {
       debug= false,
-      provider = "claude",
+      provider = "claudet",
       cursor_applying_provider = 'openai',
       vendors = {
     },
@@ -26,11 +26,16 @@ return {
         },
 
         claude = {
+
+            model = "claude-sonnet-4-20250514",
+
+        },claudet = {
+            __inherited_from = "claude",
             disable_tools = true,
 
-            model = "claude-opus-4-20250514",
+        model = "claude-sonnet-4-20250514",
 
-        },
+    },
 
     },
       behaviour = {
