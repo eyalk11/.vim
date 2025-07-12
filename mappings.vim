@@ -812,9 +812,9 @@ let g:neoterm_automap_keys="<plug>(aaaa)"
 "imap jk <ESC>l" : " 
 "
 " 
-"nmap § <CMD>call StartSpecialInsert()<CR>i
-"imap § <c-o>
-inoremap § <c-l>
+"nmap Ãƒâ€šÃ‚Â§ <CMD>call StartSpecialInsert()<CR>i
+"imap Ãƒâ€šÃ‚Â§ <c-o>
+"inoremap Ãƒâ€šÃ‚Â§ <c-l>
 
 "imap <c-z> <c-f><c-r>=SuperTab('n')<CR> 
 "
@@ -976,7 +976,8 @@ vnoremap mP <CMD>call Domp()<CR>"zp
 nnoremap mP <CMD>call Domp()<CR>"zp
 nnoremap MP <CMD>call Domp()<CR>"zP
 "convert from WINDOWS style <CR> 
-nmap mwin :s/\<lf>CR>//g<CR>
+nmap mwin :s/\<lf>CR>/
+
 
 "remove empty spaces and lines
 nnoremap msA :%s/^[\t ]*//<CR>:%s/\s\+$//e<CR>:%g/^[\t ]*$/d<CR>:%s/[  ]* / /g<CR>
@@ -1415,7 +1416,8 @@ nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>call fzf#run({'s
 "o
 "endfunction
 nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
-nmap <leader>upd \ttupama
+nmap <leader>upd \ttupama
+
 
 nnoremap <leader>oi <CMD>call RecallInserts(0)<CR>
 nnoremap <leader>OI <CMD>call GetAllInserts()<CR>
@@ -1660,7 +1662,7 @@ noremap <leader>Y "zyi
 
 
 " for ansi keyboard
-"nnoremap ± :set incsearch<CR>/
+"nnoremap Ãƒâ€šÃ‚Â± :set incsearch<CR>/
 "nnoremap Y <CMD>set incsearch<CR>/\c
 "nnoremap , :set incsearch<CR>/\c
 "nnoremap <C-[> :set incsearch<CR>/\c
@@ -2494,8 +2496,8 @@ nmap <leader>hu <Plug>(GitGutterUndoHunk)
 
 function! StashME()
  let stash = input('Enter name: ')
-exec "!git stash push -m \"". stash . '" --keep-index '. expand('%') 
-endfunction 
+ exec "!git stash push -m \"". stash . '" --keep-index '. expand('%') 
+endfunction
 function! StashAll() 
     let stash = input('Enter name: ')
     exec "!pwsh -command \"StashAll ". stash . "\""
@@ -2618,7 +2620,7 @@ nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
 nmap <leader>GH :DiffviewFileHistory %<CR>
 nmap <leader>Gh :DiffviewFileHistory --base=LOCAL %<CR>
-nmap <leader>gh :DiffviewFileHistory --base=LOCAL %<CR>
+nmap <leader>gh :DiffviewFileHistory --base=LOCALÃƒâ€šÃ‚Â %<CR>
 
 
 
