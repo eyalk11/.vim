@@ -25,6 +25,7 @@ endif
 " Language Specific - Support for specific programming languages
 " Utilities - Miscellaneous useful tools
 "==============================================================================
+Plugit 'madox2/vim-ai'
 "==============================================================================
 " CORE DEPENDENCIES
 "==============================================================================

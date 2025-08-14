@@ -119,4 +119,38 @@ return {
         end,
         priority = 10000,
     },
+    {
+    "robitx/gp.nvim",
+    config = function()
+        local conf = {
+            agents=
+            {
+                { 
+                    provider = "openai", 
+                    name = "CodeGPT4o-mini", 
+                    chat = true, 
+                    command = true, 
+                    -- string with model name or table with model name and parameters 
+                    model = { model = "gpt-4o-mini", temperature = 0.7, top_p = 1 }, 
+                    -- system prompt (use this to specify the persona/role of the AI) 
+                    system_prompt = "Please return ONLY code snippets.\nSTART AND END YOUR ANSWER WITH:\n\n```", 
+                },   { 
+                    provider = "openai", 
+                    name = "GPT5", 
+                    chat = true, 
+                    openai_api_key = os.getenv("OPENAI_API_KEY"),
+                    command = true, 
+                    -- string with model name or table with model name and parameters 
+                    model = { model = "gpt-5", temperature = 0.7, top_p = 1 }, 
+                    -- system prompt (use this to specify the persona/role of the AI) 
+                    system_prompt = "Please return ONLY code snippets.\nSTART AND END YOUR ANSWER WITH:\n\n```", 
+                },
+            }
+            -- For customization, refer to Install > Configuration in the Documentation/Readme
+        }
+        require("gp").setup(conf)
+
+        -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+    end,
+}
 }

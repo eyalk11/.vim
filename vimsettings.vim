@@ -419,7 +419,7 @@ autocmd filetype vim let b:auto_save = 1
 
 
 "let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH 
-"let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
+let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
 "autocmd! TermEnter * :startinsert
 
 "commands
