@@ -175,6 +175,9 @@ telescope.setup({
 --end
 --}}})
 
+-- nnoremap TN <nowait> :tabnew<CR> add this as lua 
+vim.keymap.set("n", "TN", ":tabnew<CR>", {  silent = true })
+
 vim.keymap.set("n", "<esc>", "<esc>")
 vim.keymap.set("i", "<esc>", "<esc>")
 --lua require'telescope.builtin'.lsp_workspace_symbols({["layout_config.preview_width"]    = 0.8})
@@ -271,8 +274,9 @@ cmp.setup({
 		end),
 		["<C-Y>"] = cmp.mapping.confirm({ select = false }), -- Confirm the selection even if not explicitly
 		["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-		["<C-CR>"] = cmp.mapping(function(fallback)
+		["<C-CR>"] = cmp.mapping(function(fallback) 
 			if cmp.visible() then
+                
 				cmp.confirm({ select = true })
 				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
 			else
@@ -438,7 +442,8 @@ null_ls.setup({
 		null_ls.builtins.formatting.black,
 		null_ls.builtins.formatting.jq,
         null_ls.builtins.formatting.prettier,
-        --null_ls.builtins.completion.spell,
+        null_ls.builtins.diagnostics.proselint,
+        null_ls.builtins.completion.spell, --toremove
     },
 })
 --require('lint').linters_by_ft = {
@@ -604,6 +609,17 @@ local function my_on_attach(bufnr)
 	vim.keymap.set("n", "/", function()
 		vim.api.nvim_command("Fin -matcher=fuzzy")
 	end, opts("Find"))
+	vim.keymap.set("n", "<M-right>", function()
+		local api = require("nvim-tree.api")
+		local node = api.tree.get_node_under_cursor()
+		if node and (node.type == "directory" or (node.parent and node.type == "file")) then
+			local target_dir = node.type == "directory" and node.absolute_path or node.parent.absolute_path
+			api.tree.change_root_to_node()
+			vim.schedule(function()
+				vim.api.nvim_command("Fin -matcher=fuzzy")
+			end)
+		end
+	end, opts("Navigate into directory and Find"))
 	vim.keymap.set("n", "<C-[>", api.tree.change_root_to_parent, opts("Goto Parent"))
 	vim.keymap.set("n", "<left>", api.tree.change_root_to_parent, opts("Goto Parent"))
 	vim.keymap.set("n", "<right>", api.tree.change_root_to_node, opts("Root to Node"))

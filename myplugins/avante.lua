@@ -20,7 +20,7 @@ return {
         claude37 = {
 
         __inherited_from = "claude",
-        model = "claude-3-7-sonnet-latest",
+        model = "claude-sonnet-4-5-20250929",
         disable_tools = true,
 
         },
@@ -33,12 +33,13 @@ return {
             __inherited_from = "claude",
             disable_tools = true,
 
-        model = "claude-sonnet-4-20250514",
+        model = "claude-sonnet-4-5-20250929",
 
     },
 
     },
       behaviour = {
+        auto_set_keymaps = false,
       --- ... existing behaviours
       enable_cursor_planning_mode = false, -- enable cursor planning mode!
   },

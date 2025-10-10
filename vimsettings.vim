@@ -159,7 +159,7 @@ endfunction
 au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
 au ExitPre * nested call timer_stop(g:autosaveWS)
-function! SetAltFone()
+function! SetAltFont()
     set guifont=JetBrains\ Mono\ Medium:h
 endfunction    
 function! SetFont()

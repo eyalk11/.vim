@@ -288,8 +288,6 @@ nmap <Home> ^
 nmap <c-CR> <CMD>noh<CR><CMD>silent! Noice dismiss<CR>
 nmap L: :lua 
 
-map __ <Plug>NERDCommenterComment
-map <leader>Cu <Plug>NERDCommenterUncomment
 "replace vanila
 nnoremap <leader>& &
 "get start of (next) string
@@ -507,7 +505,7 @@ imap <F13> <ESC>
 "
 
 "faster
-nnoremap <c-,> <CMD>Leaderf line --recall<CR>
+"nnoremap <m-,> <CMD>Leaderf line --recall<CR>
 
 
 "nmap <C--> <Plug>Sneak_,
@@ -771,7 +769,6 @@ else
 endif 
 endfunction 
 
-imap <c-z> <CMD>call DoCz()<CR> 
 imap <expr> <c-z> DoCz() 
 imap <M-Space> <c-o>
 imap <S-CR> <c-o>
@@ -899,7 +896,7 @@ nmap mC <CMD>call CopyPath()<CR>
 noremap mc <CMD>cd %:p:h<CR>
 nnoremap md <CMD>diffupdate<CR>
 nnoremap mf <CMD>!start %:p:h<CR>
-nnoremap mF <CMD>exec '!open '.getcwd()<CR>
+nnoremap <leader>mF <CMD>exec '!open '.getcwd()<CR>
 nmap mF vaf<F2>
 
 
@@ -953,8 +950,8 @@ function! PasteFormat(x)
     return a:x."V".string(l).'j='
 endfunction
 
-nmap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
-nmap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
+nnoremap <expr> ]p @+ =~ ".*\n$" ?  PasteFormat("p") : ((@+ =~ ".*\n.*$") ? PasteFormat("o<ESC>p"): "o<C-R>+<ESC>")
+nnoremap <expr> ]P @+ =~ ".*\n$" ?  PasteFormat("P") : ((@+ =~ ".*\n.*$") ? PasteFormat("O<ESC>p"): "O<C-R>+<ESC>")
 "nnoremap <silent>]p <cmd>call Putline("]p")<CR>
 
 function! Putline(how)
@@ -988,7 +985,6 @@ nnoremap msb :%s/\s\+$//e<CR>:g/^$/d<CR>:%s/[  ]* / /g<CR>
 nnoremap mss <CMD>s/\s\+/ /g<CR>
 "remove empty lines
 nnoremap msl <CMD>%s/\s\+$//e<CR>
-nnoremap msl <CMD>g/^\s*$/norm dd<CR>
 "remove trailing spaces
 nnoremap msc <CMD>%s/^\(.\{-\}\)[ ]*$/\1<CR>
 "open cur folder 
@@ -1081,8 +1077,6 @@ nnoremap <leader>R R
 func! MapR()
     let lst=['+','*','.','=','%']
 imap <M--> <CMD>:echo getreg("+")<CR>
-imap <M--> <CMD>:echo getreg("+")<CR>
-imap <M-=> <CMD>:echo getreg("=")<CR>
 imap <M-=> <CMD>:echo getreg("=")<CR>
     for i in range(10)
             call add(lst,string(i))
@@ -1161,7 +1155,8 @@ nmap <silent> <C-a>H <CMD>call fzf#run({'source':"cat ~/.bash_history \<bar> sor
 nnoremap <silent> <C-a>a <CMD>call FZFOpen(':Ag')<CR>
 nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
 nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
-nnoremap <silent> <C-a>w <CMD>call FZFOpen(':Windows')<CR>
+"nnoremap <silent> <C-a>w <CMD>call FZFOpen(':Windows')<CR>
+nnoremap <silent> <C-a>w <CMD>FzfLua tabs<CR>
 nnoremap <silent> <C-a>b <CMD>Leaderf window<CR>
 nnoremap <silent> <C-a>s <CMD>call FZFOpen(':Snippets')<CR>
 "use it to increase
@@ -1396,6 +1391,9 @@ function! LfFil(a)
 
 endfunction
 "opens file
+nmap <m-p> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`<CR><c-a>f
+nmap <m-o> mc<leader>vn<c-a>f
+
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<CMD>LeaderfBuffer<CR>
@@ -1762,7 +1760,7 @@ endif
 
 
 "map NT <CMD>NERDTree
-nnoremap TN <nowait> <CMD>tabnew<CR>
+"nnoremap TN <nowait> <CMD>tabnew<CR>
 nmap \tn <CMD>tabnew<CR>
 
 runtime ftplugin/man.vim " adds Man command
@@ -1883,7 +1881,7 @@ noremap <leader>gl <CMD>YcmCompleter GoToDeclaration<CR>
 " "    call youcompleteme#EnableCursorMovedAutocommands()
 " "endfunction
 "
-"set runtimepath^=~/vimpy3/plugged/coc-pythom
+"set runtimepath^=~/vimpy3/plugged
 
 "function! SetupPython()
         ":CocCommand python.setInterpreter
@@ -2317,8 +2315,7 @@ endfunction
  endfunction
 nmap <leader>vv <CMD>call Exec('version')<CR>
 
-nmap <c-p> mc<leader>gf
-nmap <m-p> :Telescope lsp_document_symbols<CR>
+"nmap <m-p> :Telescope lsp_document_symbols<CR>
 nmap <c-i> <CMD>call JJH()<CR>
 nnoremap <m-i> <c-i>
 
@@ -2652,6 +2649,7 @@ cnoremap <m-b> <c-v>
 nnoremap R q
 cabbr %G Gvdiffsplit
 nmap <leader>AC <CMD>AvanteAsk /clear<CR>
+nmap <leader>ae <CMD>AvanteEdit<CR>
 nmap <leader>rF <CMD>source %<CR>
 
 
@@ -2672,3 +2670,5 @@ execute a:firstline . ',' . a:lastline . 'join'
 norm $x
 endfunction
 nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>
+nmap <leader>ps <CMD>call TogglePS()<CR>
+nmap <c-,> mc<leader>ac

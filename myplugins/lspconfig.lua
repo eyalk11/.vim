@@ -1,4 +1,11 @@
 local on_attach = function(client, bufnr)
+    if BufIsBig(bufnr) then
+        vim.schedule(function()
+            vim.lsp.buf_detach_client(bufnr, client.id)
+        end)
+        return
+    end
+
     vim.diagnostic.config({ virtual_text = { severity = vim.diagnostic.severity.ERROR }, virtual_lines = true })
     vim.keymap.set("", "_l", function()
         if vim.diagnostic.config().virtual_text then
@@ -119,7 +126,11 @@ return {
             })
 
             mason.setup()
-            mason_lspconfig.setup()
+            mason_lspconfig.setup( {   automatic_enable = true}
+            --mason_lspconfig.setup( {   automatic_enable = { "proselint"
+            --}}
+            
+                )
             local capabilities = vim.tbl_deep_extend(
                 "force",
                 vim.lsp.protocol.make_client_capabilities(),
@@ -158,6 +169,7 @@ return {
                 "Pipfile",
                 "pyrightconfig.json",
             }
+            require("lspconfig").proselint.setup()
             require("lspconfig").pylsp.setup({
                 capabilities = capabilities,
                  on_attach = function(client, bufnr)

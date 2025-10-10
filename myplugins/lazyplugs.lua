@@ -1,6 +1,6 @@
 return {
     { "girishji/pythondoc.vim" },
-    { "vim-scripts/LargeFile" },
+    --{ "vim-scripts/LargeFile" },
     {
         "rcarriga/nvim-dap-ui",
         dependencies = "mfussenegger/nvim-dap",
@@ -64,7 +64,7 @@ return {
             require("diagnostic_manipulation").setup({
                 blacklist = {
                     function(diagnostic)
-                        return string.find(diagnostic.message, "Undefined global `vim`") or string.find(diagnostic.message, "is not a known attribute of \"None\"")
+                        return string.find(diagnostic.message, "Undefined global `vim`") or string.find(diagnostic.message, "is not a known attribute of \"None\"") or string.find(diagnostic.message, "Try to avoid using")
                     end,
                     --require("diagnostic_manipulation.builtin.tsserver").tsserver_codes({ 6133, 6196 })
                 },
@@ -152,5 +152,117 @@ return {
 
         -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
     end,
-}
+    }, --[[{]]
+    --[["greggh/claude-code.nvim",]]
+    --[[dependencies = {]]
+      --[["nvim-lua/plenary.nvim", -- Required for git operations]]
+    --[[},]]
+    --[[config = function()]]
+      --[[require("claude-code").setup({ keymaps = {]]
+    --[[toggle = {]]
+      --[[normal = "<C-,>",       -- Normal mode keymap for toggling Claude Code, false to disable]]
+      --[[terminal = "<C-,>",     -- Terminal mode keymap for toggling Claude Code, false to disable]]
+      --[[variants = {]]
+        --[[continue = "<leader>cC", -- Normal mode keymap for Claude Code with continue flag]]
+        --[[verbose = "<leader>cV",  -- Normal mode keymap for Claude Code with verbose flag]]
+      --[[},]]
+    --[[}} })]]
+    --[[end]]
+  --[[}]]
+  {
+  "coder/claudecode.nvim",
+  dependencies = {  },
+  config = true,
+  keys = {
+    { "<leader>a", nil, desc = "AI/Claude Code" },
+    { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+    { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+    { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+    { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+    { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+    { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+    {
+      "<leader>as",
+      "<cmd>ClaudeCodeTreeAdd<cr>",
+      desc = "Add file",
+      ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
+    },
+    -- Diff management
+    { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+    { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+  },
+  } ,{
+  "okuuva/auto-save.nvim",
+  version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
+  cmd = "ASToggle", -- optional for lazy loading on command
+  event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
+  opts = {
+ condition = function(buf)
+    -- Check buffer-local and global auto_save variables
+    local b_auto_save = vim.b[buf].auto_save
+    local g_auto_save = vim.g.auto_save
+
+    -- If buffer-local variable is explicitly set, use it
+    if b_auto_save ~= nil then
+      if not b_auto_save then
+        return false
+      end
+    -- Otherwise, check global variable
+    elseif g_auto_save ~= nil then
+      if not g_auto_save then
+        return false
+      end
+    end
+
+    -- Exclude claudecode diff buffers by buffer name patterns
+    local bufname = vim.api.nvim_buf_get_name(buf)
+    if bufname:match('%(proposed%)') or bufname:match('%(NEW FILE %- proposed%)') or bufname:match('%(New%)') then
+      return false
+    end
+
+    -- Exclude by buffer variables (claudecode sets these)
+    if
+      vim.b[buf].claudecode_diff_tab_name
+      or vim.b[buf].claudecode_diff_new_win
+      or vim.b[buf].claudecode_diff_target_win
+    then
+      return false
+    end
+
+    -- Exclude by buffer type (claudecode diff buffers use "acwrite")
+    local buftype = vim.fn.getbufvar(buf, '&buftype')
+    if buftype == 'acwrite' then
+      return false
+    end
+
+    return true -- Safe to auto-save
+  end
+    -- your config goes here
+    -- or just leave it empty :)
+  },
+},{
+"folke/snacks.nvim",
+priority = 1000,
+lazy = false,
+---@type snacks.Config
+opts = {
+  -- your configuration comes here
+  -- or leave it empty to use the default settings
+  -- refer to the configuration section below
+  bigfile = { enabled = true },
+  dashboard = { enabled = false },
+  explorer = { enabled = false },
+  indent = { enabled = true },
+  input = { enabled = true },
+  picker = { enabled = true },
+  notifier = { enabled = false },
+  quickfile = { enabled = false },
+  scope = { enabled = true },
+  scroll = { enabled = true },
+  statuscolumn = { enabled = true },
+  words = { enabled = true },
+},
+},
+
 }

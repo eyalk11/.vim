@@ -11,7 +11,7 @@ require("lazy").setup({
 		{ import = "plugins.noice" },
 		--{ import = "plugins.repmo" },
 		{ import = "plugins.lspconfig" },
-		--{ import = "plugins.avante" },
+		{ import = "plugins.avante" },
 		{ import =  "plugins.lazyplugs" },
 		-- just for the colorscheme
 		LazyPlugSpecs,
