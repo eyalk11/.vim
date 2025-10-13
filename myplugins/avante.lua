@@ -63,7 +63,7 @@ return {
 -- 
   },
   keys = {
-    { "<leader>ac", ":AvanteClear<CR>", desc = "Clear Avante" }
+    --{ "<leader>ac", ":AvanteClear<CR>", desc = "Clear Avante" }
   },
 
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

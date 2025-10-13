@@ -1149,3 +1149,127 @@ function! GenerateMappings(functions, const_prefix)
 
     echo "Mapping generation complete"
 endfunction
+
+" Delete current file and buffer
+function! DeleteMe()
+    let l:filepath = expand('%:p')
+    if empty(l:filepath)
+        echohl ErrorMsg
+        echo "Error: No file to delete (empty buffer)"
+        echohl None
+        return
+    endif
+
+    if !filereadable(l:filepath)
+        echohl ErrorMsg
+        echo "Error: File does not exist or is not readable"
+        echohl None
+        return
+    endif
+
+    let l:confirm = confirm('Delete file: ' . l:filepath . '?', "&Yes\n&No", 2)
+    if l:confirm != 1
+        echo "Deletion cancelled"
+        return
+    endif
+
+    " Delete the buffer first
+    let l:bufnr = bufnr('%')
+    let l:bufcount = len(getbufinfo({'buflisted':1}))
+
+    " If this is the last buffer, create a new empty one
+    if l:bufcount == 1
+        enew
+    else
+        bprevious
+    endif
+
+    " Delete the buffer
+    execute 'bdelete! ' . l:bufnr
+
+    " Delete the file
+    if has('win32') || has('win64')
+        call system('del /Q "' . l:filepath . '"')
+    else
+        call delete(l:filepath)
+    endif
+
+    if filereadable(l:filepath)
+        echohl ErrorMsg
+        echo "Error: Failed to delete file"
+        echohl None
+    else
+        echo "Deleted: " . l:filepath
+    endif
+endfunction
+
+command! -nargs=0 DeleteMe call DeleteMe()
+
+" Move current file to another location
+function! MoveMe(...)
+    let l:current = expand('%:p')
+    if empty(l:current)
+        echohl ErrorMsg
+        echo "Error: No file to move (empty buffer)"
+        echohl None
+        return
+    endif
+
+    if !filereadable(l:current)
+        echohl ErrorMsg
+        echo "Error: Current file does not exist"
+        echohl None
+        return
+    endif
+
+    " Get destination path
+    if a:0 > 0
+        let l:dest = expand(a:1)
+    else
+        let l:dest = input('Move to: ', l:current, 'file')
+        if empty(l:dest)
+            echo "Move cancelled"
+            return
+        endif
+    endif
+
+    " If destination is a directory, append the filename
+    if isdirectory(l:dest)
+        let l:dest = l:dest . '/' . fnamemodify(l:current, ':t')
+    endif
+
+    " Normalize path separators for Windows
+    if has('win32') || has('win64')
+        let l:dest = substitute(l:dest, '/', '\', 'g')
+    endif
+
+    " Check if destination already exists
+    if filereadable(l:dest)
+        let l:confirm = confirm('Destination exists. Overwrite?', "&Yes\n&No", 2)
+        if l:confirm != 1
+            echo "Move cancelled"
+            return
+        endif
+    endif
+
+    " Move the file
+    if has('win32') || has('win64')
+        call system('move /Y "' . l:current . '" "' . l:dest . '"')
+    else
+        call rename(l:current, l:dest)
+    endif
+
+    " Check if move was successful
+    if filereadable(l:dest) && !filereadable(l:current)
+        " Update the buffer to point to the new location
+        execute 'file ' . fnameescape(l:dest)
+        execute 'edit! ' . fnameescape(l:dest)
+        echo "Moved to: " . l:dest
+    else
+        echohl ErrorMsg
+        echo "Error: Failed to move file"
+        echohl None
+    endif
+endfunction
+
+command! -nargs=? -complete=file MoveMe call MoveMe(<f-args>)

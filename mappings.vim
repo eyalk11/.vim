@@ -835,14 +835,17 @@ vmap <m-k> "xy<CMD>let x=printf("Leaderf help --input \"%s\"", getreg("x"))<CR><
 "completion by fuzzing of anything
 imap <c-.> <CMD>call CompleteInf()<CR>
 cmap <c-.> <CMD>call CompleteInf()<CR>
-imap <M-K> <plug>(fzf-complete-word)
-imap <M-k> <plug>(fzf-complete-word)
-"imap <M-F> <plug>(fzf-complete-path)
-"imap <M-f> <plug>(fzf-complete-path)
+"imap <M-K> <plug>(fzf-complete-word)
+"imap <M-k> <plug>(fzf-complete-word) c:/
+imap <m-f> <CMD>FzfLua complete_path<CR>
+imap <m-h> <c-o>h
+imap <m-j> <c-o>j
+imap <m-k> <c-o>k
+imap <m-l> <c-o>l
 "imap <M-J> <plug>(fzf-complete-file-ag)
 "imap <M-j> <plug>(fzf-complete-file-ag)
-imap <M-L> <plug>(fzf-complete-line)
-imap <M-l> <plug>(fzf-complete-line)
+"imap <M-L> <plug>(fzf-complete-line)
+"imap <M-l> <plug>(fzf-complete-line)
 
 
 
@@ -1390,9 +1393,12 @@ function! LfFil(a)
     :exec " :LeaderfFile ". a:a
 
 endfunction
+
 "opens file
-nmap <m-p> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`<CR><c-a>f
+nmap <c-p> mc<leader>gf
+nmap <m-p> mc\vn<leader>gf
 nmap <m-o> mc<leader>vn<c-a>f
+nmap <m-'> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`<CR><c-a>f
 
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
@@ -2648,7 +2654,7 @@ inoremap <m-b> <c-v>
 cnoremap <m-b> <c-v>
 nnoremap R q
 cabbr %G Gvdiffsplit
-nmap <leader>AC <CMD>AvanteAsk /clear<CR>
+"nmap <leader>AC <CMD>AvanteAsk /clear<CR>
 nmap <leader>ae <CMD>AvanteEdit<CR>
 nmap <leader>rF <CMD>source %<CR>
 
@@ -2672,3 +2678,5 @@ endfunction
 nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>
 nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
+nmap <leader>AC <CMD>AmendCur<CR>
+nmap <leader>APC <CMD>AmendCur!<CR>
