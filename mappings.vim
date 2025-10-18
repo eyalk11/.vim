@@ -664,9 +664,9 @@ nmap mL <Plug>(easymotion-bd-jk)
 
 "imap <M-t> <c-o><Plug>(easymotion-tl)
 
-nmap <M-s> <Plug>(easymotion-sl)
-imap <M-s> <c-o><Plug>(easymotion-sl)
-nmap ? <Plug>(easymotion-sl)
+"nmap <M-s> <Plug>(easymotion-sl)
+"imap <M-s> <c-o><Plug>(easymotion-sl)
+"nmap ? <Plug>(easymotion-sl)
 
 "nmap <A-s> <Plug>(easymotion-bd-sl)
 "notice that q is easymotion bd everywhere 
@@ -779,8 +779,8 @@ imap <S-CR> <c-o>
 "nmap <silent> <M-K> <Plug>(ale_next_wrap)
 "nmap <silent> <M-k> <Plug>(ale_next_wrap) a\n/
 
-imap <M-g> <Plug>(IPy-Complete)
-nmap <M-k> <Plug>(IPy-WordObjInfo) 
+"imap <M-g> <Plug>(IPy-Complete)
+"nmap <M-k> <Plug>(IPy-WordObjInfo) 
 nmap <M-r> <CMD>call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
 command PyRun -complete=custom,IPyCompleteForInput <CMD>call IPyRun(<f-args>)
 "nmap <M-r> <CMD>call IPyRun(input('enter python: '))<CR>
@@ -837,12 +837,13 @@ imap <c-.> <CMD>call CompleteInf()<CR>
 cmap <c-.> <CMD>call CompleteInf()<CR>
 "imap <M-K> <plug>(fzf-complete-word)
 "imap <M-k> <plug>(fzf-complete-word) c:/
-imap <m-f> <CMD>FzfLua complete_path<CR>
-imap <m-h> <c-o>h
-imap <m-j> <c-o>j
-imap <m-k> <c-o>k
-imap <m-l> <c-o>l
-"imap <M-J> <plug>(fzf-complete-file-ag)
+imap <m-p> <CMD>FzfLua complete_path<CR>
+"imap <m-g> <CMD>FzfLua spell_suggest<CR>
+map <m-g> <CMD>FzfLua spell_suggest<CR>
+imap <m-h> <Right>
+imap <m-l> <Left>
+imap <m-j> <Down>
+imap <m-k> <Up>
 "imap <M-j> <plug>(fzf-complete-file-ag)
 "imap <M-L> <plug>(fzf-complete-line)
 "imap <M-l> <plug>(fzf-complete-line)
@@ -2680,3 +2681,5 @@ nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
 nmap <leader>AC <CMD>AmendCur<CR>
 nmap <leader>APC <CMD>AmendCur!<CR>
+"nmap <leader>hs <CMD>GitGutterEnable<CR><Plug>(GitGutterStageHunk)<CMD>GitGutterDisable<CR>
+"p>

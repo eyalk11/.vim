@@ -18,7 +18,10 @@ let g:shellpipe=&shellpipe
 let g:shq=&shellquote
 let g:shxq=&shellxquote
 
+set jumpoptions=stack
+
 let g:ver=ver
+
 "allows ctrl-c I think
 set allowrevins
 if has('nvim')

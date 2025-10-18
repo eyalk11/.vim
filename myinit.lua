@@ -87,6 +87,44 @@ function _G.tprint(tbl, indent)
 	end)
 end
 
+-- Print LSP capabilities for a given server
+-- Usage: PrintLspCapabilities('jedi_language_server')
+function _G.PrintLspCapabilities(server_name)
+	local lspconfig = require('lspconfig')
+	if not lspconfig[server_name] then
+		print("LSP server '" .. server_name .. "' not found in lspconfig")
+		return
+	end
+
+	local manager = lspconfig[server_name].manager
+	if manager and manager.config and manager.config.capabilities then
+		print("Capabilities for " .. server_name .. ":")
+		print(vim.inspect(manager.config.capabilities))
+	else
+		print("No active manager or capabilities found for " .. server_name)
+		print("The server might not be running yet. Try opening a file that uses this LSP.")
+	end
+end
+
+-- Print LSP config for a given server
+-- Usage: PrintLspConfig('jedi_language_server')
+function _G.PrintLspConfig(server_name)
+	local lspconfig = require('lspconfig')
+	if not lspconfig[server_name] then
+		print("LSP server '" .. server_name .. "' not found in lspconfig")
+		return
+	end
+
+	local manager = lspconfig[server_name].manager
+	if manager and manager.config then
+		print("Config for " .. server_name .. ":")
+		print(vim.inspect(manager.config))
+	else
+		print("No active manager or config found for " .. server_name)
+		print("The server might not be running yet. Try opening a file that uses this LSP.")
+	end
+end
+
 --function _G.set_all_workspace_dir(dir)
 --for t in vim.lsp.buf.list_workspace_folders() do
 --vim.lsp.buf.remove_workspace_folder(t)
@@ -113,7 +151,7 @@ navbuddy.setup({
 
 --require("symbols-outline").setup()
 --require('navigator').setup({  default_mapping = false, lsp = {disable_lsp  = "all" }} )
-require("grammar-guard").init()
+--require("grammar-guard").init()
 --require'lspconfig'.grammarly.setup{
 --filetypes = { "markdown" }
 --}
@@ -211,145 +249,12 @@ local function opencwd()
 	api.tree.change_root(pathb) --in case
 end
 vim.keymap.set("n", "mt", opencwd, opts)
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local cmp = require("cmp")
-
-local has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local feedkey = function(key, mode)
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-cmp.setup({
-	--snippet = {
-	---- REQUIRED - you must specify a snippet engine
-	--expand = function(args)
-	---- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-	---- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-	---- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-	--vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-
-	--end,
-	--},
-	window = {
-		-- completion = cmp.config.window.bordered(),
-		-- documentation = cmp.config.window.bordered(),doc flags
-		-- rep
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-e>"] = cmp.mapping.abort(),
-		--['<C-b>'] = cmp.mapping.scroll_docs(-4),
-		--['<C-f>'] = cmp.mapping.scroll_docs(4),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			--elseif vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-				--feedkey("<Plug>(ultisnips_expand)", "")
-			elseif has_words_before() then
-				cmp.complete()
-			else
-				fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-			end
-		end, { "i", "s" }),
-
-		["<S-Tab>"] = cmp.mapping(function(fallback) -- inoremap <S-TAB> <esc><<^i
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif has_words_before() then
-				cmp.complete()
-			else
-				fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-			end
-		end, { "i", "s" }),
-		["<esc>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.abort()
-				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
-			else
-				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
-			end
-		end),
-		["<C-Y>"] = cmp.mapping.confirm({ select = false }), -- Confirm the selection even if not explicitly
-		["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-		["<C-CR>"] = cmp.mapping(function(fallback) 
-			if cmp.visible() then
-                
-				cmp.confirm({ select = true })
-				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "n", true)
-			else
-				fallback()
-			end
-		end),
-	}),
-	sources = cmp.config.sources({
-		{ name = "buffer", priority = 1 },
-		{ name = "path", proiority = 5 },
-		{ name = "nvim_lsp", priority = 200 },
-	}),
-})
-vim.api.nvim_create_autocmd("BufReadPre", {
-	callback = function(t)
-		if not BufIsBig(t.buf) then
-			sources = cmp.config.sources({
-				{ name = "buffer", priority = 1 },
-				{ name = "path", priority = 5 },
-				{ name = "nvim_lsp", priority = 200 },
-			})
-		else
-            --vim.lsp.stop_client(vim.lsp.get_clients())
-			cmp.setup.buffer({
-				sources = {},
-			})
-            print("Buffer is big, stopping clients and setting up empty sources")  -- added here
-            vim.api.nvim_echo({{'Buffer is big, stopping clients and setting up empty sources', 'Normal'}}, true, {})  -- added here
-
-		end
-	end,
-})
-
--- Set configuration for specific filetype.
-cmp.setup.filetype("gitcommit", {
-	sources = cmp.config.sources({
-		{ name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
-	}, {
-		{ name = "buffer" },
-	}),
-})
-
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline("/", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = {
-		{ name = "buffer" },
-	},
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(":", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "path" },
-	}, {
-		{ name = "cmdline" },
-	}),
-})
-
--- Setup lspconfig.
--- cmp_nvim_lsp.
---local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
---require'lspconfig'.sumneko_lua.setup{
---capabilities = capabilities,
---on_attach = on_attach,
---}
+-- CMP configuration has been moved to myplugins/cmp.lua (loaded via Lazy.nvim)
 
 vim.lsp.set_log_level("debug")
 
 --
---require'lspconfig'.jedi_language_server.setup{
+-- require'lspconfig'.jedi_language_server.setup{
 --capabilities = capabilities,
 --on_attach = on_attach
 ------root_dir = function() return vim.loop.cwd() end
@@ -449,22 +354,7 @@ null_ls.setup({
 --require('lint').linters_by_ft = {
 --py = {'black','mypy','isort',}
 --}
-require("cmp_dictionary").setup({
-	dic = {
-		["*"] = { "c:\\temp\\words" },
-		spelllang = {
-			en_us = "c:\\temp\\words",
-		},
-	},
-	-- The following are default values.
-	--exact = 2,
-	--first_case_insensitive = false,
-	--document = false,
-	--document_command = "wn %s -over",
-	--async = false,
-	--capacity = 5,
-	--debug = false,
-})
+-- cmp_dictionary setup has been moved to myplugins/cmp.lua (loaded via Lazy.nvim)
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
 --require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
 --capabilities = capabilities

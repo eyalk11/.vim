@@ -143,13 +143,14 @@ Plugit 'viniciusarcanjo/fzf-tabs.nvim'
 " LSP/COMPLETION
 "==============================================================================
 " Language servers and code completion
-Plugit 'hrsh7th/nvim-cmp', { 'branch': 'main'}
-Plugit 'hrsh7th/cmp-nvim-lsp'
-Plugit 'hrsh7th/cmp-path'
-Plugit 'hrsh7th/cmp-cmdline'
+" CMP plugins now managed by Lazy.nvim (see myplugins/cmp.lua)
+"Plugit 'hrsh7th/nvim-cmp', { 'branch': 'main'}
+"Plugit 'hrsh7th/cmp-nvim-lsp'
+"Plugit 'hrsh7th/cmp-path'
+"Plugit 'hrsh7th/cmp-cmdline'
 "Plugit 'hrsh7th/cmp-buffer'
 "Plugit 'ray-x/cmp-treesitter'
-Plugit 'uga-rosa/cmp-dictionary'
+"Plugit 'uga-rosa/cmp-dictionary'
 "Plugit 'quangnguyen30192/cmp-nvim-ultisnips'
 Plugit 'tamago324/nlsp-settings.nvim'
 "Plugit 'williamboman/mason.nvim'

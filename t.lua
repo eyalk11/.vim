@@ -12,6 +12,7 @@ require("lazy").setup({
 		--{ import = "plugins.repmo" },
 		{ import = "plugins.lspconfig" },
 		{ import = "plugins.avante" },
+		{ import = "plugins.cmp" },
 		{ import =  "plugins.lazyplugs" },
 		-- just for the colorscheme
 		LazyPlugSpecs,

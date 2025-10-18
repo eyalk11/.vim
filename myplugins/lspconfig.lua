@@ -1,4 +1,14 @@
+
 local on_attach = function(client, bufnr)
+    function BufIsBig(bufnr)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        else
+            return false
+        end
+    end
     if BufIsBig(bufnr) then
         vim.schedule(function()
             vim.lsp.buf_detach_client(bufnr, client.id)
@@ -126,7 +136,7 @@ return {
             })
 
             mason.setup()
-            mason_lspconfig.setup( {   automatic_enable = true}
+            mason_lspconfig.setup( {   automatic_enable = false}
             --mason_lspconfig.setup( {   automatic_enable = { "proselint"
             --}}
             
@@ -145,6 +155,13 @@ return {
             --on_attach = on_attach,
             --flags = lsp_flags,
             --})
+            require("lspconfig")["vale_ls"].setup({
+                 filetypes = { "markdown", "tex", "text", "md","html","txt" },
+                capabilities = capabilities,
+                on_attach = on_attach,
+                flags = lsp_flags,
+            })
+            -- filetypes = { 
             require("lspconfig")["rust_analyzer"].setup({
                 on_attach = on_attach,
                 flags = lsp_flags,
@@ -173,7 +190,9 @@ return {
             require("lspconfig").pylsp.setup({
                 capabilities = capabilities,
                  on_attach = function(client, bufnr)
-                    --client.server_capabilities.completionProvider = false
+                    -- Disable symbol information
+                    client.server_capabilities.documentSymbolProvider = false
+                    client.server_capabilities.workspaceSymbolProvider = false
                     on_attach(client, bufnr)
                 end,
                 settings = {
@@ -191,16 +210,13 @@ return {
                             --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
                             --rope_autoimport = {enabled = false, {completions = {enabled = false}, {code_actions = {enabled = false}}}},
                             jedi_symbols = {
-                                enabled = true,
-                                all_scopes = true,
-                                include_import_symbols = true,
-                                ignore_paths = { "^(?=.*compare-my-stocks)(?!.*src)" },
+                                enabled = false,  -- Disable symbol information
                             },
 
                             --jedi = { enabled= true }
                             --jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
                         },
-                        --root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
+                        ----root_dir = vim.fs.dirname(vim.fs.find(root_files, { upward = true })[1])
                     },
                 },
             })
@@ -209,6 +225,28 @@ return {
                 on_attach = on_attach,
                 flags = lsp_flags,
             })
+            require'lspconfig'.jedi_language_server.setup({
+                ----capabilities = capabilities,
+                -----on_attach = on_attach
+                ---------root_dir = function() return vim.loop.cwd() end
+                -----}
+                ---
+            --require("lspconfig")["jedi_language_server"].setup({
+                settings = {
+                    jediSettings = {
+                        symbols = {
+                            workspace = {
+                                maxSymbols = 10000
+                            }
+                        }
+                    }
+                },
+            
+                capabilities = capabilities,
+                on_attach = on_attach,
+                flags = lsp_flags,
+            })
+            
 
             --require("lspconfig")['htmlbeautifier'].setup({
             --capabilities = capabilities,
@@ -218,7 +256,9 @@ return {
             require("lspconfig")["pyright"].setup({
                 capabilities = capabilities,
                 on_attach = function(client, bufnr)
-                    --client.server_capabilities.completionProvider = false
+                    client.server_capabilities.completionProvider = false
+                    client.server_capabilities.signature_help = true
+
                     on_attach(client, bufnr)
                 end,
                 flags = lsp_flags,
@@ -254,7 +294,7 @@ return {
             mason_lspconfig.setup_handlers({
                 function(server_name)
                     --local ignore_list = { "lua_ls", "lua-language-server", "sourcery" }
-                    local ignore_list = {  "sourcery","jedi-language-server" }
+                    local ignore_list = {  "sourcery"} --,"jedi-language-server" }
                     local ignore = false
 
                     for _, v in ipairs(ignore_list) do

@@ -771,8 +771,10 @@ endfunction
 
 function! MakeItFaster(adv)
     if (a:adv)
-        au! autotag
+        "GitGutterDisable
+        "au! autotag
         :let g:airline_extensions = []
+        au! gitgutter
         ":CocDisable
         ":ALEDisable
         :NoMatchParen

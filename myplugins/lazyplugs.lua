@@ -1,6 +1,15 @@
 return {
-    { "girishji/pythondoc.vim" },
+    --{ "girishji/pythondoc.vim" },
     --{ "vim-scripts/LargeFile" },
+    {
+        "luckasRanarison/nvim-devdocs",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        opts = {}
+    },
     {
         "rcarriga/nvim-dap-ui",
         dependencies = "mfussenegger/nvim-dap",

@@ -850,5 +850,6 @@ let g:copilot_filetypes = {
       \ 'md': v:true,
       \ 'vim': v:true,
       \ 'lua': v:true,
+      \ 'html': v:true,
       \ }
 
