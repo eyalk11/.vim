@@ -202,12 +202,13 @@ function! OnLoad()
 
     :call DefineMapping()
     set ambiwidth=single
-let g:keys = ['jk',  'sd','kl' ]
-for key in g:keys
-    execute 'silent Arpeggio inoremap ' key '<Esc>'
-    execute 'silent Arpeggio nnoremap ' key 'i'
-endfor
-    :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
+" Chord mappings disabled
+" let g:keys = ['jk',  'sd','kl' ]
+" for key in g:keys
+"     execute 'silent Arpeggio inoremap ' key '<Esc>'
+"     execute 'silent Arpeggio nnoremap ' key 'i'
+" endfor
+"     :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
     if exists('g:GuiLoaded')
         ":GuiFont! Fira\ Code:h12
         set guifont=Hasklug\ Nerd\ Font:h12

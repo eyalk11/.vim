@@ -333,7 +333,7 @@ nnoremap mS <CMD>call ToggleSearch()<CR>
 :nnoremap [) (<CR>
 :nnoremap [0 )<CR>
 "qw inserts char after
-nmap <Plug>(arpeggio-default:s) <CMD>call InsertBefore(v:count1)<CR>
+" nmap <Plug>(arpeggio-default:s) <CMD>call InsertBefore(v:count1)<CR>
 nmap s :<C-U>call InsertBefore(v:count1)<CR>
 "nnoremap F f
 nmap S <CMD>call InsertAfter(v:count1)<CR>
@@ -549,25 +549,25 @@ function! FF_Forward()
 call quick_scope#Wallhacks('f')
 return "\<c-o>\<Plug>Lightspeed_t"
 endfunction
-imap <expr> <c-'> FF_Forward()
+imap <expr> <m-]> FF_Forward()
 
 function! FF_MF()
 call quick_scope#Wallhacks('t')
 return "\<c-o>\<Plug>Lightspeed_F"
 endfunction
-imap <expr> <m-'> FF_MF()
+imap <expr> <m-[> FF_MF()
 
 function! FF_f()
 call quick_scope#Wallhacks('f')
 return "\<c-o>\<Plug>Lightspeed_f"
 endfunction
-imap <expr> <c-/> FF_f()
-
+imap <expr> <c-'> FF_f()
+"works less good than m-] 
 function! FF_T()
 call quick_scope#Wallhacks('t')
 return "\<c-o>\<Plug>Lightspeed_T"
 endfunction
-imap <expr> <M-/> FF_T()
+imap <expr> <m-'> FF_T()
 
 "function! FF_TT3()
 "call quick_scope#Wallhacks('f')
@@ -585,13 +585,13 @@ function! FF_f2()
 call quick_scope#Wallhacks('f')
 return "\<Plug>Lightspeed_f"
 endfunction
-nmap <expr> <c-/> FF_f2()
+nmap <expr> <m-]> FF_f2()
 
 function! FF_T2()
 call quick_scope#Wallhacks('t')
 return "\<Plug>Lightspeed_T"
 endfunction
-nmap <expr> <m-/> FF_T2()
+nmap <expr> <M-[> FF_T2()
 
 
 
@@ -634,7 +634,8 @@ function! Ffn()
 call quick_scope#Wallhacks('f')
 return "\<Plug>Lightspeed_f"
 endfunction
-nmap <expr> <Plug>(arpeggio-default:f) Ffn()
+" Chord mapping disabled
+" nmap <expr> <Plug>(arpeggio-default:f) Ffn()
 "nmap F <Plug>cusF
 "nmap s <Plug>Lightspeed_s
 "nmap S <Plug>Lightspeed_S
@@ -781,7 +782,7 @@ imap <S-CR> <c-o>
 "nmap <silent> <M-K> <Plug>(ale_next_wrap)
 "nmap <silent> <M-k> <Plug>(ale_next_wrap) a\n/
 
-"imap <M-g> <Plug>(IPy-Complete)
+imap <M-i> <Plug>(IPy-Complete)
 "nmap <M-k> <Plug>(IPy-WordObjInfo) 
 nmap <M-r> <CMD>call IPyRun(input('enter python: ','','custom,IPyCompleteForInput'))<CR>
 command PyRun -complete=custom,IPyCompleteForInput <CMD>call IPyRun(<f-args>)
@@ -839,7 +840,7 @@ imap <c-.> <CMD>call CompleteInf()<CR>
 cmap <c-.> <CMD>call CompleteInf()<CR>
 "imap <M-K> <plug>(fzf-complete-word)
 "imap <M-k> <plug>(fzf-complete-word) c:/
-imap <m-p> <CMD>FzfLua complete_path<CR>
+imap <m-f> <CMD>FzfLua complete_path<CR>
 "imap <m-g> <CMD>FzfLua spell_suggest<CR>
 map <m-g> <CMD>FzfLua spell_suggest<CR>
 imap <m-h> <Right>
@@ -978,6 +979,8 @@ endfunction
 vnoremap mP <CMD>call Domp()<CR>"zp
 nnoremap mP <CMD>call Domp()<CR>"zp
 nnoremap MP <CMD>call Domp()<CR>"zP
+imap <m-p> <c-o><CMD>call Domp()<CR><c-r>z
+
 "convert from WINDOWS style <CR> 
 nmap mwin :s/\<lf>CR>/
 
