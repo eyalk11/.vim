@@ -1,4 +1,21 @@
 
+-- Autocmd to disable completion for specific LSP clients after attach
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client then
+            -- Disable completion for jedi_language_server
+            if client.name == "jedi_language_server" then
+                client.server_capabilities.completionProvider = false
+            end
+            -- Disable completion for pyright
+            if client.name == "pyright" then
+                client.server_capabilities.completionProvider = false
+            end
+        end
+    end,
+})
+
 local on_attach = function(client, bufnr)
     function BufIsBig(bufnr)
         local max_filesize = 100 * 1024 -- 100 KB
@@ -226,12 +243,9 @@ return {
                 flags = lsp_flags,
             })
             require'lspconfig'.jedi_language_server.setup({
-                ----capabilities = capabilities,
-                -----on_attach = on_attach
+                capabilities = capabilities,
+                on_attach = on_attach,
                 ---------root_dir = function() return vim.loop.cwd() end
-                -----}
-                ---
-            --require("lspconfig")["jedi_language_server"].setup({
                 settings = {
                     jediSettings = {
                         symbols = {
@@ -242,8 +256,6 @@ return {
                     }
                 },
             
-                capabilities = capabilities,
-                on_attach = on_attach,
                 flags = lsp_flags,
             })
             
@@ -255,12 +267,7 @@ return {
             --})
             require("lspconfig")["pyright"].setup({
                 capabilities = capabilities,
-                on_attach = function(client, bufnr)
-                    client.server_capabilities.completionProvider = false
-                    client.server_capabilities.signature_help = true
-
-                    on_attach(client, bufnr)
-                end,
+                on_attach = on_attach,
                 flags = lsp_flags,
                 settings = {
                     python = {

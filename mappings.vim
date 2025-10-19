@@ -377,7 +377,6 @@ vnoremap <end> $h
 
 
 nmap <nowait> , <CMD>Leaderf line --popup<CR>
-nmap <m-,> <CMD>Telescope lsp_document_symbols<CR>
 "nmap <nowait> , <CMD>Telescope current_buffer_fuzzy_find<CR>
 "nmap <nowait> , <CMD>call Lff()<CR>
 "function! Lff()
@@ -543,9 +542,9 @@ endfunction
 " in normal mode M is same line
 "imap <M-f> <c-o><Plug>Lightspeed_s
 "imap ` <c-o><Plug>Lightspeed_s
-imap <silent><script><expr> <C-j> copilot#Accept("")
-imap <silent><script><expr> <M-j> copilot#Next()
-let g:copilot_no_tab_map = v:true
+"imap <silent><script><expr> <C-j> copilot#Accept("")
+"imap <silent><script><expr> <M-j> copilot#Next()
+"let g:copilot_no_tab_map = v:true
 function! FF_Forward()
 call quick_scope#Wallhacks('f')
 return "\<c-o>\<Plug>Lightspeed_t"
@@ -723,7 +722,10 @@ inoremap <expr> <C-K>  pumvisible()? "<c-k>" : "<c-o><CMD>call RecallInserts(0)<
 "imap <c-b> <c-o><CMD>call RecallInserts(0)<CR>
 inoremap <c-b> <c-o><CMD>call GetAllInserts()<CR>
 inoremap <c-end> <c-v>
+"jumps to the map
 nmap <Leader>gm :lua GotoMap()<CR>
+"opens navbuddy on the mappings
+nmap <Leader>gM <CMD>e C:\Users\ekarni\.vim\README.md<CR><leader>s<CMD>call timer_start(2000, {-> execute('normal hhhlt')})<CR>
 "does chars 
 
 inoremap <m-c-k> <c-x><c-k>
@@ -1228,8 +1230,10 @@ noremap  <leader>od <CMD>exec ":vs " . getcwd()<CR>
 "nnoremap <leader>em <CMD>call Exec("messages")<CR>
 "nnoremap <leader>em <CMD>NoiceHistory<CR>
 nnoremap <expr> <leader>em exists(":NoiceHistory") ? "<CMD>NoiceHistory<CR>" : "<CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm \"xp<CR>"
-nnoremap <leader>EM <CMD>NoiceTelescope<CR>
-nnoremap <leader>EM <CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm "xp<CR>
+nnoremap <expr> <leader>EM exists(":Noice") ? "<CMD>NoiceTelescope<CR>" : "<CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm \"xp<CR>"
+
+"nnoremap <leader>EM <CMD>NoiceTelescope<CR>
+"nnoremap <leader>EM <CMD>call VspIfNeed()<CR><CMD>enew<CR><CMD>let @x=MinExec('messages')<CR><CMD>norm "xp<CR>
 
 "enable save
 nnoremap <leader>as :if exists('b:auto_save') <bar> :let b:auto_save = !b:auto_save <bar> else <bar> let b:auto_save=1 <bar> endif<CR>:echo "it is now locally". b:auto_save<CR>
@@ -1399,6 +1403,9 @@ endfunction
 nmap <c-p> mc<leader>gf
 nmap <m-p> mc\vn<leader>gf
 nmap <m-o> mc<leader>vn<c-a>f
+"nmap <c-u> <CMD>Telescope lsp_workspace_symbols<CR>
+nmap <m-,> <CMD>Telescope lsp_document_symbols<CR>
+nmap <c-\> <CMD>Telescope lsp_workspace_symbols<CR>
 nmap <m-'> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`<CR><c-a>f
 
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
@@ -2657,6 +2664,7 @@ nnoremap R q
 cabbr %G Gvdiffsplit
 "nmap <leader>AC <CMD>AvanteAsk /clear<CR>
 nmap <leader>ae <CMD>AvanteEdit<CR>
+vmap <leader>ae <CMD>AvanteEdit<CR>
 nmap <leader>rF <CMD>source %<CR>
 
 
@@ -2681,5 +2689,6 @@ nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
 nmap <leader>AC <CMD>AmendCur<CR>
 nmap <leader>APC <CMD>AmendCur!<CR>
+nmap <leader>mM <CMD>Minuet virtualtext toggle<CR>
 "nmap <leader>hs <CMD>GitGutterEnable<CR><Plug>(GitGutterStageHunk)<CMD>GitGutterDisable<CR>
 "p>

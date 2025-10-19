@@ -169,8 +169,9 @@ Plugit 'folke/trouble.nvim'
 Plugit 'folke/which-key.nvim'
 "Plugit 'liuchengxu/vim-which-key'
 "Plugit 'folke/lazy.nvim'
-Plugit 'github/copilot.vim', {'event': 'VeryLazy'}
-Plugit 'jackMort/ChatGPT.nvim', {'event': 'VeryLazy'}
+"Plugit 'github/copilot.vim', {'event': 'VeryLazy'}
+Plugit 'sheepy9/gipity.nvim', {'event':'VeryLazy'}
+"Plugit 'jackMort/ChatGPT.nvim', {'event': 'VeryLazy'}
 Plugit 'piersolenski/wtf.nvim'
 Plugit 'aznhe21/actions-preview.nvim'
 Plugit 'ThePrimeagen/refactoring.nvim'
@@ -189,7 +190,7 @@ Plugit 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 " LANGUAGE SPECIFIC
 "==============================================================================
 " Support for specific programming languages
-Plugit 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+"Plugit 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plugit 'jeetsukumaran/vim-pythonsense'
 Plugit 'Vimjas/vim-python-pep8-indent'
 Plugit 'relastle/vim-nayvy'
@@ -201,7 +202,7 @@ Plugit 'PProvost/vim-ps1'
 Plugit 'slim-template/vim-slim'
 Plugit 'octol/vim-cpp-enhanced-highlight'
 "Plugit 'WolfgangMehner/bash-support'
-Plugit 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plugit 'nvim-treesitter/nvim-treesitter',
 "Plugit 'nvim-treesitter/nvim-treesitter-refactor'
 "Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
 "Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}

@@ -177,6 +177,8 @@ telescope.setup({
 			i = {
 				["<esc>"] = actions.close,
 				["<c-i>"] = actions.to_fuzzy_refine,
+				["<c-j>"] = require('telescope.actions').move_selection_next,
+				["<c-k>"] = require('telescope.actions').move_selection_previous,
 			},
 		},
 	},
