@@ -312,7 +312,9 @@ nnoremap <leader>' ``
 
 
 "recall command
-nmap m/ <CMD>set noignorecase<CR><CMD>set noincsearch<CR>/
+nmap <c-/> /<c-r>/
+nnoremap <m-/> <CMD>set incsearch<CR><CMD>set hlsearch<CR>/\c
+nnoremap m/ <CMD>set noignorecase<CR><CMD>set noincsearch<CR>/
 noremap m? <CMD>set incsearch<CR><CMD>set hlsearch<CR>?
 function! ToggleSearch()
 if &incsearch
@@ -326,15 +328,15 @@ endfunction
 
 nnoremap mS <CMD>call ToggleSearch()<CR>
 ":nmap q :exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap ( <CMD>exec "normal i".nr2char(getchar())."\e"<CR>
-:nmap ) <CMD>exec "normal a".nr2char(getchar())."\e"<CR>
+":nmap ( <CMD>exec "normal i".nr2char(getchar())."\e"<CR>
+":nmap ) <CMD>exec "normal a".nr2char(getchar())."\e"<CR>
 :nnoremap [( (<CR>
 :nnoremap [9 (<CR>
 :nnoremap [) (<CR>
 :nnoremap [0 )<CR>
 "qw inserts char after
 " nmap <Plug>(arpeggio-default:s) <CMD>call InsertBefore(v:count1)<CR>
-nmap s :<C-U>call InsertBefore(v:count1)<CR>
+nmap s <CMD>call InsertBefore(v:count1)<CR>
 "nnoremap F f
 nmap S <CMD>call InsertAfter(v:count1)<CR>
 "nnoremap q t
@@ -430,8 +432,8 @@ map _# <CMD>e #<CR>
 "nmap <M-[> <bar><UP><CR>
 
 nmap _t <CMD>exe "tabn ".g:lasttab<CR>
-noremap _b <CMD>bnext<CR>
-noremap _B <CMD>bprev<CR>
+"noremap _b <CMD>bnext<CR>
+"noremap _B <CMD>bprev<CR>
 
 "Grammerous M- mappings
 "imap <M-Down> <esc>
@@ -575,15 +577,15 @@ imap <expr> <m-'> FF_T()
 "endfunction
 "nmap <expr> <c-t> FF_TT3()
 
-function! FF_MF2()
-call quick_scope#Wallhacks('t')
-return "\<Plug>Lightspeed_F"
-endfunction
-nmap <expr> <m-'> FF_MF2()
+"function! FF_MF2()
+"call quick_scope#Wallhacks('t')
+"return "\<Plug>Lightspeed_F"
+"endfunction
+"nmap <expr> <m-'> FF_MF2()
 
 function! FF_f2()
-call quick_scope#Wallhacks('f')
-return "\<Plug>Lightspeed_f"
+call quick_scope#Wallhacks('t')
+return "\<Plug>Lightspeed_t"
 endfunction
 nmap <expr> <m-]> FF_f2()
 
@@ -650,17 +652,17 @@ endfunction
 "
 "beginning of words
 "
-imap <M-d> <c-o><Plug>(easymotion-bl)
-nmap <M-d> <Plug>(easymotion-bl)
+"imap <M-d> <c-o><Plug>(easymotion-bl)
+"nmap <M-d> <Plug>(easymotion-bl)
 
 "end of word 
-imap <c-h> <c-o><Plug>(easymotion-bd-E)
-nmap <c-h> <Plug>(easymotion-bd-E)
+"imap <c-h> <c-o><Plug>(easymotion-bd-E)
+"nmap <c-h> <Plug>(easymotion-bd-E)
 
-imap <M-h> <c-o><Plug>(easymotion-bd-el)
-nmap <M-h> <Plug>(easymotion-bd-el)
+"imap <M-h> <c-o><Plug>(easymotion-bd-el)
+"nmap <M-h> <Plug>(easymotion-bd-el)
 
-nmap mL <Plug>(easymotion-bd-jk)
+"nmap mL <Plug>(easymotion-bd-jk)
 
 "imap <M-t> <c-o><Plug>(easymotion-tl)
 
@@ -684,8 +686,12 @@ nmap mL <Plug>(easymotion-bd-jk)
 "nmap <c-t> <Plug>(easymotion-sl)
 
 nmap <c-s> <CMD>let g:EasyMotion_add_search_history=1<CR><Plug>(easymotion-sn)
-nmap <m-s> <Plug>(easymotion-tn)
+"nmap <m-s> <Plug>(easymotion-tn)
 vmap <c-s> <Plug>(easymotion-s2)
+"imap <c-s> <ESC><CMD>norm <Plug>(easymotion-sn)<CR><CMD>call timer_start(2000, {-> execute('normal i')})<CR>
+imap <c-s> <c-o>/\c
+inoremap <m-s> <c-o>?\c
+
 
 "search help , lift saving
 nmap <c-f> mH
@@ -799,7 +805,6 @@ let g:neoterm_automap_keys="<plug>(aaaa)"
 "imap <c-.> <c-o>.
 
 "loofor 2 chars already S 
-"imap <expr> <c-s> "<c-o><Plug>(easymotion-sn)"
 " to <Plug>(easymotion-hlsearch)handle bug of sear
 
 "needed to be in onload
@@ -841,13 +846,15 @@ cmap <c-.> <CMD>call CompleteInf()<CR>
 "imap <M-K> <plug>(fzf-complete-word)
 "imap <M-k> <plug>(fzf-complete-word) c:/
 imap <m-f> <CMD>FzfLua complete_path<CR>
-"imap <m-g> <CMD>FzfLua spell_suggest<CR>
 map <m-g> <CMD>FzfLua spell_suggest<CR>
-imap <m-h> <Right>
-imap <m-l> <Left>
+inoremap <m-h> <Left>
+imap <m-l> <Right>
 imap <m-j> <Down>
 imap <m-k> <Up>
-"imap <M-j> <plug>(fzf-complete-file-ag)
+" stop insert
+inoremap <C-CR> <esc>
+"undo change and stop insert 
+imap <S-CR> <esc><CMD>norm u<CR>
 "imap <M-L> <plug>(fzf-complete-line)
 "imap <M-l> <plug>(fzf-complete-line)
 
@@ -876,7 +883,8 @@ imap <m-k> <Up>
 "let g:EasyMotion_use_upper = 1
 " type `l` and match `l`&`L`
 "cmd shortcuts
-"m shokjknaaartcuts
+"m shokjknaaartvcvut<Cmd>lua require"cmp.utils.feedkeys".run(118)
+"s
 "nnoremap <m-s> :w<CR>
 "inoremap <m-s> <esc>:w<CR>
 
@@ -895,9 +903,19 @@ nmap gp <CMD>exec ":e ". system("TranslatePath ".expand('<cfile>'))<CR>
 
 
 nnoremap <leader>mb iimport ipdb;ipdb.set_trace()<ESC>
-nmap mb <leader><C-O>
-nmap mB <leader><C-I>
-nmap mv <leader><C-I>
+
+"nmap mb <CMD>bprev<CR>  
+"nmap mB <leader><C-I>
+"nmap mv <CMD>bnext<CR>
+"I want  mv to do get mapping (nmap) but it should wait for user to press the mapping like in c-v in insert mode. use *i_CTRL-V* CTRL-V		Insert next non-digit literally.  
+nnoremap mv <CMD>call feedkeys("i")<CR><CMD>echo "gg"<CR>
+
+
+
+"
+
+nmap <m-n> <CMD>bprev<CR> 
+nmap <m-m> <cmd>bnext<CR>
 " jump to current path
 nmap mC <CMD>call CopyPath()<CR>
 noremap mc <CMD>cd %:p:h<CR>
@@ -1194,6 +1212,16 @@ nmap mG <CMD>unlet b:git_dir<CR><CMD>G<CR>
 
 map <leader>g2 :diffget \\2<CR>
 map <leader>g3 :diffget \\3<CR>
+nnoremap <leader>Grc <CMD>Git rebase --continue<CR>
+
+nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
+
+nnoremap <leader>Gw <CMD>Gwrite<CR>
+
+nmap <leader>AC <CMD>AmendCur<CR>
+nmap <leader>APC <CMD>AmendCur!<CR>
+"nnoremap <leader>GA <CMD>Gwrite<CR><CMD>Git commit  -a --amend --no-verify --no-edit<CR>
+nnoremap <leader>GA <CMD>Git commit  -a<CR>
 nnoremap <leader>Gs <CMD>Gdiff --staged<CR>
 nnoremap <leader>Gc <CMD>Git commit -v -q<CR>
 nnoremap <leader>GC <CMD>Git commit --amend --no-verify<CR>
@@ -1564,7 +1592,7 @@ function! InsertBefore(count) range
                         break
                 endif
         let @z= t
-        ":normal "zp
+        ":normal "z
         if l>1
                 exec "normal a"."\<c-r>=nr2char(".t.")\<ESC>"
     else
@@ -2622,15 +2650,8 @@ nmap <leader>dx <CMD>diffthis<CR><CMD>call GoOther()<CR><CMD>diffthis<CR>
 
 
 
-nnoremap <leader>Grc <CMD>Git rebase --continue<CR>
 
-nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
-
-nnoremap <leader>Gw <CMD>Gwrite<CR>
-
-nnoremap <leader>GA <CMD>Gwrite<CR><CMD>Git commit  -a --amend --no-verify --no-edit<CR>
-
-nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
+"nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
 nmap <leader>GH :DiffviewFileHistory %<CR>
 nmap <leader>Gh :DiffviewFileHistory --base=LOCAL %<CR>
@@ -2690,8 +2711,63 @@ endfunction
 nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>
 nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
-nmap <leader>AC <CMD>AmendCur<CR>
-nmap <leader>APC <CMD>AmendCur!<CR>
 nmap <leader>mM <CMD>Minuet virtualtext toggle<CR>
 "nmap <leader>hs <CMD>GitGutterEnable<CR><Plug>(GitGutterStageHunk)<CMD>GitGutterDisable<CR>
 "p>
+"au filetype python exec "Minuet virtualtext enable"
+"au filetype vim exec "Minuet virtualtext enable"
+"au filetype lua exec "Minuet virtualtext enable"
+
+
+function! SetupCode()
+let g:char2code = {}
+" Letters a-z
+for i in range(char2nr('a'), char2nr('z'))
+  let char = nr2char(i)
+  let g:char2code[char] = char
+  execute 'silent! let g:char2code["\<C-' . char . '>"] = ''<C-' . char . '>'''
+  execute 'silent! let g:char2code["\<A-' . char . '>"] = ''<A-' . char . '>'''
+  execute 'silent! let g:char2code["\<M-' . char . '>"] = ''<M-' . char . '>'''
+endfor
+" Letters A-Z (uppercase)
+for i in range(char2nr('A'), char2nr('Z'))
+  let char = nr2char(i)
+  let g:char2code[char] = char
+  execute 'silent! let g:char2code["\<C-' . char . '>"] = ''<C-' . char . '>'''
+  execute 'silent! let g:char2code["\<A-' . char . '>"] = ''<A-' . char . '>'''
+  execute 'silent! let g:char2code["\<M-' . char . '>"] = ''<M-' . char . '>'''
+endfor
+" Numbers 0-9
+for i in range(char2nr('0'), char2nr('9'))
+  let char = nr2char(i)
+  let g:char2code[char] = char
+  execute 'silent! let g:char2code["\<C-' . char . '>"] = ''<C-' . char . '>'''
+  execute 'silent! let g:char2code["\<A-' . char . '>"] = ''<A-' . char . '>'''
+  execute 'silent! let g:char2code["\<M-' . char . '>"] = ''<M-' . char . '>'''
+endfor
+" Special characters
+for char in [' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', '\', '|', ';', ':', "'", '"', ',', '.', '<', '>', '/', '?', '`', '~']
+  let g:char2code[char] = char
+  execute 'silent! let g:char2code["\<C-' . char . '>"] = ''<C-' . char . '>'''
+  execute 'silent! let g:char2code["\<A-' . char . '>"] = ''<A-' . char . '>'''
+  execute 'silent! let g:char2code["\<M-' . char . '>"] = ''<M-' . char . '>'''
+endfor
+" Function keys
+for i in range(1, 12)
+  execute 'silent! let g:char2code["\<F' . i . '>"] = ''<F' . i . '>'''
+  execute 'silent! let g:char2code["\<C-F' . i . '>"] = ''<C-F' . i . '>'''
+  execute 'silent! let g:char2code["\<A-F' . i . '>"] = ''<A-F' . i . '>'''
+  execute 'silent! let g:char2code["\<M-F' . i . '>"] = ''<M-F' . i . '>'''
+endfor
+" Special keys
+for key in ['Tab', 'CR', 'BS', 'Del', 'Esc', 'Up', 'Down', 'Left', 'Right', 'Home', 'End', 'PageUp', 'PageDown', 'Insert', 'Space']
+  execute 'silent! let g:char2code["\<' . key . '>"] = ''<' . key . '>'''
+  execute 'silent! let g:char2code["\<C-' . key . '>"] = ''<C-' . key . '>'''
+  execute 'silent! let g:char2code["\<A-' . key . '>"] = ''<A-' . key . '>'''
+  execute 'silent! let g:char2code["\<M-' . key . '>"] = ''<M-' . key . '>'''
+endfor
+endfunction
+call SetupCode()
+nmap mv <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "nmap  ". get(g:char2code, c, c)<CR>
+nmap mV <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "imap  ". get(g:char2code, c, c)<CR>
+nmap mVV<CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "vmap  ". get(g:char2code, c, c)<CR>

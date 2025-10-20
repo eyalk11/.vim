@@ -589,4 +589,20 @@ require("actions-preview").setup({})
         --enable = true, 
         --enable_quotes= true } }
 --configs.get_module('matchup').enable_quotes= true
---vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {})
+--vim.keymap.set('n', '<C-g>', '<cmd>lua fuzzyFindFiles{}<cr>', {}) 
+--
+--
+--add lua that when enter buffer, updates c:\temp\active_buffer with the file name (if there is ) 
+vim.api.nvim_create_autocmd('BufEnter', {
+pattern = '*',
+callback = function()
+local filename = vim.api.nvim_buf_get_name(0)
+if filename ~= '' then
+local file = io.open('c:\\temp\\active_buffer', 'w')
+if file then
+file:write(filename)
+file:close()
+end
+end
+end
+})

@@ -904,10 +904,51 @@ This document provides comprehensive documentation for the custom Vim configurat
 
 ## File Structure
 
+### Core Configuration Files
+- **.vimrc**: Main Vim configuration entry point
+- **vimsettings.vim**: General Vim settings and options
 - **hacks.vim**: Core functions, utilities, tracking systems
 - **mappings.vim**: All key mappings, leader mappings, function keys
-- **inserts.vim**: Insert tracking system (sourced)
-- **Other files**: Referenced but not documented here (myinit.lua, newplug.vim, etc.)
+- **inserts.vim**: Insert tracking system (sourced by hacks.vim)
+- **math.vim**: LaTeX and math support functions
+- **newplug.vim**: Plugin manager configuration
+- **pluginSettings.vim**: Plugin-specific settings
+
+### Lua Configuration
+- **myinit.lua**: Main Lua initialization
+- **t.lua**: Utility Lua functions
+- **myplugins/**: Lua plugin configurations
+  - **avante.lua**: Avante plugin config
+  - **cmp.lua**: Completion plugin config
+  - **lazyplugs.lua**: Lazy plugin loader config
+  - **lspconfig.lua**: LSP configuration
+  - **noice.lua**: Noice UI plugin config
+  - **repmo.lua**: Repeat motion plugin config
+
+### File Type Specific
+- **after/ftplugin/**: File type specific configurations
+  - Python, JavaScript, HTML, Markdown, Go, Java, etc.
+  - Indentation settings (2spaces.vim, 4spaces.vim, tabs.vim)
+
+### Utilities & Scripts
+- **autoload/plug.vim**: Vim-plug plugin manager
+- **UltiSnips/tex.snippets**: LaTeX snippets
+- **installnvim.ps1** / **installnvim.sh**: Neovim installation scripts
+- **installscript.sh**: General installation script
+- **pycharmst.py**: PyCharm integration script
+- **recurse.ps1**: PowerShell recursion utilities
+
+### Documentation
+- **README.md**: This file - comprehensive configuration documentation
+- **vimlec/**: Vim lecture notes and tutorials
+  - **vimlec.md**: Main lecture notes
+  - **beginner.md**: Beginner tutorial
+
+### Other
+- **.gitignore**: Git ignore patterns
+- **.gitmodules**: Git submodules configuration
+- **.eslintrc.yml**: ESLint configuration
+- **vim-indentwise**: Indentation-based navigation plugin (submodule)
 
 ---
 

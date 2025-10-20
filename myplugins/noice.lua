@@ -1,6 +1,6 @@
---return {}
 return {
         "folke/noice.nvim",
+	enabled=true,
         priority=2000,
         opts = {
             -- add any options here
@@ -22,6 +22,9 @@ require("noice").setup({
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+        },
+        hover = {
+          enabled = false, -- Disable noice LSP hover to fix E5108 error
         },
       },
       --cmdline = { view="cmdline" }, 
@@ -60,7 +63,7 @@ require("noice").setup({
                         { find = 'LSP client '},
                         { find = 'No lines in buffer'},
                         { find = '(AutoSave)'},
-                        { find = 'is_in_node_range'}
+                        { find = 'is_in_node_range'},
                     },
                 },
                 opts = { skip = true },

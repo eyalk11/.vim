@@ -268,6 +268,17 @@ autocmd InsertLeave * execute 'normal! mI'
 " Mark M at the position when any modification happened in the Normal or Insert mode
 autocmd InsertLeave * execute 'normal! mM'
 
+
+autocmd User visual_multi_start call MyVmStart()
+autocmd User visual_multi_end call MyVmEnd() 
+function! MyVmStart()
+    let b:old_save_inserts=get(b:,'save_inserts',0) 
+    let b:save_inserts=0 
+endfunction
+function! MyVmEnd()
+    let b:save_inserts=get(b:,'old_save_inserts',1) 
+    unlet b:old_save_inserts
+endfunction
 "timer func
 "
 "

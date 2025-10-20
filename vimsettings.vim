@@ -11,7 +11,7 @@ let $PYENV_ROOT='C:\Users\ekarni\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
 let g:pwmod=0
-let g:sh = &shell 
+let g:sh = &shell
 let g:shf=&shellcmdflag
 let g:shr=&shellredir
 let g:shellpipe=&shellpipe
@@ -151,7 +151,7 @@ autocmd FileChangedShell * echohl WarningMsg | echo "File changed: " . @% | echo
 :autocmd CmdwinEnter * nmap <buffer> <F5> <CR>q: 
 ":autocmd InsertLeave * :let g:EasyMotion_add_search_history=1
 
-au SwapExists * nested call OnSwap() 
+au SwapExists * nested call OnSwap()
 function! OnSwap()
 	let swap_info = swapinfo(v:swapname)
 	echo "Recovery exist " . strftime("%Y %b %d %X",swap_info['mtime']) 
@@ -337,6 +337,7 @@ let g:GuiLoaded=1
         cnoremap <c-v> <c-r>+
 		nnoremap <c-v> p
         nnoremap <M-v> <c-v>
+        inoremap <M-v> <c-v>
         nnoremap <M-a> ggVG
 		"nmap <D-v> p
 		"imap <D-V> 
@@ -377,8 +378,8 @@ au! gutentags_detect
 set ut=3000
 silent! nunmap ,tt
 silent! nunmap ,t
-norm! `M
 silent! nunmap @Þ
+silent norm! `M
 "call SetFont()
 endfunction
 

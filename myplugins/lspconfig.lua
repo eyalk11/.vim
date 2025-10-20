@@ -5,12 +5,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client then
             -- Disable completion for jedi_language_server
+            if client.name =="pylsp" then 
+                client.server_capabilities.hoverProvider=false 
+            end 
+
             if client.name == "jedi_language_server" then
                 client.server_capabilities.completionProvider = false
+                --client.server_capabilities.hoverProvider = false
             end
             -- Disable completion for pyright
             if client.name == "pyright" then
                 client.server_capabilities.completionProvider = false
+                --client.server_capabilities.hoverProvider = false
             end
         end
     end,

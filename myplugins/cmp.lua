@@ -73,7 +73,20 @@ return {
 							)
 						end
 					end),
-					["<C-Y>"] = cmp.mapping.confirm({ select = false }),
+					["<C-Y>"] = cmp.mapping.confirm({ select = false }), 
+				["<M-CR>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.confirm({ select = false })
+						vim.api.nvim_feedkeys(
+							vim.api.nvim_replace_termcodes("<CR>", true, true, true),
+							"n",
+							true
+						)
+					else
+						fallback()
+					end
+				end), 
+
 					["<CR>"] = cmp.mapping.confirm({ select = true }),
 					["<C-CR>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
