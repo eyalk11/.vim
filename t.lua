@@ -9,7 +9,7 @@ require("lazy").setup({
 	--, performance = { rtp = {reset_packpath = false , paths = {vim.fn.expand( '~/.vim/plugged')  }}},  
 	spec = {
 		{ import = "plugins.noice" },
-		--{ import = "plugins.repmo" },
+		{ import = "plugins.repmo" },
 		{ import = "plugins.lspconfig" },
 		{ import = "plugins.avante" },
         { import = "plugins.minuet" },

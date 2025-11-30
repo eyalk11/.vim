@@ -446,9 +446,10 @@ let g:no_spec_maps=1
 function! Aa()
 if mode() != 'n' ||  getcmdwintype() != ''
     return
-endif 
+endif
 checktime
-endf 
+
+endf
 autocmd BufEnter,FocusGained *  call Aa()
 "set noautoread #don't reload it when changed outside vim and no vim changes. 
 set synmaxcol=300

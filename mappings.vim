@@ -1,5 +1,5 @@
 
-let fil="/\caccess attribute\\|access member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/"
+let fil="/\caaaaa\\|access attribute\\|access member\\|undefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter\\|Expected.*arguments/"
 "let fil="/\caccess member\|undefined \|expected \|syntax\|not defined\|Arguments missing\|No Parameter\|Expected.*arguments/"
 nnoremap <leader>XF <CMD>lua vim.diagnostic.setloclist()<CR><CMD>exe "Lfilter " . fil<CR>   
 nnoremap <leader>xf <CMD>call DiagnosticsGitOnly()<CR><CMD>exe "Cfilter " . fil<CR>
@@ -544,9 +544,11 @@ endfunction
 " in normal mode M is same line
 "imap <M-f> <c-o><Plug>Lightspeed_s
 "imap ` <c-o><Plug>Lightspeed_s
-"imap <silent><script><expr> <C-j> copilot#Accept("")
-"imap <silent><script><expr> <M-j> copilot#Next()
-"let g:copilot_no_tab_map = v:true
+if exists(":Copilot") 
+    imap <silent><script><expr> <C-j> copilot#Accept("")
+    imap <silent><script><expr> <M-j> copilot#Next()
+    let g:copilot_no_tab_map = v:true
+endif 
 function! FF_Forward()
 call quick_scope#Wallhacks('f')
 return "\<c-o>\<Plug>Lightspeed_t"
@@ -1040,8 +1042,8 @@ endfunction
 
 
 "vmap T 
-nmap Mm Miw
-nmap MM MiW
+"nmap Mm Miw
+"nmap MM MiW
 
 function! SpecialFindRg(type)
 let &selection = "inclusive"
@@ -1173,6 +1175,7 @@ nnoremap <silent> <C-a>f <CMD>FzfLua files<CR>
 "nnoremap <c-a>f <CMD>CtrlPCurWD<CR>
 "nnoremap <silent> <C-a>f <CMD>exe ":LeaderfFile ".getcwd()<CR>
 nnoremap <c-a>F <CMD>Telescope find_files<CR>
+"or ?
 nnoremap <c-a>j <CMD>lua require('telescope.builtin').jumplist({fname_width=80 , layout_config = {      preview_width = 0.6,       width = 0.9     }})<CR>
 "files current file
 "66444
@@ -1180,8 +1183,10 @@ nnoremap <silent> <C-a>F <CMD>exe ":LeaderfFile " . expand('%:p:h')<CR>
 nnoremap <silent> <C-a>h <CMD>call FZFOpen(':History')<CR>
 nmap <silent> <C-a>H <CMD>call fzf#run({'source':"cat ~/.bash_history \<bar> sort \<bar> uniq",'sink': function('BH')})<CR>
 nnoremap <silent> <C-a>a <CMD>call FZFOpen(':Ag')<CR>
-nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
-nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
+"nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
+nnoremap <silent> <C-a>d <CMD>call FzfDirSelect()<CR>
+nnoremap <silent> <C-a>D <CMD>call FzfDirChooseFile()<CR>
+"nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
 "nnoremap <silent> <C-a>w <CMD>call FZFOpen(':Windows')<CR>
 nnoremap <silent> <C-a>w <CMD>FzfLua tabs<CR>
 nnoremap <silent> <C-a>b <CMD>Leaderf window<CR>
@@ -1229,6 +1234,7 @@ nnoremap <leader>Ga <CMD>sil Git add %<CR>
 nnoremap <leader>Gt <CMD>Git commit -v -q %<CR>
 nnoremap <leader>Gd <CMD>Gvdiffsplit<CR>
 nnoremap <leader>GDh <CMD>Gvdiffsplit HEAD^<CR>
+nnoremap <leader>GO <CMD>call Gconfig()<CR>
 
 nnoremap <leader>GD <CMD>Gvdiffsplit!<CR>
 "nmap <leader>GD <CMD>Gvdiffsplit diff<CR>
@@ -1250,6 +1256,9 @@ nnoremap <leader>GU <CMD>Git push -f upstream<CR>
 nnoremap <leader>GP <CMD>Git push --force<CR>
 nnoremap <leader>Gb <CMD>Git branch<Space>
 nnoremap <leader>Go <CMD>Git checkout<Space>
+nmap <leader>GWP mc:Gw<CR>:!git commit --amend --no-edit<CR>:!git push --force<CR>
+nmap <leader>GW mc:Gw<CR><CMD>G commit --no-edit --amend<CR>
+nmap <leader>Gw mc:Gw<CR>\Gc
 "nnoremap <leader>Grc <CMD>Git rebase --continue<CR>
 "nnoremap <leader>Gra <CMD>Git rebase --abort<CR>
 
@@ -2070,6 +2079,7 @@ nnoremap m] ]
 nnoremap g] ]
 "nmap  t  let g:init=1<CR>:w<CR>
 nmap  T  <Plug>spleader
+
 "nmap t :echo exists('g:lightspeed_active')<CR>
 
 nnoremap <Plug>spleader :set opfunc=SpecialFindLeader<CR>g@
@@ -2564,8 +2574,6 @@ nmap <leader>MO <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function(
 command! -nargs=0 -bang AmendCur  :Gw | :Git commit --amend -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 command! -nargs=0 -bang  AmendAll   :Git commit --amend -a -v -q --no-edit | :exec ("<bang>"=="!" ? "Git push --force" : "echo")
 
-nmap <leader>GWP mc:Gw<CR>:!git commit --amend --no-edit<CR>:!git push --force<CR>
-nmap <leader>Gw mc:Gw<CR>\Gc
 nnoremap <leader>w <CMD>Gwrite<CR>
 nmap <leader>gC <CMD>call GitF("",0)<CR>
 "#save and push  
@@ -2653,9 +2661,10 @@ nmap <leader>dx <CMD>diffthis<CR><CMD>call GoOther()<CR><CMD>diffthis<CR>
 
 "nnoremap <leader>Gcv <CMD>Git commit -v -q<CR>
 
-nmap <leader>GH :DiffviewFileHistory %<CR>
-nmap <leader>Gh :DiffviewFileHistory --base=LOCAL %<CR>
-nmap <leader>gh :DiffviewFileHistory --base=LOCALÃƒâ€šÃ‚Â %<CR>
+nmap <leader>GH :DiffviewFileHistory --base=LOCAL<CR>
+nmap <leader>GHF :DiffviewFileHistory --all --walk-reflogs<CR>
+nmap <leader>Gh :DiffviewFileHistory --base=LOCAL --walk-reflogs --all %<CR>
+nmap <leader>gh :DiffviewFileHistory --base=LOCAL %<CR>
 
 
 
@@ -2664,7 +2673,6 @@ nnoremap msS <CMD>%s/\s//g<CR>
 
 
 "remove dumplicate lines
-
 nnoremap msd <CMD>silent! %s/\r\r/\r/g<CR><CMD>silent! %s/\n\n/\r/g<CR><CMD>silent! %s/^M/^M/g<CR>
 
 
@@ -2711,6 +2719,7 @@ endfunction
 nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>
 nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
+nmap <leader>aF mc<CMD>ClaudeCodeStop<CR>ClaudeCodeOpen<CR>
 nmap <leader>mM <CMD>Minuet virtualtext toggle<CR>
 "nmap <leader>hs <CMD>GitGutterEnable<CR><Plug>(GitGutterStageHunk)<CMD>GitGutterDisable<CR>
 "p>
@@ -2767,7 +2776,87 @@ for key in ['Tab', 'CR', 'BS', 'Del', 'Esc', 'Up', 'Down', 'Left', 'Right', 'Hom
   execute 'silent! let g:char2code["\<M-' . key . '>"] = ''<M-' . key . '>'''
 endfor
 endfunction
-call SetupCode()
+silent call SetupCode()
 nmap mv <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "nmap  ". get(g:char2code, c, c)<CR>
 nmap mV <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "imap  ". get(g:char2code, c, c)<CR>
-nmap mVV<CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "vmap  ". get(g:char2code, c, c)<CR>
+nmap mVV <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "vmap  ". get(g:char2code, c, c)<CR>
+function! GetVersionForGithub()
+
+    let @* =  MinExec('version') . "\nWindows 10"
+
+endfunction 
+nmap <leader>AF :Af =expand('%:p:h')<CR>
+ nmap <leader>af :Af =getcwd()<CR>
+ nmap <leader>AG :AG =expand('%:p:h')<CR>
+ nmap <leader>ag :AG =getcwd()<CR>
+ command! -nargs=1 -complete=file Af call ChooseFile(<q-args>)
+ command! -nargs=1 -complete=file AG call ChooseGFile(<q-args>)
+ nmap <leader>VF :VF =expand('%:p:h')<CR>
+ nmap <leader>vf :VF =getcwd()<CR>
+ nmap <leader>VG :VG =expand('%:p:h')<CR>
+ nmap <leader>vg :VG =getcwd()<CR>
+ command! -nargs=1 -complete=file VF call ChooseVFile(<q-args>)
+ command! -nargs=1 -complete=file VG call ChooseVGFile(<q-args>)
+ 
+ function! ChooseGFile(item)
+     :exe "cd ".a:item
+     FzfLua git_files
+ endfunction
+ function! ChooseFile(item)
+     :exe "cd ".a:item
+     FzfLua files
+ endfunction
+ function! ChooseVGFile(item)
+     :exe "cd ".a:item
+     call CloseVspIfNeed()
+     vnew
+     FzfLua git_files
+ endfunction
+ function! ChooseVFile(item)
+     :exe "cd ".a:item
+     call CloseVspIfNeed()
+     vnew
+     FzfLua files
+ endfunction
+ 
+ function! FzfDirSelect()
+     call fzf#run({
+         \ 'source': uniq(sort(map(copy(g:dirs), 'tolower(v:val)'))),
+         \ 'sink': function('CdDirPlug'),
+         \ 'options': '--preview "ls {} | head -50"'
+     \ })
+ endfunction
+ 
+ function! FzfDirChooseFile()
+     call fzf#run({
+         \ 'source': uniq(sort(map(copy(g:dirs), 'tolower(v:val)'))),
+         \ 'sink': function('ChooseFile'),
+         \ 'options': '-i --preview "ls {} | head -50"'
+     \ })
+ endfunction
+
+ "look for files 
+ nmap <leader>AF :Af =expand('%:p:h')<CR>
+ nmap <leader>af :Af =getcwd()<CR>
+ "look for git files
+ nmap <leader>AG :AG =expand('%:p:h')<CR>
+ nmap <leader>ag :AG =getcwd()<CR>
+ command! -nargs=1 -complete=file Af call ChooseFile(<q-args>)
+ command! -nargs=1 -complete=file AG call ChooseGFile(<q-args>)
+ nmap <leader>VF :VF =expand('%:p:h')<CR>
+ nmap <leader>vf :VF =getcwd()<CR>
+ nmap <leader>VG :VG =expand('%:p:h')<CR>
+ nmap <leader>vg :VG =getcwd()<CR>
+ command! -nargs=1 -complete=file VF call ChooseVFile(<q-args>)
+ command! -nargs=1 -complete=file VG call ChooseVGFile(<q-args>)
+ " make <leader>vc do VimtexCompile 
+ nmap <leader>vc <CMD>VimtexStop<CR><CMD>VimtexCompile<CR>
+ 
+ " cat .git/config (get repo head using rev-parse)
+ " let top = systemlist("git rev-parse --show-toplevel")[0] 
+ "
+ "
+ function Gconfig()
+    let top = systemlist("git rev-parse --show-toplevel")[0]
+    execute 'e '.top.'/.git/config'
+ endfunction 

@@ -848,8 +848,8 @@ let g:copilot_filetypes = {
       \ 'ps1': v:true,
       \ 'txt': v:true,
       \ 'md': v:true,
+      \ 'markdown': v:true,
       \ 'vim': v:true,
       \ 'lua': v:true,
       \ 'html': v:true,
       \ }
-

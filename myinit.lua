@@ -377,22 +377,22 @@ require("chatgpt").setup({
 local chatgpt = require("chatgpt")
 wk = require("which-key")
 wk.setup({ plugins = { presets = { operators = false } }, 
-triggers_blacklist = { c = { "*" ,"%"}, v= { "*" } } 
+triggers_blacklist = { c = { "*" ,"%"}, v= { "*","%" } } 
 })
-wk.register({
-	p = {
-		name = "ChatGPT",
-		e = {
-			function()
-				chatgpt.edit_with_instructions()
-			end,
-			"Edit with instructions",
-		},
-	},
-}, {
-	prefix = "<leader>",
-	mode = "v",
-})
+--wk.register({
+	--p = {
+		--name = "ChatGPT",
+		--e = {
+			--function()
+				--chatgpt.edit_with_instructions()
+			--end,
+			--"Edit with instructions",
+		--},
+	--}})
+--}, {
+	--prefix = "<leader>",
+	--mode = "v",
+--})
 --require("transparent").setup({
 --groups = { -- table: default groups
 --},

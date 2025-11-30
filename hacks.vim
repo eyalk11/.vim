@@ -291,18 +291,19 @@ endfunction
 
 let g:last_copied=""
 let g:init=0
+norm <plug>timech <CMD>checktime<CR>
 function! TimerFunc(a)
  if mode() != 'n' ||  getcmdwintype() != ''
      return
-endif 
+endif
 
     try
     norm! mM
-    checktime
+    norm <plug>timech
     ":profile dump 
     "updates shada files to keep current commands
     wshada
-    let minbu=MinExec(':buffers')
+    "let minbu=MinExec(':buffers')
     "echom minbu
     "echo "called"
     "multiple instances of neovim cause trouble when tried to save. I verify
@@ -340,7 +341,7 @@ function! TimerFuncB(a)
     
 try 
     let tm=getreg('*') 
-    if len(tm) > 10000
+    if len(tm) > 80000
         return 
     end 
 
@@ -369,7 +370,10 @@ function! SaveLastReg()
     endif
     if v:event['regname']==""
         if v:event['operator']=='y'
-            for i in range(8,1,-1)
+            if @1 == g:last_yank
+                return
+            endif
+            for i in range(8,2,-1)
                 exe "let @".string(i+1)." = @". string(i) 
             endfor
             if exists("g:last_yank")

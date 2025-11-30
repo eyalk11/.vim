@@ -170,7 +170,7 @@ Plugit 'folke/trouble.nvim'
 Plugit 'folke/which-key.nvim'
 "Plugit 'liuchengxu/vim-which-key'
 "Plugit 'folke/lazy.nvim'
-"Plugit 'github/copilot.vim', {'event': 'VeryLazy'}
+Plugit 'github/copilot.vim', {'event': 'VeryLazy'}
 Plugit 'sheepy9/gipity.nvim', {'event':'VeryLazy'}
 "Plugit 'jackMort/ChatGPT.nvim', {'event': 'VeryLazy'}
 Plugit 'piersolenski/wtf.nvim'
@@ -223,7 +223,7 @@ Plugit 'lkhphuc/jupyter-kernel.nvim', {'event':'VeryLazy'}
 Plugit 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugits' }
 Plugit 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plugit 'mhinz/neovim-remote'
-Plugit 'puremourning/vimspector'
+"Plugit 'puremourning/vimspector'
 Plugit 'rbtnn/vim-vimscript_lasterror'
 Plugit 'blblb/speech-to-text.nvim'
 Plugit 'brymer-meneses/grammar-guard.nvim'

@@ -1,6 +1,6 @@
 return {
         "folke/noice.nvim",
-	enabled=true,
+	enabled=false,
         priority=2000,
         opts = {
             -- add any options here

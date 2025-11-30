@@ -1,5 +1,6 @@
 return {
         'milanglacier/minuet-ai.nvim',
+        enabled=false,
         event = { 'BufReadPre' },
         config = function()
             require('minuet').setup {
