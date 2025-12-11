@@ -343,7 +343,7 @@ nmap S <CMD>call InsertAfter(v:count1)<CR>
 
 "The <M-t> provides omni tl-search 
 
-nmap <M-f> <Plug>(easymotion-s2)
+"nmap <M-f> <Plug>(easymotion-s2)
 
 "replaacing default
 "nnoremap zq q
@@ -549,53 +549,49 @@ if exists(":Copilot")
     imap <silent><script><expr> <M-j> copilot#Next()
     let g:copilot_no_tab_map = v:true
 endif 
-function! FF_Forward()
-call quick_scope#Wallhacks('f')
-return "\<c-o>\<Plug>Lightspeed_t"
-endfunction
-imap <expr> <m-]> FF_Forward()
+"function! FF_Forward()
+""call quick_scope#Wallhacks('f')
 
-function! FF_MF()
-call quick_scope#Wallhacks('t')
-return "\<c-o>\<Plug>Lightspeed_F"
-endfunction
-imap <expr> <m-[> FF_MF()
+"return "\<c-o>\<Plug>(QuickScopef)"
+""
+""return "\<c-o>\<Plug>Lightspeed_t"
+"endfunction
+"imap <expr> <m-]> FF_Forward()
+"imap <m-]> <c-o><Plug>(QuickScopef)
+
+"function! FF_t()
+"call quick_scope#Wallhacks('f')
+"return "\<Plug>Lightspeed_t"
+"endfunction 
+nmap  <m-f> <m-t>
+" norm! t 
+"return "\<c-o>\<Plug>(QuickScopeF)"
+"
+"endfunction
+"imap <expr> <m-[> FF_MF()
 
 function! FF_f()
 call quick_scope#Wallhacks('f')
-return "\<c-o>\<Plug>Lightspeed_f"
+return "\<Plug>Lightspeed_f"
 endfunction
-imap <expr> <c-'> FF_f()
-"works less good than m-] 
-function! FF_T()
+nmap <expr> <m-]> FF_f()
+""works less good than m-] 
+function! FF_F()
 call quick_scope#Wallhacks('t')
-return "\<c-o>\<Plug>Lightspeed_T"
+return "\<Plug>Lightspeed_F"
 endfunction
-imap <expr> <m-'> FF_T()
-
-"function! FF_TT3()
-"call quick_scope#Wallhacks('f')
-"return "\<Plug>Lightspeed_t"
-"endfunction
-"nmap <expr> <c-t> FF_TT3()
-
-"function! FF_MF2()
-"call quick_scope#Wallhacks('t')
-"return "\<Plug>Lightspeed_F"
-"endfunction
-"nmap <expr> <m-'> FF_MF2()
+nmap f <m-]>
+nmap F <m-[>
 
 function! FF_f2()
-call quick_scope#Wallhacks('t')
-return "\<Plug>Lightspeed_t"
+return "\<Plug>(QuickScopef)"
 endfunction
-nmap <expr> <m-]> FF_f2()
+nmap <expr> <m-]> FF_f()
 
 function! FF_T2()
-call quick_scope#Wallhacks('t')
-return "\<Plug>Lightspeed_T"
+return "\<Plug>(QuickScopeF)"
 endfunction
-nmap <expr> <M-[> FF_T2()
+nmap <expr> <m-[> FF_F()
 
 
 
@@ -605,14 +601,14 @@ nmap <expr> <M-[> FF_T2()
 ""imap <c-t> <c-o>t
 "imap <c-,> <c-o>f
 
-autocmd FileType * inoremap <expr> <c-]> IsRegular() ? "<c-o><Plug>Lightspeed_s" : "<c-]>"
-autocmd FileType * nnoremap <expr> <c-]> IsRegular() ? "<Plug>Lightspeed_s" : "<c-]>"
-autocmd FileType * nnoremap <expr>  m<c-]> <c-]>
-autocmd FileType * inoremap <expr> <c-[> IsRegular() ? "<c-o><Plug>Lightspeed_S" : "<c-[>"
-autocmd FileType * nnoremap <expr> <c-[> IsRegular() ? "<Plug>Lightspeed_S" : "<c-[>"
+autocmd FileType * inoremap <expr> <c-]> IsRegular() ? "\<c-o>\<Plug>Lightspeed_s" : "<c-]>"
+autocmd FileType * nnoremap <expr> <c-]> IsRegular() ? "\<Plug>Lightspeed_s" : "<c-]>"
+autocmd FileType * nnoremap <expr> <leader><c-]> <c-]>
+autocmd FileType * inoremap <expr> <c-[> IsRegular() ? "\<c-o>\<Plug>Lightspeed_S" : "<c-[>"
+autocmd FileType * nnoremap <expr> <c-[> IsRegular() ? "\<Plug>Lightspeed_S" : "<c-[>"
 
-autocmd FileType * inoremap <expr> <m-]> IsRegular() ? "<esc><Plug>Lightspeed_s" : "<m-]>"
-autocmd FileType * inoremap <expr> <m-[> IsRegular() ? "<esc><Plug>Lightspeed_S" : "<m-[>"
+autocmd FileType * inoremap <expr> <m-]> IsRegular() ? "\<c-o>\<Plug>(QuickScopef)" : "<m-]>"
+autocmd FileType * inoremap <expr> <m-[> IsRegular() ? "\<c-o>\<Plug>(QuickScopeF)" : "<m-[>"
 
 
 "imap <tab> <c-o><Plug>Lightspeed_s
@@ -621,6 +617,7 @@ autocmd FileType * inoremap <expr> <m-[> IsRegular() ? "<esc><Plug>Lightspeed_S"
 "imap <M-t> <c-o><CMD>call Teasy()<CR> 
 nmap <M-t> <Plug>(easymotion-bd-tl)
 imap <M-t> <c-o><Plug>(QuickScopet)
+"imap <M-]> <c-o><Plug>(QuickScopef)
 nmap <M-t> <Plug>(QuickScopet)
 xmap <M-t> <Plug>(QuickScopet)
 omap <M-t> <Plug>(QuickScopet)
@@ -628,16 +625,16 @@ omap <M-t> <Plug>(QuickScopet)
 "map <Plug>cusF <CMD>call quick_scope#Wallhacks()<CR><Plug>(easymotion-sl)
 "map <Plug>cusnf <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_f)
 "map <Plug>cusnF <CMD>call quick_scope#Wallhacks()<CR><Plug>(Lightspeed_F)
-function! FFn()
-call quick_scope#Wallhacks('t')
-return "\<Plug>Lightspeed_F"
-endfunction
-nmap <expr> f Ffn()
-nmap <expr> F FFn()
-function! Ffn()
-call quick_scope#Wallhacks('f')
-return "\<Plug>Lightspeed_f"
-endfunction
+"function! FFn()
+"call quick_scope#Wallhacks('t')
+"return "\<Plug>Lightspeed_F"
+"endfunction
+"nmap <expr> f Ffn()
+"nmap <expr> F FFn()
+"function! Ffn()
+"call quick_scope#Wallhacks('f')
+"return "\<Plug>Lightspeed_f"
+"endfunction
 " Chord mapping disabled
 " nmap <expr> <Plug>(arpeggio-default:f) Ffn()
 "nmap F <Plug>cusF
@@ -910,7 +907,7 @@ nnoremap <leader>mb iimport ipdb;ipdb.set_trace()<ESC>
 "nmap mB <leader><C-I>
 "nmap mv <CMD>bnext<CR>
 "I want  mv to do get mapping (nmap) but it should wait for user to press the mapping like in c-v in insert mode. use *i_CTRL-V* CTRL-V		Insert next non-digit literally.  
-nnoremap mv <CMD>call feedkeys("i")<CR><CMD>echo "gg"<CR>
+"nnoremap mv <CMD>call feedkeys("i")<CR><CMD>echo "gg"<CR>
 
 
 
@@ -932,7 +929,7 @@ nmap mF vaf<F2>
 "vmap mg <C-Y>
 
 "exact 
-vnoremap mge "xy<CMD>exe ":FzfRg -e" . @x<CR>
+"vnoremap mge "xy<CMD>exe ":FzfRg -e" . @x<CR>
 "current folder lookup word
 "nmap mg viWmg
 "current file lookup word
@@ -940,7 +937,8 @@ nmap MG viWY
 nnoremap MH <CMD>Help 
 nnoremap Mh <CMD>help 
 nnoremap mH <CMD>LeaderfHelp<CR>
-noremap mm <CMD>LeaderfMru<CR>
+noremap <leader>mm <CMD>LeaderfMru<CR>
+noremap mm <CMD>Telescope frecency<CR>
 "this is by order and not fuzzy
 noremap mM <CMD>Mru<CR>
 
@@ -1144,12 +1142,13 @@ nnoremap <leader><bar> <bar>
 "<M-Bslash>
 "<M-Bslash>
 nmap <bar> <CMD>let g:Lf_JumpToExistingWindow = 1<CR><CMD>LeaderfDisablePreview<CR><CMD>Leaderf --popup buffer --all<CR>
+nmap <bar> <CMD>FzfLua buffers<CR>
 nmap <M-Bslash> <CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup buffer --all<CR>
 "nnoremap <silent> <M-Bslash> <CMD>call FZFOpen(':Windows')<CR>
 
 
 
-nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup buffer<CR>
+nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup  buffer --all<CR>
 "nmap <bar> <CMD>Telescope buffers<CR>
 "nnoremap <silent> <C-a>b <CMD>Leaderf buffers<CR>
 "
@@ -1447,7 +1446,7 @@ nmap <m-p> mc\vn<leader>gf
 nmap <m-o> mc<leader>vn<c-a>f
 "nmap <c-u> <CMD>Telescope lsp_workspace_symbols<CR>
 nmap <m-,> <CMD>Telescope lsp_document_symbols<CR>
-nmap <c-\> <CMD>Telescope lsp_workspace_symbols<CR>
+"nmap <c-\> <CMD>Telescope lsp_workspace_symbols<CR>
 nmap <m-'> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`<CR><c-a>f
 
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
@@ -1459,6 +1458,11 @@ call feedkeys("mo\<C-b>")
 endfunction 
 nmap <plug>ttt <CMD>call JJJ()<CR>
 nmap <expr> <c-b> "<plug>ttt"
+function! JJX()
+    call feedkeys("\<bar>\<C-b>")
+endfunction
+nmap <plug>ttx <CMD>call JJX()<CR>
+nmap <expr> <c-\> "<plug>ttx"
 "<c-b> the same with tab
 "swaps right and left window
 nmap mO <c-w><c-r>
@@ -2779,7 +2783,7 @@ for key in ['Tab', 'CR', 'BS', 'Del', 'Esc', 'Up', 'Down', 'Left', 'Right', 'Hom
 endfor
 endfunction
 silent call SetupCode()
-nmap mv <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "nmap  ". get(g:char2code, c, c)<CR>
+nmap mv <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> lua GotoMap(vim.fn.eval("get(g:char2code, c, c)"))<CR>
 nmap mV <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "imap  ". get(g:char2code, c, c)<CR>
 nmap mVV <CMD>echo "press char"<CR><CMD>let c = getcharstr() <bar> exec "vmap  ". get(g:char2code, c, c)<CR>
 function! GetVersionForGithub()
@@ -2865,3 +2869,7 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
 
 " mapping for \ad
 nnoremap <leader>ad <c-a>D
+function! OpenLazyplugs()
+    e C:\Users\ekarni\.vim\myplugins\lazyplugs.lua
+endfunction
+nmap <leader>lp :call OpenLazyplugs()<CR>

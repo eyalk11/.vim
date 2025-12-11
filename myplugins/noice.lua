@@ -39,6 +39,18 @@ require("noice").setup({
         routes = {
             {
                 filter = {
+                    warning=true,
+                    any = {
+                        { find = 'nvim-treesitter.ts_utils.is_in_node_range'},
+                        { find = 'make_range_params'},
+                        { find = 'builtin jq'},
+                        {find= 'lua-language-server' },
+                    },
+                },
+                opts = { skip = true },
+            },
+            {
+                filter = {
                     --event = "msg_show",
                     any = {
                         { find = "%d+L, %d+B" },
@@ -67,7 +79,7 @@ require("noice").setup({
                         { find = 'nvim-treesitter.ts_utils.is_in_node_range'},
                         { find = 'make_range_params'},
                         { find = 'builtin jq'},
-                        {find= '`{ "lua-language-server" }` failed' },
+                        {find= 'lua-language-server' },
                     },
                 },
                 opts = { skip = true },
