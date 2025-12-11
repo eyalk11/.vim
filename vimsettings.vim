@@ -74,7 +74,7 @@ set clipboard+=unnamed
 
 "plus
 "set paste
-set go+=a "???
+"set go+=a "???
 set cpoptions+=y
 :noh
 

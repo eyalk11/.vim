@@ -37,6 +37,7 @@ end
 
 return {
   "vds2212/vim-remotions",
+  enabled=false,
   event = { "BufRead", "BufWinEnter", "BufNewFile" },
 
   config = function()

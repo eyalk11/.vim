@@ -451,7 +451,18 @@ call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 "
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
-"command LeaderfTogglePreview let g:Lf_PreviewInPopup = !g:Lf_PreviewInPopup 
+function! LeaderfTogglePreviewFunc()
+    if get(g:Lf_PreviewResult, 'File', 0) == 1
+        LeaderfDisablePreview
+        echo "LeaderF preview disabled"
+    else
+        LeaderfEnablePreview
+        echo "LeaderF preview enabled"
+    endif
+endfunction
+
+command! LeaderfTogglePreview call LeaderfTogglePreviewFunc()
+
 command! LeaderfEnablePreview let g:Lf_PreviewResult = {
 			\ 'File': 1,
 			\ 'Buffer': 1,

@@ -1024,6 +1024,8 @@ nnoremap msc <CMD>%s/^\(.\{-\}\)[ ]*$/\1<CR>
 "mt is defined in lua
 noremap MT <CMD>exec "NvimTreeOpen ".expand("%:p:h")<CR>
 "noremap mt <CMD>NERDTreeFind<CR>
+nnoremap mT <CMD>LeaderfTogglePreview<CR>
+nnoremap <leader>lp <CMD>LeaderfTogglePreview<CR>
 
 nnoremap mu <CMD>UndotreeToggle<CR>
 "nnoremap mu <CMD>MundoShow<CR>
@@ -1141,13 +1143,13 @@ nnoremap <leader><bar> <bar>
 "nnoremap <silent> <bar> <CMD>call FZFOpen(':Buffers')<CR>
 "<M-Bslash>
 "<M-Bslash>
-nmap <bar> <CMD>LeaderfDisablePreview<CR><CMD>Leaderf --popup buffer --all<CR>
+nmap <bar> <CMD>let g:Lf_JumpToExistingWindow = 1<CR><CMD>LeaderfDisablePreview<CR><CMD>Leaderf --popup buffer --all<CR>
 nmap <M-Bslash> <CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup buffer --all<CR>
 "nnoremap <silent> <M-Bslash> <CMD>call FZFOpen(':Windows')<CR>
 
 
 
-nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExistingWindow = 1<CR><CMD>Leaderf --popup buffer<CR>
+nnoremap <silent> m<bar> <CMD>LeaderfEnablePreview<CR><CMD>let g:Lf_JumpToExistingWindow = 0<CR><CMD>Leaderf --popup buffer<CR>
 "nmap <bar> <CMD>Telescope buffers<CR>
 "nnoremap <silent> <C-a>b <CMD>Leaderf buffers<CR>
 "
@@ -1450,7 +1452,7 @@ nmap <m-'> mc<leader>vn<CMD>cd `=systemlist("git rev-parse --show-toplevel")[0]`
 
 nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
-nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<CMD>LeaderfBuffer<CR>
+nmap mo <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 nmap mO <CMD>call CloseVisibleNvimTreeBuffers()<CR><CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 function! JJJ()
 call feedkeys("mo\<C-b>")
@@ -2860,3 +2862,6 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
     let top = systemlist("git rev-parse --show-toplevel")[0]
     execute 'e '.top.'/.git/config'
  endfunction 
+
+" mapping for \ad
+nnoremap <leader>ad <c-a>D

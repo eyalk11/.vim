@@ -5,6 +5,7 @@ exec 'source ' . g:vimloc . "/inserts.vim"
 call EnableTrackInserts(0)
 let g:lastWindows= []
 let g:lastWinName = ""
+let g:last_yank=""
 
 let g:max_inserts_for_file = []
 function! GetLastWind()

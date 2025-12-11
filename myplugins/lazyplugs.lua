@@ -262,6 +262,7 @@ opts = {
   -- your configuration comes here
   -- or leave it empty to use the default settings
   -- refer to the configuration section below
+  terminal = {enabled=false },
   bigfile = { enabled = true },
   dashboard = { enabled = false },
   explorer = { enabled = false },
@@ -275,6 +276,20 @@ opts = {
   statuscolumn = { enabled = true },
   words = { enabled = true },
 },
+},  {
+"Kurama622/llm.nvim",
+dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim"},
+cmd = { "LLMSessionToggle", "LLMSelectedTextHandler", "LLMAppHandler" },
+config = function()
+  require("llm").setup({
+    url = "https://models.inference.ai.azure.com/chat/completions",
+    model = "gpt-4o-mini",
+    api_type = "openai"
+  })
+end,
+keys = {
+  { "<leader>ll", mode = "n", "<cmd>LLMSessionToggle<cr>" },
 },
+}
 
 }

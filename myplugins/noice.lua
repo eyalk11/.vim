@@ -1,6 +1,6 @@
 return {
         "folke/noice.nvim",
-	enabled=false,
+	enabled=true,
         priority=2000,
         opts = {
             -- add any options here
@@ -64,6 +64,10 @@ require("noice").setup({
                         { find = 'No lines in buffer'},
                         { find = '(AutoSave)'},
                         { find = 'is_in_node_range'},
+                        { find = 'nvim-treesitter.ts_utils.is_in_node_range'},
+                        { find = 'make_range_params'},
+                        { find = 'builtin jq'},
+                        {find= '`{ "lua-language-server" }` failed' },
                     },
                 },
                 opts = { skip = true },
