@@ -208,7 +208,7 @@ return {
   "okuuva/auto-save.nvim",
   version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
   cmd = "ASToggle", -- optional for lazy loading on command
-  event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
+  event = { "InsertLeave", "TextChanged","BufEnter" }, -- optional for lazy loading on trigger events
   opts = {
  condition = function(buf)
     -- Check buffer-local and global auto_save variables
@@ -276,20 +276,14 @@ opts = {
   statuscolumn = { enabled = true },
   words = { enabled = true },
 },
-},  {
-"Kurama622/llm.nvim",
-dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim"},
-cmd = { "LLMSessionToggle", "LLMSelectedTextHandler", "LLMAppHandler" },
-config = function()
-  require("llm").setup({
-    url = "https://models.inference.ai.azure.com/chat/completions",
-    model = "gpt-4o-mini",
-    api_type = "openai"
-  })
-end,
-keys = {
-  { "<leader>ll", mode = "n", "<cmd>LLMSessionToggle<cr>" },
 },
+{
+  "nvim-telescope/telescope-frecency.nvim",
+  -- install the latest stable version
+  version = "*",
+  config = function()
+    require("telescope").load_extension "frecency"
+  end,
 }
 
 }

@@ -5,8 +5,7 @@ exec 'source ' . g:vimloc . "/inserts.vim"
 call EnableTrackInserts(0)
 let g:lastWindows= []
 let g:lastWinName = ""
-let g:last_yank=""
-
+let g:last_yank="mechu"
 let g:max_inserts_for_file = []
 function! GetLastWind()
     return g:lastWindows
@@ -300,7 +299,7 @@ endif
 
     try
     norm! mM
-    norm <plug>timech
+    "norm <plug>timech
     ":profile dump 
     "updates shada files to keep current commands
     wshada

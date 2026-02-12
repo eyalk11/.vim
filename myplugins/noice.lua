@@ -1,6 +1,6 @@
 return {
         "folke/noice.nvim",
-	enabled=true,
+	enabled=false,
         priority=2000,
         opts = {
             -- add any options here
@@ -11,7 +11,14 @@ return {
             -- OPTIONAL:
             --   `nvim-notify` is only needed, if you want to use the notification view.
             --   If not available, we use `mini` as the fallback
-            "rcarriga/nvim-notify",
+            {
+                "rcarriga/nvim-notify",
+                config = function()
+                    require("notify").setup({
+                        top_down = false
+                    })
+                end,
+            },
         },
 
         config = function()
@@ -27,6 +34,7 @@ require("noice").setup({
           enabled = false, -- Disable noice LSP hover to fix E5108 error
         },
       },
+      notify= {{top_down=false}},
       --cmdline = { view="cmdline" }, 
       -- you can enable a preset for easier configuration
       presets = {

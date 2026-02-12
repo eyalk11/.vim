@@ -1,8 +1,7 @@
 
-
 local api = vim.api
-function GotoMap()
-	local str = vim.fn.input("Enter the mapping: ")
+function GotoMap(c)
+	local str = c or vim.fn.input("Enter the mapping: ")
 	local output = vim.api.nvim_exec("verbose nmap " .. str, true)
 	local lines = {}
 	for s in output:gmatch("[^\r\n]+") do
@@ -339,20 +338,7 @@ vim.lsp.set_log_level("debug")
 --})
 require("refactoring").setup({})
 --
-local null_ls = require("null-ls")
-
-null_ls.setup({
-	sources = {
-		null_ls.builtins.code_actions.refactoring,
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.isort,
-		null_ls.builtins.formatting.black,
-		null_ls.builtins.formatting.jq,
-        null_ls.builtins.formatting.prettier,
-        null_ls.builtins.diagnostics.proselint,
-        null_ls.builtins.completion.spell, --toremove
-    },
-})
+-- none-ls config moved to myplugins/lspconfig.lua (loaded via Lazy.nvim)
 --require('lint').linters_by_ft = {
 --py = {'black','mypy','isort',}
 --}

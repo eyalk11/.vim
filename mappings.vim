@@ -2648,6 +2648,37 @@ function! DDa()
 
 nnoremap <leader>XD <CMD>lua vim.diagnostic.setloclist()<CR>
 
+" Copy diagnostics to clipboard
+function! CopyDiagnosticsToClipboard()
+lua << EOF
+    local diagnostics = vim.diagnostic.get(0)  -- 0 for current buffer
+    if #diagnostics == 0 then
+        vim.api.nvim_echo({{"No diagnostics found", "WarningMsg"}}, false, {})
+        return
+    end
+
+    local lines = {}
+    local bufname = vim.api.nvim_buf_get_name(0)
+
+    for _, diag in ipairs(diagnostics) do
+        local severity = vim.diagnostic.severity[diag.severity]
+        local line = string.format("%s:%d:%d: [%s] %s",
+            bufname,
+            diag.lnum + 1,
+            diag.col + 1,
+            severity,
+            diag.message)
+        table.insert(lines, line)
+    end
+
+    local result = table.concat(lines, "\n")
+    vim.fn.setreg('+', result)
+    vim.api.nvim_echo({{string.format("Copied %d diagnostic(s) to clipboard", #diagnostics), "Normal"}}, false, {})
+EOF
+endfunction
+
+nnoremap <leader>xc <CMD>call CopyDiagnosticsToClipboard()<CR>
+
 "check file
  "nnoremap <leader>xf <CMD>lua vim.diagnostic.setloclist()<CR><CMD>Lfilter /\cundefined \\|expected \\|syntax\\|not defined\\|Arguments missing\\|No Parameter/<CR>
 

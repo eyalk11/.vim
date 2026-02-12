@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
             if client.name == "jedi_language_server" then
                 client.server_capabilities.completionProvider = false
-                --client.server_capabilities.hoverProvider = false
+                client.server_capabilities.hoverProvider = false
             end
             -- Disable completion for pyright
             if client.name == "pyright" then
@@ -325,6 +325,40 @@ return {
                         })
                     end
                 end,
+            })
+        end,
+    },
+    {
+    "zeioth/none-ls-autoload.nvim",
+    event = "BufEnter",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "zeioth/none-ls-external-sources.nvim" -- To install a external sources library.
+    },
+    opts = {
+      external_sources = {
+        -- To specify where to find a external source.
+        --'none-ls-external-sources.formatting.reformat_gherkin'
+      },
+    },
+  },
+    {
+        "nvimtools/none-ls.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        event = "VeryLazy",
+        config = function()
+            local null_ls = require("null-ls")
+            null_ls.setup({
+                sources = {
+                    null_ls.builtins.code_actions.refactoring,
+                    null_ls.builtins.formatting.stylua,
+                    null_ls.builtins.formatting.isort,
+                    null_ls.builtins.formatting.black,
+                    null_ls.builtins.formatting.jq,
+                    null_ls.builtins.formatting.prettier,
+                    null_ls.builtins.diagnostics.proselint,
+                    null_ls.builtins.formatting.biome,
+                },
             })
         end,
     },

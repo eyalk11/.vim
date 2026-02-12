@@ -102,11 +102,11 @@ endif
 " Plug 'severin-lemaignan/vim-minimap'
 
 function! Runit() 
-exe 'source' . " " . g:vimloc . "\\newplug.vim"
+    exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
+    exe 'source' . " " . g:vimloc . "\\newplug.vim"
 exe 'source' . " " . g:vimloc . "\\t.lua"
 exe 'source' . " " . g:vimloc    . "\\secret.vim"
     
-exe 'source' . " " . g:vimloc . "\\pluginSettings.vim"
 exe 'source' . " " . g:vimloc . "\\hacks.vim"
 exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
 
@@ -116,6 +116,7 @@ if filereadable(" " . g:vimloc . "\\math.vim")
 endif
 
 exe 'source' . " " . g:vimloc . "\\mappings.vim"
+source c:\temp\quicksel.vim
 endfunction
 
 if g:minimal==0

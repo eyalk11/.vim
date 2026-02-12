@@ -11,7 +11,7 @@ if executable('pyls')
         \ 'name': 'pyls',
         \ 'cmd': {server_info->['pyls']},
         \ 'allowlist': ['python'],
-        \ })
+        \ }g
 endif
 "packadd! syntax-vim-ex asdasd
 "colorscheme onedark
@@ -421,7 +421,7 @@ let g:NETRPreviewDefaultOn=0
 "let g:NETRAutochdir="a"
 " sort by modified
 :autocmd FileType netranger setlocal noswapfile
-call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
+"call EasyMotion#command_line#cmap(["<C-K>","<CR><CR>:call DoOpen()<CR>"])
 :autocmd FileType netranger nmap <buffer> R SM
 :autocmd FileType netranger cmap <buffer> <C-K> <CR><CR>
 :autocmd FileType netranger nmap <buffer> <space> za
@@ -518,6 +518,7 @@ let g:Lf_StlSeparator = { 'left': '', 'right': '' }
 let g:Lf_StlColorscheme = 'powerline'
 "Make c-h , c-l a valid option in leaderf
 let g:Lf_CommandMap = {'<C-k>':['<C-h>'], '<C-j>':['<C-l>'], '<Down>': ['<C-j>','<Down>'], '<UP>': ['<C-k>','<UP>']}
+let g:Lf_MruEnable =0 
 
 let g:Lf_MruMaxFiles=100000
 let g:Lf_ShowHidden  = 1

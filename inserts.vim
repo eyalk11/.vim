@@ -128,16 +128,25 @@ function! AddInsert(str)
 endfunction
 function! AddInsertInternal(str)
 py3 <<EOF
-bufn=vim.eval('GetBufName()')
-import datetime
-dt= datetime.datetime.now()
-sec=dt.second
-if dt.minute != lastmin:
-    bufslasttwentysec= defaultdict(lambda: 0)
-    lastmin=dt.minute
-bufslasttwentysec[sec // 5 ]+=1
-toexit= ( bufslasttwentysec[sec // 5 ] > 100) #more than 20 in 5 sec slot
+try: 
+    lastmin 
+    a=1 
+except:
+    a=0 
+if a:
+    bufn=vim.eval('GetBufName()')
+    import datetime
+    dt= datetime.datetime.now()
+    sec=dt.second
+    if dt.minute != lastmin:
+        bufslasttwentysec= defaultdict(lambda: 0)
+        lastmin=dt.minute
+    bufslasttwentysec[sec // 5 ]+=1
+    toexit= ( bufslasttwentysec[sec // 5 ] > 100) #more than 20 in 5 sec slot
 EOF
+if py3eval("a")==0
+    call LoadBaseInserts(0)
+endif
 if py3eval('toexit')
     if exists('g:restartinsertwatch')
         if len(timer_info(g:restartinsertwatch))>0
@@ -150,6 +159,7 @@ if py3eval('toexit')
     :echo 'pause inserts'
     return
 endif
+
 let strt = substitute(a:str,"\<BS>",'\n','g')
 py3 insertfunc(vim.eval('strt'),bufn)
 endfunction
