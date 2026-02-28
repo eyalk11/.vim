@@ -379,7 +379,7 @@ set ut=3000
 silent! nunmap ,tt
 silent! nunmap ,t
 silent! nunmap @Þ
-silent norm! `M
+silent! norm! `M
 "call SetFont()
 endfunction
 
