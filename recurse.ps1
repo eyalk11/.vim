@@ -71,11 +71,11 @@ $repos | ForEach-Object -Process {
         
         # Check if repo needs attention
         $needsAttention = $isEyalkRepo -or $hasModified -or $hasUntracked -or $hasStaged -or !$isPushed -or ($branchStatus -ne "")
-        
-        if ($needsAttention) {
+
+        if ($true) {
             if ($hasModified -or $hasUntracked -or $hasStaged) { $modifiedRepos++ }
-            
-            Write-Host "Repository: $($_.Name)" -ForegroundColor Yellow
+
+            Write-Host "Repository: $($_.Name)" -ForegroundColor $(if ($needsAttention) { "Yellow" } else { "White" })
             Write-Host "Path: $($_.FullName)" -ForegroundColor Gray
             
             if ($remoteUrls) {

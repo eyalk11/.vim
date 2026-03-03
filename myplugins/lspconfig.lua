@@ -229,12 +229,12 @@ return {
                                 enabled = false,
                             },
                             pylint = { enabled = false },
-                            rope = { enabled = true, ropefolder = "C:\\temp\\rope" },
-                            --rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
-                            --rope_autoimport = {enabled = false, {completions = {enabled = false}, {code_actions = {enabled = false}}}},
-                            jedi_symbols = {
-                                enabled = false,  -- Disable symbol information
-                            },
+                            --rope = { enabled = true, ropefolder = "C:\\temp\\rope" },
+                            ----rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
+                            --rope_autoimport = {enabled = true, {completions = {enabled = true}, {code_actions = {enabled = true}}}},
+                            --jedi_symbols = {
+                                --enabled = true,  -- Disable symbol information
+                            --},
 
                             --jedi = { enabled= true }
                             --jedi = { extra_paths = {"c:\\gitproj\\Auto-GPT"} }
@@ -354,7 +354,7 @@ return {
                     null_ls.builtins.formatting.stylua,
                     null_ls.builtins.formatting.isort,
                     null_ls.builtins.formatting.black,
-                    null_ls.builtins.formatting.jq,
+                    --null_ls.builtins.formatting.jq,
                     null_ls.builtins.formatting.prettier,
                     null_ls.builtins.diagnostics.proselint,
                     null_ls.builtins.formatting.biome,

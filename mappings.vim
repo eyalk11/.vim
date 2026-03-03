@@ -1785,8 +1785,8 @@ nmap <c-F5> mz
 "vmap mz <CMD>TREPLSendSelection<CR>
 "move between two panels (left and right) 
 "copy to other split
-nmap my "xyy<CMD>call GoOther()<CR>"xp
-vmap my "xy<CMD>call GoOther()<CR>"xp
+nmap my "xyy<CMD>call GoOther()<CR>"xp<CMD>call GoOther()<CR>
+vmap my "xy<CMD>call GoOther()<CR>"xp<CMD>call GoOther()<CR>
 
 nnoremap <C-'> <CMD>call GoOther()<CR><CMD>call IfTerm()<CR>
 tnoremap <C-'> <C-\><C-n><CMD>call GoOther()<CR>
