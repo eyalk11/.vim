@@ -357,7 +357,7 @@ require("chatgpt").setup({
 	["popup_window.buf_options.cinkeys"] = "chatgpt",
 	["settings_window.buf_options.cinkeys"] = "chatgpt",
 	["popup_input.buf_options.cinkeys"] = "chatgptp",
-	log_file = "C:\\users\\ekarni\\chatgptn.log",
+	log_file = vim.fn.expand('~') .. "\\chatgptn.log",
 })
 
 local chatgpt = require("chatgpt")

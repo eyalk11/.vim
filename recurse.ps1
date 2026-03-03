@@ -10,12 +10,12 @@ $divergedRepos = 0
 $processedRepos = @()
 
 # Ensure tmp directory exists
-$tmpDir = "C:\Users\ekarni\.vim\tmp"
+$tmpDir = "$env:USERPROFILE\.vim\tmp"
 if (!(Test-Path $tmpDir)) {
     New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
 }
 
-$repos = Get-ChildItem -Path 'C:\Users\ekarni\.vim\plugged'
+$repos = Get-ChildItem -Path "$env:USERPROFILE\.vim\plugged"
 $repos | ForEach-Object -Process {
     If (Test-Path -Path ($_.FullName + "\.git")) {
         $totalRepos++
@@ -166,4 +166,4 @@ Write-Host ""
 Write-Host "=== Git Repository Status Checker Completed ===" -ForegroundColor Green
 
 # Return to original directory
-Set-Location "C:\Users\ekarni\.vim"
+Set-Location "$env:USERPROFILE\.vim"

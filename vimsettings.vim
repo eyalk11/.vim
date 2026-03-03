@@ -5,9 +5,10 @@ set dictionary=C:\temp\words
 "Should be indepdenent of plugins!
 let $LC_ALL="en_US.UTF-8"
 let $LANG="en_US.UTF-8"
-let g:python3_host_prog='C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\python.exe'
-let g:python_host_prog='C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\python.exe'
-let $PYENV_ROOT='C:\Users\ekarni\.pyenv\pyenv-win'
+let g:user_home = $USERPROFILE
+let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.9\python.exe'
+let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.9\python.exe'
+let $PYENV_ROOT=g:user_home.'\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
 let g:pwmod=0
@@ -95,7 +96,7 @@ filetype plugin indent on
 "
 "set noswapfile
 "for swap files
-set directory=c:\\users\\ekarni\\.vim\\swap
+let &directory=g:user_home.'\.vim\swap'
 set shortmess=a  "added now
 set shm+=A
 set shortmess+=A
@@ -424,7 +425,7 @@ autocmd filetype vim let b:auto_save = 1
 
 
 "let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH 
-let $PATH='C:\Users\ekarni\AppData\Local\SumatraPDF;'. $PATH
+let $PATH=g:user_home.'\AppData\Local\SumatraPDF;'. $PATH
 "autocmd! TermEnter * :startinsert
 
 "commands

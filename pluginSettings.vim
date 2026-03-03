@@ -531,7 +531,7 @@ let g:Lf_WindowPosition = 'popup'
 
 ""ideally would be called each time
 let g:Lf_PopupPosition=[max([float2nr(&lines * 0.4),10]),1]
-let g:Lf_CacheDirectory = "c:\\users\\ekarni\\.vim\\lcache"
+let g:Lf_CacheDirectory = g:user_home.'\.vim\lcache'
 let g:Lf_IndexTimeLimit =7
 let g:Lf_RgConfig = [ "--max-columns=150"]
 let g:Lf_WorkingDirectoryMode = 'c'
@@ -567,9 +567,9 @@ command! -bang -nargs=* FzfRgDir
 
 let g:fzf_action = {'ctrl-o' : '!open'}
 "let g:fzf_history= "~/.fzf/history"
-let g:fzf_history=  "C:\\users\\ekarni\\.fzf\\history_f"
+let g:fzf_history=  g:user_home.'\.fzf\history_f'
 set shell=cmd.exe
-let $FZF_DEFAULT_OPTS="--history=" . ("C:/users/ekarni/.fzf/history_file")
+let $FZF_DEFAULT_OPTS="--history=" . (g:user_home.'/.fzf/history_file')
 " had to change ~/.fzf to add escape for default_OPTS
 "#. "\\.fzf\\history_file"
 "nvim-ipy stuff

@@ -731,7 +731,7 @@ inoremap <c-end> <c-v>
 "jumps to the map
 nmap <Leader>gm :lua GotoMap()<CR>
 "opens navbuddy on the mappings
-nmap <Leader>gM <CMD>e C:\Users\ekarni\.vim\README.md<CR><leader>s<CMD>call timer_start(2000, {-> execute('normal hhhlt')})<CR>
+nmap <Leader>gM <CMD>exe 'e '.g:user_home.'\.vim\README.md'<CR><leader>s<CMD>call timer_start(2000, {-> execute('normal hhhlt')})<CR>
 "does chars 
 
 inoremap <m-c-k> <c-x><c-k>
@@ -2501,7 +2501,7 @@ endfunction
 nmap gf <CMD>call DoGF()<CR>
 
 nmap \] mC<CMD>bd<CR>:e <C-R>=@*<CR><CR>
-nmap <leader>gv <CMD>cd c:\users\ekarni\.vim<CR><CMD>Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
+nmap <leader>gv <CMD>exe 'cd '.g:user_home.'\.vim'<CR><CMD>Leaderf rg --glob "*.vim" --glob "*.lua" --max-depth=1<CR>
 "nmap {          <Plug>EnhancedJumpsOlder
 "nmap }          <Plug>EnhancedJumpsNewer
 "nmap g{         <Plug>EnhancedJumpsLocalOlder
@@ -2511,7 +2511,7 @@ nmap <leader>gv <CMD>cd c:\users\ekarni\.vim<CR><CMD>Leaderf rg --glob "*.vim" -
 nmap z; <Plug>EnhancedJumpsFarChangeOlder
 nmap z, <Plug>EnhancedJumpsFarChangeNewer
 
-command! -nargs=1 ReloadPackage <CMD>exe "cd c:/users/ekarni/.vim" <bar> lua require('funcs').reload_package(<f-args>)
+command! -nargs=1 ReloadPackage <CMD>exe "cd ".g:user_home."/.vim" <bar> lua require('funcs').reload_package(<f-args>)
 
 "function! GetVoice()
     "return py3eval('recognize_voice()')
@@ -2520,7 +2520,7 @@ nmap <c-L> <CMD>Voice<CR>
 
 imap <C-L> <C-R>=GetVoice()<CR>
 
-nmap <leader>rch <cmd>:%s#\(\.\.\.\)\?\(.*\)\(plugged\)#C:\\users\\ekarni\\.vim\\plugged#g<CR>:%s#\c\(\.\.\.\)\?\(.*\)\(chatgpt.nvim\)#C:\\Users\\ekarni\\.vim\\plugged\\ChatGPT.nvim#g<cr>
+nmap <leader>rch <cmd>exe '%s#\(\.\.\.\)\?\(.*\)\(plugged\)#'.escape(g:user_home.'\.vim\plugged','\\').'#g'<CR><cmd>exe '%s#\c\(\.\.\.\)\?\(.*\)\(chatgpt.nvim\)#'.escape(g:user_home.'\.vim\plugged\ChatGPT.nvim','\\').'#g'<cr>
 function! MapCC()
     if &buftype == ""
         nmap <buffer> <c-x> <leader>pc<C-L> 
@@ -2565,7 +2565,7 @@ endfunction
 
 nmap <leader>GS <CMD>call StashME()<CR>
 nmap <leader>Gs <CMD>call StashAll()<CR>
-nmap <leader>gp <CMD>exec '!python c:/users/ekarni/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
+nmap <leader>gp <CMD>exec '!python '.g:user_home.'/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
 nmap <leader>gc <CMD>cd ~/compare-my-stocks<CR>
 function! LfFil(a)
 exec " :LeaderfFile ". a:a
@@ -2901,6 +2901,6 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
 " mapping for \ad
 nnoremap <leader>ad <c-a>D
 function! OpenLazyplugs()
-    e C:\Users\ekarni\.vim\myplugins\lazyplugs.lua
+    exe 'e '.g:user_home.'\.vim\myplugins\lazyplugs.lua'
 endfunction
 nmap <leader>lp :call OpenLazyplugs()<CR>

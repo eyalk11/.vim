@@ -478,10 +478,10 @@ endfunc
 func! RunPS(var)
     if g:pwmod==0
         call TogglePS()
-        exec 'silent! !Import-Module C:\Users\ekarni\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
+        exec 'silent! !Import-Module '.g:user_home.'\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
         call TogglePS()
     else
-        exec 'silent! !Import-Module C:\Users\ekarni\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
+        exec 'silent! !Import-Module '.g:user_home.'\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
     endif
 endfunction 
 

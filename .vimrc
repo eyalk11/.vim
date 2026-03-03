@@ -26,7 +26,7 @@ let $HOME=expand('~')
 
 let g:minimal = 0
 let g:onlyplug=  "'Yggdroot/LeaderF'"  "'neovim/nvim-lspconfig' 
-let g:on_ek_computer=1 " (filewritable("\\Users/ekarni")==2)
+let g:on_ek_computer= ($USERNAME =~? 'karni')
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
 let g:no_spec_map=1
