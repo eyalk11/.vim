@@ -1,3 +1,13 @@
+local _orig_notify = vim.notify
+vim.notify = function(msg, ...)
+  if type(msg) == "string" and msg:find("Spawning language server") then
+      return
+  end
+  if type(msg) == "string" and msg:find("navbuddy:") then
+    return
+  end
+  return _orig_notify(msg, ...)
+end
 
 local api = vim.api
 function GotoMap(c)
@@ -157,6 +167,7 @@ navbuddy.setup({
 require("lightspeed").setup({ ignore_case = true, repeat_ft_with_target_char = true })
 
 local lga_actions = require("telescope-live-grep-args.actions")
+--[[ nvim-lightbulb not installed
 require("nvim-lightbulb").setup({
 	ignore = { ft = { "python" } },
 	autocmd = { enabled = true },
@@ -167,6 +178,7 @@ require("nvim-lightbulb").setup({
 		hl = "LightBulbNumber",
 	},
 })
+--]]
 
 local telescope = require("telescope")
 
@@ -336,7 +348,7 @@ vim.lsp.set_log_level("debug")
 --},
 --},
 --})
-require("refactoring").setup({})
+--require("refactoring").setup({}) -- refactoring.nvim not installed
 --
 -- none-ls config moved to myplugins/lspconfig.lua (loaded via Lazy.nvim)
 --require('lint').linters_by_ft = {
@@ -352,6 +364,7 @@ require("which-key").setup({
 	-- or leave it empty to use the default settings
 	-- refer to the configuration section below
 })
+--[[ chatgpt not installed
 require("chatgpt").setup({
 	["chat.sessions_window.buf_options.cinkeys"] = "chatgpt",
 	["popup_window.buf_options.cinkeys"] = "chatgpt",
@@ -359,12 +372,54 @@ require("chatgpt").setup({
 	["popup_input.buf_options.cinkeys"] = "chatgptp",
 	log_file = vim.fn.expand('~') .. "\\chatgptn.log",
 })
-
-local chatgpt = require("chatgpt")
+--]]
+--local chatgpt = require("chatgpt") -- chatgpt not installed
 wk = require("which-key")
-wk.setup({ plugins = { presets = { operators = false } }, 
-triggers_blacklist = { c = { "*" ,"%"}, v= { "*","%" } } 
+wk.setup({ plugins = { presets = { operators = false } },
+triggers_blacklist = { c = { "*" ,"%"}, v= { "*","%" } }
 })
+
+-- Show Alt/Ctrl mappings in a which-key popup using wk's own tree (has comment-based labels)
+local function show_modifier_mappings(trigger_key, pattern, display_name)
+  local Keys = require("which-key.keys")
+  local buf = vim.api.nvim_get_current_buf()
+  Keys.update(buf)
+  local result = Keys.get_mappings("n", "", buf)
+
+  local mappings = { name = display_name }
+  for _, entry in ipairs(result.mappings) do
+    local key_notation = entry.key  -- e.g. "<M-a>"
+    if key_notation then
+      local inner = key_notation:match(pattern)
+      -- <C-i>/<Tab> and <C-m>/<CR> are equivalent; include aliases in Ctrl view
+      if not inner and display_name == "Ctrl" then
+        if key_notation == "<Tab>" then inner = "i"
+        elseif key_notation == "<CR>" then inner = "m"
+        elseif key_notation == "<Esc>" then inner = "[" end
+      end
+      if inner and not inner:match("^%d$") then
+        local wk_key = #inner == 1 and inner or ("<" .. inner .. ">")
+        if not mappings[wk_key] then
+          local prefix = entry.prefix  -- notation string, e.g. "<M-a>"
+          mappings[wk_key] = {
+            function() vim.fn.feedkeys(vim.api.nvim_replace_termcodes(prefix, true, true, true), "m") end,
+            (entry.label ~= "" and entry.label) or prefix,
+          }
+        end
+      end
+    end
+  end
+  wk.register(mappings, { prefix = trigger_key, mode = "n" })
+  wk.show(vim.api.nvim_replace_termcodes(trigger_key, true, true, true), { mode = "n" })
+end
+
+vim.keymap.set("n", "<leader>hm", function()
+  show_modifier_mappings("<F20>", "^<M%-(.-)>$", "Alt")
+end, { desc = "Show Alt keymaps" })
+
+vim.keymap.set("n", "<leader>hc", function()
+  show_modifier_mappings("<F21>", "^<C%-(.-)>$", "Ctrl")
+end, { desc = "Show Ctrl keymaps" })
 --wk.register({
 	--p = {
 		--name = "ChatGPT",
@@ -551,13 +606,14 @@ require("telescope").load_extension("git_grep")
 --search = '',
 --})
 --end
-require("wtf").setup()
+--require("wtf").setup() -- wtf.nvim not installed
 --require("project_nvim").setup {
 -- your configuration comes here
 -- or leave it empty to use the default settings
 -- refer to the configuration section below
 --}C:\Users\ekarni\Neovim\bin
 
+--[[ workspaces.nvim not installed
 require("workspaces").setup({
 	path = vim.fn.stdpath("data") .. "/workspaces",
 	hooks = {
@@ -567,7 +623,8 @@ require("workspaces").setup({
 		end,
 	},
 })
-require("actions-preview").setup({})
+--]]
+--require("actions-preview").setup({}) -- actions-preview.nvim not installed
 --require('mouse').setup()
 --local configs = require'nvim-treesitter.configs'
 --require'nvim-treesitter.configs'.setup {

@@ -238,20 +238,24 @@ augroup monitor
     au InsertLeave * call EndSpecialInsert()    " when cursor moves in Insert mode update the last activity time
 augroup END
 
-
+"autocmd TextChanged,TextChangedI * if &buftype == '' and &s | normal! mI | endif
+"autocmd InsertLeave * execute 'normal! mI'
+ 
+" Mark M at the position when any modification happened in the Normal or Insert mode
+autocmd InsertLeave *  if &buftype == '' | execute 'normal! mM'| endif
 """INSERT MODE SAVE
-let g:detect_mod_reg_state = -1
-function! DetectRegChangeAndUpdateMark()
-    let current_small_register = getreg('"-')
-    let current_mod_register = getreg('""')
-    if g:detect_mod_reg_state != current_small_register || 
-                \ g:detect_mod_reg_state != current_mod_register
-        normal! mM
-        let g:detect_mod_reg_state = current_small_register
-    endif
-endfunction
+"let g:detect_mod_reg_state = -1
+"function! DetectRegChangeAndUpdateMark()
+    "let current_small_register = getreg('"-')
+    "let current_mod_register = getreg('""')
+    "if g:detect_mod_reg_state != current_small_register || 
+                "\ g:detect_mod_reg_state != current_mod_register
+        ""normal! mM
+        "let g:detect_mod_reg_state = current_small_register
+    "endif
+"endfunction
 
-autocmd CursorMoved * call DetectRegChangeAndUpdateMark()
+"autocmd CursorMoved * call DetectRegChangeAndUpdateMark()
 "last tab
 "
 if !exists('g:lasttab')
@@ -262,11 +266,6 @@ au TabLeave * let g:lasttab = tabpagenr()
 
 "Marks
 "
-" Mark I at the position where the last Insert mode occured across the buffer
-autocmd InsertLeave * execute 'normal! mI'
-
-" Mark M at the position when any modification happened in the Normal or Insert mode
-autocmd InsertLeave * execute 'normal! mM'
 
 
 autocmd User visual_multi_start call MyVmStart()
@@ -284,8 +283,8 @@ endfunction
 "
 au ExitPre call StopTimerFunc() 
 function! StopTimerFunc()
-    call timer_stop(g:autosaveWS)
-    call timer_stop(g:timerb)
+    if exists('g:autosaveWS') | call timer_stop(g:autosaveWS) | endif
+    if exists('g:timerb') | call timer_stop(g:timerb) | endif
 
 endfunction
 
@@ -576,8 +575,9 @@ function! GetVisualSelection() abort
 endfunction
 
 function! CloseAllBuffersButCurrent()
-    %bd
-    e#
+    let l:cur = expand("%:p")
+    %bw
+    execute ':e '.l:cur
 endfunction
 "Closes the other buffers but Nerdtree. Unless only 2 buffers left. In this
 "case, closes nerdtree.
@@ -1290,3 +1290,16 @@ function! MoveMe(...)
 endfunction
 
 command! -nargs=? -complete=file MoveMe call MoveMe(<f-args>)
+
+function! CloseClaudeBufferInWindow()
+  for bufnr in tabpagebuflist()
+    let name = bufname(bufnr)
+    if name =~? 'claude' && getbufvar(bufnr, '&buftype') == 'terminal'
+      let winid = bufwinid(bufnr)
+      if winid != -1
+        call win_execute(winid, 'close')
+      endif
+    endif
+  endfor
+endfunction
+

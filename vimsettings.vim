@@ -6,8 +6,8 @@ set dictionary=C:\temp\words
 let $LC_ALL="en_US.UTF-8"
 let $LANG="en_US.UTF-8"
 let g:user_home = $USERPROFILE
-let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.9\python.exe'
-let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.9\python.exe'
+let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13.11\python.exe'
+let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13.11\python.exe'
 let $PYENV_ROOT=g:user_home.'\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
@@ -162,7 +162,7 @@ endfunction
 
 au VimEnter * nested call OnLoad()
 au VimLeave * nested call OnEnd()
-au ExitPre * nested call timer_stop(g:autosaveWS)
+au ExitPre * nested if exists('g:autosaveWS') | call timer_stop(g:autosaveWS) | endif
 function! SetAltFont()
     set guifont=JetBrains\ Mono\ Medium:h
 endfunction    
@@ -172,7 +172,8 @@ function! SetFont()
         ":GuiFont! Fira\ Code:h12
         "set guifont=Fira\ Code:h12
         "set guifont =GoMono\ Nerd\ Font:h12 
-        set guifont=Hasklug\ Nerd\ Font:h12
+        "set guifont=Hasklug\ Nerd\ Font:h12
+        "GuiFont! FiraCode\ Nerd\ Font
     endif
 endfunction
 ":GuiTabline 0
@@ -212,7 +213,7 @@ function! OnLoad()
 "     :silent Arpeggio nnoremap qw :exec "normal a".nr2char(getchar())."\e"<CR>
     if exists('g:GuiLoaded')
         ":GuiFont! Fira\ Code:h12
-        set guifont=Hasklug\ Nerd\ Font:h12
+        "set guifont=Hasklug\ Nerd\ Font:h12
     endif
     "set guifont=JetBrains\ Mono\ Medium:h11
 
@@ -241,7 +242,7 @@ function! OnLoad()
 	
 	 "Find the current process, the process parent, and use ps ax to obtain the path. Meant to work in mac. in Linux, it is easier with `/proc/XXX/cmdline'. 
     "if expand("%:p:t")=="special"
-        norm \<c-O>
+        "norm \<c-O>
         ":CtrlSpaceLoadWorkspace default
     "endif 
 	if argc()==0
@@ -315,7 +316,7 @@ let g:GuiLoaded=1
 		"endif 
     if 1
         if g:on_ek_computer
-            nmap <leader>rv :wshada!<CR>:exec "!start powershell ResetNeo"<CR>
+            nmap <leader>rv :wshada!<CR>:exec "!start pwsh  -Command ResetNeo"<CR>
 
             "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
         endif
@@ -367,15 +368,15 @@ endif
 		let g:lastdir=''
 	endif
 ":GitGutterEnable
-let g:autosaveWS=timer_start(10000,'TimerFunc',{'repeat':-1})
-let g:timerb=timer_start(3000,'TimerFuncB',{'repeat':-1})
+let g:autosaveWS=timer_start(20000,'TimerFunc',{'repeat':-1})
+let g:timerb=timer_start(80000,'TimerFuncB',{'repeat':-1})
 let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 let tt = timer_start(1000,'LazyIt',{'repeat':1})
 "for solving ctags bug
 "au! GonvimAu OptionSet
 set mouse=a
-au! gutentags_detect 
+"au! gutentags_detect 
 set ut=3000
 silent! nunmap ,tt
 silent! nunmap ,t

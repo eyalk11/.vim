@@ -86,9 +86,9 @@ def breakl(z):
 def filterinp(x):
     if len(x)==0:
         return False 
-    if re.match('^\s+$',x):
+    if re.match(r'^\s+$',x):
         return False
-    return ( re.search('\w\w\w',x) and isascii(x) )
+    return ( re.search(r'\w\w\w',x) and isascii(x) )
 def isascii(s):
     """Check if the characters in string s are in ASCII, U+0-U+7F."""
     return len(s) == len(s.encode(errors='ignore'))

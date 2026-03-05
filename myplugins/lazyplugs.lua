@@ -1,4 +1,9 @@
 return {
+    {
+        "sindrets/diffview.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    },
     --{ "girishji/pythondoc.vim" },
     --{ "vim-scripts/LargeFile" },
     {
@@ -8,54 +13,8 @@ return {
             "nvim-telescope/telescope.nvim",
             "nvim-treesitter/nvim-treesitter",
         },
-        opts = {}
-    },
-    {
-        "rcarriga/nvim-dap-ui",
-        dependencies = "mfussenegger/nvim-dap",
-        config = function()
-            local dap = require("dap")
-            local dapui = require("dapui")
-            dapui.setup()
-            dap.listeners.after.event_initialized["dapui_config"] = function()
-                dapui.open()
-            end
-            dap.listeners.before.event_terminated["dapui_config"] = function()
-                dapui.close()
-            end
-            dap.listeners.before.event_exited["dapui_config"] = function()
-                dapui.close()
-            end
-        end,
-        keys = {
-            { "<leader>Dc", function() require("dap").continue() end, desc = "DAP Continue" },
-            { "<leader>Db", function() require("dap").toggle_breakpoint() end, desc = "DAP Toggle Breakpoint" },
-            { "<leader>Do", function() require("dap").step_over() end, desc = "DAP Step Over" },
-            { "<leader>Di", function() require("dap").step_into() end, desc = "DAP Step Into" },
-            { "<leader>Du", function() require("dapui").toggle() end, desc = "DAP UI Toggle" },
-        },
-    },
-    {
-        "mfussenegger/nvim-dap",
-        config = function(_, opts)
-            --require("core.utils").load_mappings("dap")
-        end,
-    },
-    {
-        "mfussenegger/nvim-dap-python",
-        ft = "python",
-        dependencies = {
-            "mfussenegger/nvim-dap",
-            "rcarriga/nvim-dap-ui",
-            "nvim-neotest/nvim-nio",
-        },
-        config = function(_, opts)
-            --local path =
-
-            --[[ C:\Users\ekarni\.pyenv\pyenv-win\versions\3.10\python.exe ]]     --"~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
-            require("dap-python").setup("python")
-            --require("core.utils").load_mappings("dap_python")
-        end,
+        opts = {},
+		enabled=false,
     },
     {
         "ibhagwan/fzf-lua",
@@ -63,7 +22,18 @@ return {
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
             -- calling `setup` is optional for customization
-            require("fzf-lua").setup({})
+            require("fzf-lua").setup({
+                winopts = {
+                    width  = 0.95,
+                    height = 0.90,
+                    row    = 0.50,
+                    col    = 0.50,
+                    preview = {
+                        layout     = "horizontal",
+                        horizontal = "right:55%",
+                    },
+                },
+            })
         end,
     },
     {
@@ -105,7 +75,7 @@ return {
         end,
     },
     --{import = "plugins" },
-    { "rafamadriz/friendly-snippets" },
+    --{ "rafamadriz/friendly-snippets" },
     --{import = "plugins" },
     --{import="plugged/noice"},
     --{import="plugins"},
@@ -183,13 +153,14 @@ return {
   "coder/claudecode.nvim",
   dependencies = {  },
   config = true,
+  lazy = false,
   keys = {
     { "<leader>a", nil, desc = "AI/Claude Code" },
     { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
     { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
     { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
     { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-    { "<leader>aS", "<cmd>ClaudeCodeStart!<cr>", desc = "Claude Force Start" },
+    { "<leader>aS", "<cmd>call CloseClaudeBufferInWindow()<cr><cmd>ClaudeCodeStart!<cr>", desc = "Claude Force Start" },
     { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
     { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
     { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
@@ -206,7 +177,7 @@ return {
   },
   } ,{
   "okuuva/auto-save.nvim",
-  version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
+  version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release 
   cmd = "ASToggle", -- optional for lazy loading on command
   event = { "InsertLeave", "TextChanged","BufEnter" }, -- optional for lazy loading on trigger events
   opts = {
@@ -278,10 +249,38 @@ opts = {
 },
 },
 {
+    "aznhe21/actions-preview.nvim",
+    event = "VeryLazy",
+    config = function()
+        require("actions-preview").setup()
+    end,
+},
+{
+    "folke/trouble.nvim",
+    opts = {},
+    cmd = "Trouble",
+    keys = {
+        { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Document Diagnostics (Trouble)" },
+        { "<leader>xw", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace Diagnostics (Trouble)" },
+        { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix (Trouble)" },
+        { "<leader>xr", "<cmd>Trouble lsp_references toggle<cr>", desc = "LSP References (Trouble)" },
+        { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+        { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ..." },
+        { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+    },
+},
+{
   "nvim-telescope/telescope-frecency.nvim",
   -- install the latest stable version
   version = "*",
   config = function()
+    require("telescope").setup {
+      extensions = {
+        frecency = {
+          db_safe_mode = false,
+        },
+      },
+    }
     require("telescope").load_extension "frecency"
   end,
 }

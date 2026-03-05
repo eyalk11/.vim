@@ -4,7 +4,7 @@ return {
         event = { 'BufReadPre' },
         config = function()
             require('minuet').setup {
-                provider = 'gemini',
+                provider = 'claude',
                 request_timeout = 2,
                 throttle = 2000,
                 virtualtext = {
@@ -21,12 +21,6 @@ return {
                 },
                 notify = 'error',
                 provider_options = {
-                    codestral = {
-                        optional = {
-                            stop = { '\n\n' },
-                            max_tokens = 256,
-                        },
-                    },
                     gemini = {
                         api_key="GOOGLE_GEMINI_API",
                         optional = {
@@ -54,26 +48,12 @@ return {
                             },
                         },
                     },
-                    openai = {
-                        optional = {
-                            max_tokens = 256,
-                            top_p = 0.9,
-                        },
-                    },
-                    openai_compatible = {
-                        api_key = 'OPENROUTER_API_KEY',
-                        end_point = 'https://openrouter.ai/api/v1/chat/completions',
-                        model = 'mistralai/devstral-small',
-                        name = 'Openrouter',
-                        optional = {
-                            max_tokens = 56,
-                            top_p = 0.9,
-                            provider = {
-                                -- Prioritize throughput for faster completion
-                                sort = 'throughput',
-                            },
-                        },
-                    },
+                    claude = {
+                        max_tokens = 556,
+                        model = 'claude-haiku-4.5',
+                        stream = true,
+                        api_key = 'ANTHROPIC_MINUET_API_KEY',
+                    }
                 },
             }
         end,

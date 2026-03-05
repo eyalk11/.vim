@@ -29,15 +29,16 @@ local motions = {
 local function rep(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
-local keys = {{"[]", "]["}, {"]m", "[m"}, {"]M", "[M"},{"l","h"},{"k","j"},  { "w","b" } ,{ "W","B" } ,{ "e","ge" } ,{ "E","gE" }, {"]E","[E"},{"]a","[a"},{"]d","[d"},{"]e","[e"},{"]h","[h"},{"&","z&"}, {rep('<s-F3>'),rep('<s-F4>')}, {"[=", "]="}, {"]+","[+"}, {"]-","[-"},  {"]c", "[c"}, {"%","g%"}}
+-- Each pair: { forward, backward }
+local keys = {{"][", "[]"}, {"]m", "[m"}, {"]M", "[M"},{"l","h"},{"j","k"},  { "w","b" } ,{ "W","B" } ,{ "e","ge" } ,{ "E","gE" }, {"]E","[E"},{"]a","[a"},{"]D","[D"},{"]d","[d"},{"]e","[e"},{"]h","[h"},{"&","z&"}, {rep('<s-F3>'),rep('<s-F4>')}, {"]=", "[="}, {"]+","[+"}, {"]-","[-"},  {"]c", "[c"}, {"%","g%"}}
 
 for i, key in ipairs(keys) do
-    motions[tostring(i)] = { backward = key[1], forward = key[2] }
+    motions[tostring(i)] = { forward = key[1], backward = key[2] }
 end
 
 return {
   "vds2212/vim-remotions",
-  enabled=false,
+  enabled=true,
   event = { "BufRead", "BufWinEnter", "BufNewFile" },
 
   config = function()

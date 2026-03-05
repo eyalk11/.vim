@@ -7,6 +7,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
             -- Disable completion for jedi_language_server
             if client.name =="pylsp" then 
                 client.server_capabilities.hoverProvider=false 
+                client.server_capabilities.documentSymbolProvider = true
+                client.server_capabilities.workspaceSymbolProvider = true
             end 
 
             if client.name == "jedi_language_server" then
@@ -16,6 +18,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
             -- Disable completion for pyright
             if client.name == "pyright" then
                 client.server_capabilities.completionProvider = false
+                client.server_capabilities.documentSymbolProvider = false
+                client.server_capabilities.workspaceSymbolProvider = false
                 --client.server_capabilities.hoverProvider = false
             end
         end
@@ -38,6 +42,8 @@ local on_attach = function(client, bufnr)
         end)
         return
     end
+    local navbuddy = require("nvim-navbuddy")
+    navbuddy.attach(client, bufnr)
 
     vim.diagnostic.config({ virtual_text = { severity = vim.diagnostic.severity.ERROR }, virtual_lines = true })
     vim.keymap.set("", "_l", function()
@@ -128,6 +134,7 @@ return {
     { "williamboman/mason-lspconfig.nvim" },
     {
         "neovim/nvim-lspconfig",
+        --commit = "cee94b2",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
             "nvim-telescope/telescope-live-grep-args.nvim",
@@ -159,11 +166,17 @@ return {
             })
 
             mason.setup()
-            mason_lspconfig.setup( {   automatic_enable = false}
-            --mason_lspconfig.setup( {   automatic_enable = { "proselint"
-            --}}
-            
-                )
+            -- Prepend Mason bin dir so lspconfig can find manually-configured servers
+            vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. ";" .. vim.env.PATH
+            mason_lspconfig.setup({
+                automatic_enable = {
+                    exclude = {
+                        "pylsp","jedi_language_server", "pyright",
+                        "vale_ls", "rust_analyzer", "powershell_es",
+                        "yamlls", "proselint", "html", "jsonls",
+                    }
+                }
+            })
             local capabilities = vim.tbl_deep_extend(
                 "force",
                 vim.lsp.protocol.make_client_capabilities(),
@@ -196,6 +209,7 @@ return {
             require("lspconfig").powershell_es.setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
+                bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
             })
             require("lspconfig").yamlls.setup({
                 capabilities = capabilities,
@@ -211,13 +225,9 @@ return {
             }
             require("lspconfig").proselint.setup()
             require("lspconfig").pylsp.setup({
+                bundle_path = vim.fn.stdpath("data") .. "/mason/packages/python-lsp-server",
                 capabilities = capabilities,
-                 on_attach = function(client, bufnr)
-                    -- Disable symbol information
-                    client.server_capabilities.documentSymbolProvider = false
-                    client.server_capabilities.workspaceSymbolProvider = false
-                    on_attach(client, bufnr)
-                end,
+                 on_attach = on_attach,
                 settings = {
                     pylsp = {
                         plugins = {
@@ -231,7 +241,12 @@ return {
                             pylint = { enabled = false },
                             --rope = { enabled = true, ropefolder = "C:\\temp\\rope" },
                             ----rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
-                            --rope_autoimport = {enabled = true, {completions = {enabled = true}, {code_actions = {enabled = true}}}},
+                            rope_autoimport = {enabled = true},
+                            jedi_workspace_symbols = {
+                                enabled = true,
+                                max_symbols = 500,
+                                ignore_folders = {},
+                            },
                             --jedi_symbols = {
                                 --enabled = true,  -- Disable symbol information
                             --},
@@ -248,22 +263,22 @@ return {
                 on_attach = on_attach,
                 flags = lsp_flags,
             })
-            require'lspconfig'.jedi_language_server.setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-                ---------root_dir = function() return vim.loop.cwd() end
-                settings = {
-                    jediSettings = {
-                        symbols = {
-                            workspace = {
-                                maxSymbols = 10000
-                            }
-                        }
-                    }
-                },
+            --require'lspconfig'.jedi_language_server.setup({
+                --capabilities = capabilities,
+                --on_attach = on_attach,
+                -----------root_dir = function() return vim.loop.cwd() end
+                --settings = {
+                    --jediSettings = {
+                        --symbols = {
+                            --workspace = {
+                                --maxSymbols = 10000
+                            --}
+                        --}
+                    --}
+                --},
             
-                flags = lsp_flags,
-            })
+                --flags = lsp_flags,
+            --})
             
 
             --require("lspconfig")['htmlbeautifier'].setup({
@@ -304,28 +319,7 @@ return {
                 on_attach = on_attach,
                 flags = lsp_flags,
             })
-            mason_lspconfig.setup_handlers({
-                function(server_name)
-                    --local ignore_list = { "lua_ls", "lua-language-server", "sourcery" }
-                    local ignore_list = {  "sourcery"} --,"jedi-language-server" }
-                    local ignore = false
-
-                    for _, v in ipairs(ignore_list) do
-                        if v == server_name then
-                            ignore = true
-                            break
-                        end
-                    end
-
-                    if not ignore then
-                        lspconfig[server_name].setup({
-                            capabilities = capabilities,
-                            on_attach = on_attach,
-                            flags = lsp_flags,
-                        })
-                    end
-                end,
-            })
+            -- mason_lspconfig.setup_handlers removed in newer versions; servers configured explicitly above
         end,
     },
     {
@@ -354,7 +348,7 @@ return {
                     null_ls.builtins.formatting.stylua,
                     null_ls.builtins.formatting.isort,
                     null_ls.builtins.formatting.black,
-                    --null_ls.builtins.formatting.jq,
+                    null_ls.builtins.formatting.jq,
                     null_ls.builtins.formatting.prettier,
                     null_ls.builtins.diagnostics.proselint,
                     null_ls.builtins.formatting.biome,
