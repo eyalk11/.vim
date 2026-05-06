@@ -5,11 +5,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client then
             -- Disable completion for jedi_language_server
-            if client.name =="pylsp" then 
-                client.server_capabilities.hoverProvider=false 
+            if client.name =="pylsp" then
+                client.server_capabilities.hoverProvider=false
                 client.server_capabilities.documentSymbolProvider = true
                 client.server_capabilities.workspaceSymbolProvider = true
-            end 
+            end
 
             if client.name == "jedi_language_server" then
                 client.server_capabilities.completionProvider = false
@@ -228,6 +228,30 @@ return {
                 bundle_path = vim.fn.stdpath("data") .. "/mason/packages/python-lsp-server",
                 capabilities = capabilities,
                  on_attach = on_attach,
+                -- pylsp-workspace-symbols hard-codes sys_path=[root] per workspace
+                -- folder. For src-layout projects, the package source under
+                -- src/<pkg>/ is invisible from the repo root (jedi only finds
+                -- the pip-installed copy in .venv, which ignore_folders excludes).
+                -- Expose each src/*/__init__.py package as an extra workspace folder.
+                before_init = function(params, config)
+                    local root = config.root_dir
+                    if not root then return end
+                    local src = root .. "/src"
+                    local handle = vim.uv.fs_scandir(src)
+                    if not handle then return end
+                    params.workspaceFolders = params.workspaceFolders or {}
+                    while true do
+                        local name, t = vim.uv.fs_scandir_next(handle)
+                        if not name then break end
+                        if t == "directory" and vim.uv.fs_stat(src .. "/" .. name .. "/__init__.py") then
+                            local pkg_path = (src .. "/" .. name):gsub("\\", "/")
+                            table.insert(params.workspaceFolders, {
+                                uri = "file:///" .. pkg_path:gsub("^/", ""),
+                                name = name,
+                            })
+                        end
+                    end
+                end,
                 settings = {
                     pylsp = {
                         plugins = {
@@ -241,11 +265,23 @@ return {
                             pylint = { enabled = false },
                             --rope = { enabled = true, ropefolder = "C:\\temp\\rope" },
                             ----rope_autoimport = {enabled = true, {code_actions = {enabled = true}}},
-                            rope_autoimport = {enabled = true},
+                            rope_autoimport = {enabled = false},
                             jedi_workspace_symbols = {
                                 enabled = true,
-                                max_symbols = 500,
-                                ignore_folders = {},
+                                max_symbols = 10000,
+                                ignore_folders = {
+                                    ".git", ".hg", ".svn",
+                                    ".nox", ".tox",
+                                    ".venv", ".venv11", ".venv11b", ".venv314",
+                                    "venv", "env",
+                                    "__pycache__", "node_modules",
+                                    "build", "dist", "site-packages",
+                                    ".ipynb_checkpoints", ".virtual_documents",
+                                    ".nlsp-settings", ".claude", ".jupyter",
+                                    "mpl_traced_3.10.9", "comp_my_stock_temp",
+                                    "Output", "test_logs",
+                                    ".pytest_cache", ".mypy_cache", ".ruff_cache",
+                                },
                             },
                             --jedi_symbols = {
                                 --enabled = true,  -- Disable symbol information
@@ -263,23 +299,35 @@ return {
                 on_attach = on_attach,
                 flags = lsp_flags,
             })
-            --require'lspconfig'.jedi_language_server.setup({
-                --capabilities = capabilities,
-                --on_attach = on_attach,
-                -----------root_dir = function() return vim.loop.cwd() end
-                --settings = {
-                    --jediSettings = {
-                        --symbols = {
-                            --workspace = {
-                                --maxSymbols = 10000
-                            --}
-                        --}
-                    --}
-                --},
-            
-                --flags = lsp_flags,
-            --})
-            
+            -- jedi_language_server disabled — using pylsp's jedi_workspace_symbols instead
+            -- require'lspconfig'.jedi_language_server.setup({
+            --     capabilities = capabilities,
+            --     on_attach = on_attach,
+            --     ---------root_dir = function() return vim.loop.cwd() end
+            --     init_options = {
+            --         workspace = {
+            --             symbols = {
+            --                 maxSymbols = 10000,
+            --                 ignoreFolders = {
+            --                     ".git", ".hg", ".svn",
+            --                     ".nox", ".tox",
+            --                     ".venv", ".venv11", ".venv11b", ".venv314",
+            --                     "venv", "env",
+            --                     "__pycache__", "node_modules",
+            --                     "build", "dist", "site-packages",
+            --                     ".ipynb_checkpoints", ".virtual_documents",
+            --                     ".nlsp-settings", ".claude", ".jupyter",
+            --                     "mpl_traced_3.10.9", "comp_my_stock_temp",
+            --                     "Output", "test_logs",
+            --                     ".pytest_cache", ".mypy_cache", ".ruff_cache",
+            --                 },
+            --             },
+            --         },
+            --     },
+            --
+            --     --flags = lsp_flags,
+            -- })
+
 
             --require("lspconfig")['htmlbeautifier'].setup({
             --capabilities = capabilities,

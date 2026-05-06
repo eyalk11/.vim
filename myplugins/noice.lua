@@ -83,6 +83,7 @@ require("noice").setup({
                         { find = 'LSP client '},
                         { find = 'No lines in buffer'},
                         { find = '(AutoSave)'},
+                        { find = '[Nn][Aa][Tt][Ii][Vv][Ee] [Tt][Ee][Rr][Mm][Ii][Nn][Aa][Ll] [Oo][Pp][Ee][Nn][Ee][Dd]'},
                         { find = 'is_in_node_range'},
                         { find = 'nvim-treesitter.ts_utils.is_in_node_range'},
                         { find = 'make_range_params'},

@@ -600,7 +600,8 @@ endfunction
 " in normal mode M is same line
 "imap <M-f> <c-o><Plug>Lightspeed_s
 "imap ` <c-o><Plug>Lightspeed_s
-if exists(":Copilot")
+if IsPluginUsed('copilot.vim') "ask if function exists 
+    
     " C-j: accept Copilot suggestion
     imap <silent><script><expr> <C-j> copilot#Accept("")
     " M-j: cycle to next Copilot suggestion
@@ -2869,8 +2870,8 @@ command! -nargs=0 -bang  AmendAll   :Git commit --amend -a -v -q --no-edit | :ex
 nnoremap <leader>w <CMD>Gwrite<CR>
 nmap <leader>gC <CMD>call GitF("",0)<CR>
 "#save and push  
-nmap Zp ZZ<CMD>redraw<CR><CMD>Git push<CR>
-nmap ZP ZZ<CMD>redraw<CR><CMD>Git push --force<CR>
+nmap Zp <CMD>silent! wall<CR><CMD>redraw<CR><CMD>Git push<CR>
+nmap ZP <CMD>silent! wall<CR><CMD>redraw<CR><CMD>Git push --force<CR>
 " Get the directory of a file
 " - On Ex command lines, returns the directory of the file ('./' for new files)
 " - On other command lines (/,?) returns the keymap used to trigger it
@@ -3185,7 +3186,9 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
  function Gconfig()
     let top = systemlist("git rev-parse --show-toplevel")[0]
     execute 'e '.top.'/.git/config'
- endfunction 
+ endfunction
+ command! GitConfig call Gconfig()
+ nnoremap <leader>gc :call Gconfig()<CR>
 
 " mapping for \ad
 nnoremap <leader>ad <c-a>D

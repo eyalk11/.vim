@@ -37,6 +37,8 @@ Plugit 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plugit 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plugit 'yegappan/mru'
 Plugit 'tamago324/nlsp-settings.nvim'
+Plugit 'github/copilot.vim', {'event': 'VeryLazy'}
+Plugit 'sheepy9/gipity.nvim', {'event':'VeryLazy'}
 Plugit 'nvimtools/none-ls.nvim'
 Plugit 'junegunn/fzf.vim'
 Plugit 'nvim-telescope/telescope.nvim', {'event': 'VeryLazy'}
@@ -50,6 +52,20 @@ Plugit 'PProvost/vim-ps1'
 Plugit 'kana/vim-textobj-user'
 Plugit 'SmiteshP/nvim-navic'
 Plugit 'hasansujon786/nvim-navbuddy', {'event': 'VeryLazy'}
+Plugit 'slim-template/vim-slim'
+Plugit 'octol/vim-cpp-enhanced-highlight'
+"Plugit 'WolfgangMehner/bash-support'
+"Plugit 'nvim-treesitter/nvim-treesitter',
+"Plugit 'nvim-treesitter/nvim-treesitter-refactor'
+"Plugit 'ray-x/guihua.lua', {'do': 'cd lua\fzy && make' }
+"Plugit 'ray-x/navigator.lua', {'event': 'VeryLazy'}
+
+"==============================================================================
+" UTILITIES
+"==============================================================================
+" Miscellaneous useful tools
+Plugit 'simnalamburt/vim-mundo'
+Plugit 'sjl/gundo.vim'
 Plugit 'tmhedberg/SimpylFold'
 if !has('nvim')
     call plug#end()

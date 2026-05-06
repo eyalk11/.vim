@@ -301,7 +301,7 @@ endif
     "norm <plug>timech
     ":profile dump 
     "updates shada files to keep current commands
-    wshada
+    wshada!
     "let minbu=MinExec(':buffers')
     "echom minbu
     "echo "called"

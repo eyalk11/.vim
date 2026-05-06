@@ -6,8 +6,8 @@ set dictionary=C:\temp\words
 let $LC_ALL="en_US.UTF-8"
 let $LANG="en_US.UTF-8"
 let g:user_home = $USERPROFILE
-let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13.11\python.exe'
-let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13.11\python.exe'
+let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
+let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
 let $PYENV_ROOT=g:user_home.'\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
@@ -368,8 +368,30 @@ endif
 		let g:lastdir=''
 	endif
 ":GitGutterEnable
-let g:autosaveWS=timer_start(20000,'TimerFunc',{'repeat':-1})
-let g:timerb=timer_start(80000,'TimerFuncB',{'repeat':-1})
+let g:autosaveWS=timer_start(70000,'TimerFunc',{'repeat':-1})
+if has('nvim')
+lua << EOF
+if vim.fn.executable('win32yank.exe') == 1 then
+  vim.g.clipboard = {
+    name = 'win32yank',
+    copy = {
+      ['+'] = { 'win32yank.exe', '-i', '--crlf' },
+      ['*'] = { 'win32yank.exe', '-i', '--crlf' },
+    },
+    paste = {
+      ['+'] = { 'win32yank.exe', '-o', '--lf' },
+      ['*'] = { 'win32yank.exe', '-o', '--lf' },
+    },
+    cache_enabled = 1,
+  }
+end
+EOF
+endif
+let g:timerb=timer_start(40000,'TimerFuncB',{'repeat':-1})
+augroup ClipboardOnFocus
+    autocmd!
+    autocmd FocusGained * call TimerFuncB(0)
+augroup END
 let g:autoreg=timer_start(20000,'GetLine',{'repeat':-1})
 let g:autosaveInserts = timer_start(200000,'SaveInsertsFunc',{'repeat':-1})
 let tt = timer_start(1000,'LazyIt',{'repeat':1})

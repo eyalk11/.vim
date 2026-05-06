@@ -134,6 +134,93 @@ function _G.PrintLspConfig(server_name)
 	end
 end
 
+-- :LspInfo replacement (legacy lspconfig command was removed in nvim 0.11+).
+-- Shows clients attached to current buffer, all active clients, configured
+-- servers and their current settings/cmd/root_dir.
+local function _lsp_info()
+	local lines = {}
+	local function add(s) table.insert(lines, s or "") end
+
+	local cur_buf = vim.api.nvim_get_current_buf()
+	local cur_ft = vim.bo[cur_buf].filetype
+	add(string.format("Buffer: %d   Filetype: %s", cur_buf, cur_ft))
+	add(string.rep("-", 70))
+
+	local buf_clients = vim.lsp.get_clients({ bufnr = cur_buf })
+	add(string.format("Clients attached to current buffer: %d", #buf_clients))
+	for _, c in ipairs(buf_clients) do
+		add(string.format("  * %s (id=%d)  root=%s", c.name, c.id, c.config.root_dir or "?"))
+	end
+	add("")
+
+	local all_clients = vim.lsp.get_clients()
+	add(string.format("All active clients: %d", #all_clients))
+	for _, c in ipairs(all_clients) do
+		local cmd = c.config.cmd
+		if type(cmd) == "table" then cmd = table.concat(cmd, " ") end
+		local bufs = {}
+		for b, _ in pairs(c.attached_buffers or {}) do table.insert(bufs, tostring(b)) end
+		table.sort(bufs)
+		add(string.format("  - %s (id=%d)", c.name, c.id))
+		add(string.format("      root_dir : %s", c.config.root_dir or "?"))
+		add(string.format("      cmd      : %s", tostring(cmd)))
+		add(string.format("      filetypes: %s", table.concat(c.config.filetypes or {}, ", ")))
+		add(string.format("      buffers  : %s", table.concat(bufs, ", ")))
+		if c.config.settings and next(c.config.settings) then
+			add("      settings :")
+			for line in vim.inspect(c.config.settings):gmatch("[^\n]+") do
+				add("        " .. line)
+			end
+		end
+	end
+	add("")
+
+	-- Configured servers via lspconfig (legacy setup() path)
+	local ok, lspconfig = pcall(require, "lspconfig")
+	if ok then
+		local configs = require("lspconfig.configs")
+		local names = {}
+		for name, _ in pairs(configs) do table.insert(names, name) end
+		table.sort(names)
+		add(string.format("Configured via lspconfig (%d):", #names))
+		for _, name in ipairs(names) do
+			local cfg = lspconfig[name]
+			local mgr_state = (cfg and cfg.manager) and "manager-active" or "no-manager"
+			add(string.format("  - %s [%s]", name, mgr_state))
+		end
+		add("")
+	end
+
+	-- New-style vim.lsp.config (nvim 0.11+)
+	if vim.lsp.config then
+		local cfg_names = {}
+		for name, _ in pairs(vim.lsp._enabled_configs or {}) do
+			table.insert(cfg_names, name)
+		end
+		if #cfg_names > 0 then
+			table.sort(cfg_names)
+			add(string.format("Enabled via vim.lsp.enable (%d):", #cfg_names))
+			for _, n in ipairs(cfg_names) do add("  - " .. n) end
+			add("")
+		end
+	end
+
+	add(string.format("Log level : %s", vim.lsp.get_log_level and vim.lsp.get_log_level() or "?"))
+	add(string.format("Log file  : %s", vim.lsp.get_log_path()))
+
+	-- Render in a scratch split
+	vim.cmd("botright new")
+	local buf = vim.api.nvim_get_current_buf()
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+	vim.bo[buf].buftype = "nofile"
+	vim.bo[buf].bufhidden = "wipe"
+	vim.bo[buf].swapfile = false
+	vim.bo[buf].modifiable = false
+	vim.api.nvim_buf_set_name(buf, "LspInfo")
+end
+
+vim.api.nvim_create_user_command("MLspInfo", _lsp_info, { desc = "Show LSP clients and configuration" })
+
 --function _G.set_all_workspace_dir(dir)
 --for t in vim.lsp.buf.list_workspace_folders() do
 --vim.lsp.buf.remove_workspace_folder(t)
