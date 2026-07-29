@@ -2869,9 +2869,9 @@ command! -nargs=0 -bang  AmendAll   :Git commit --amend -a -v -q --no-edit | :ex
 
 nnoremap <leader>w <CMD>Gwrite<CR>
 nmap <leader>gC <CMD>call GitF("",0)<CR>
-"#save and push  
-nmap Zp <CMD>silent! wall<CR><CMD>redraw<CR><CMD>Git push<CR>
-nmap ZP <CMD>silent! wall<CR><CMD>redraw<CR><CMD>Git push --force<CR>
+" Save all files, redraw, then push once after five seconds.
+nnoremap Zp <CMD>silent! wall<CR><CMD>redraw<CR><CMD>call timer_start(5000, {timer -> execute('G push')})<CR>
+nnoremap ZP <CMD>silent! wall<CR><CMD>redraw<CR><CMD>call timer_start(5000, {timer -> execute('G push --force-with-lease')})<CR>
 " Get the directory of a file
 " - On Ex command lines, returns the directory of the file ('./' for new files)
 " - On other command lines (/,?) returns the keymap used to trigger it
