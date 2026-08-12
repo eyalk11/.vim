@@ -1,6 +1,6 @@
 return {
         'milanglacier/minuet-ai.nvim',
-        enabled=false,
+        enabled=true,
         event = { 'BufReadPre' },
         config = function()
             require('minuet').setup {
@@ -50,7 +50,7 @@ return {
                     },
                     claude = {
                         max_tokens = 556,
-                        model = 'claude-haiku-4.5',
+                        model = 'claude-haiku-4-5',
                         stream = true,
                         api_key = 'ANTHROPIC_MINUET_API_KEY',
                     }

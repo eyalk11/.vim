@@ -1633,6 +1633,7 @@ function! LfFil(a)
 
 endfunction
 
+nmap <leader>jf <Cmd>call FormatJson()<CR>
 "opens file
 " filefolder, git files
 nmap <c-p> mc<leader>gf
@@ -3175,7 +3176,40 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
  nmap <leader>vg :VG =getcwd()<CR>
  command! -nargs=1 -complete=file VF call ChooseVFile(<q-args>)
  command! -nargs=1 -complete=file VG call ChooseVGFile(<q-args>)
- " make <leader>vc do VimtexCompile 
+ "look for directories: pick one with fzf, cd into it and open nvim-tree there
+ nmap <leader>AD :Ad <C-R>=expand('%:p:h')<CR><CR>
+ nmap <leader>ad :Ad <C-R>=getcwd()<CR><CR>
+ command! -nargs=1 -complete=dir Ad call ChooseDir(<q-args>)
+ function! ChooseDir(item)
+     exe "cd ".a:item
+ lua << EOF
+     -- dirs derived from rg --files (respects .gitignore, no fd needed)
+     require('fzf-lua').fzf_exec(function(fzf_cb)
+         local seen = {}
+         for _, f in ipairs(vim.fn.systemlist('rg --files')) do
+             local d = vim.fs.dirname((f:gsub('\\', '/')))
+             while d and d ~= '.' and d ~= '/' and not seen[d] do
+                 seen[d] = true
+                 fzf_cb(d)
+                 d = vim.fs.dirname(d)
+             end
+         end
+         fzf_cb()
+     end, {
+         actions = {
+             ['default'] = function(selected)
+                 if not selected or not selected[1] then return end
+                 vim.cmd('cd ' .. vim.fn.fnameescape(selected[1]))
+                 local api = require('nvim-tree.api')
+                 api.tree.open({ path = vim.fn.getcwd() })
+                 api.tree.change_root(vim.fn.getcwd())
+             end,
+         },
+         fzf_opts = { ['--preview'] = 'ls {} | head -50' },
+     })
+EOF
+ endfunction
+ " make <leader>vc do VimtexCompile
  nmap <leader>vc <CMD>VimtexStop<CR><CMD>VimtexCompile<CR>
  
  " cat .git/config (get repo head using rev-parse)
