@@ -34,8 +34,7 @@ require("noice").setup({
           enabled = false, -- Disable noice LSP hover to fix E5108 error
         },
       },
-      notify= {{top_down=false}},
-      --cmdline = { view="cmdline" }, 
+      --cmdline = { view="cmdline" },
       -- you can enable a preset for easier configuration
       presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
@@ -45,6 +44,22 @@ require("noice").setup({
         --lsp_doc_border = false, -- add a border to hover docs and signature help
       },
         routes = {
+            {
+                filter = { event = "msg_show", kind = "", find = "%d+L, %d+B" },
+                opts = { skip = true },
+            },
+            {
+                filter = { event = "msg_show", kind = "", find = "%[unix%]" },
+                opts = { skip = true },
+            },
+            {
+                filter = { event = "msg_show", kind = "", find = "%[dos%]" },
+                opts = { skip = true },
+            },
+            {
+                filter = { event = "msg_show", kind = "", find = "%[mac%]" },
+                opts = { skip = true },
+            },
             {
                 filter = {
                     warning=true,
