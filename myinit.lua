@@ -659,6 +659,23 @@ local function my_on_attach(bufnr)
 	---
 end
 
+-- `:e some/dir` should root the tree at that dir. nvim-tree's own hijack only
+-- does that when no explorer exists yet (it calls force_dirchange with
+-- should_init=false), so an already-open tree keeps its old root. Must be
+-- registered BEFORE setup() -- nvim-tree's BufEnter handler runs first
+-- otherwise and wipes the directory buffer before we see it.
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
+	callback = function(ev)
+		if not vim.api.nvim_buf_is_valid(ev.buf) then
+			return
+		end
+		local name = vim.api.nvim_buf_get_name(ev.buf)
+		if name ~= "" and vim.fn.isdirectory(name) == 1 then
+			require("nvim-tree.api").tree.change_root(name)
+		end
+	end,
+})
+
 -- OR setup with some options
 require("nvim-tree").setup({
 	on_attach = my_on_attach,

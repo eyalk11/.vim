@@ -519,7 +519,7 @@ let g:Lf_StlSeparator = { 'left': '', 'right': '' }
 let g:Lf_StlColorscheme = 'powerline'
 "Make c-h , c-l a valid option in leaderf
 let g:Lf_CommandMap = {'<C-k>':['<C-h>'], '<C-j>':['<C-l>'], '<Down>': ['<C-j>','<Down>'], '<UP>': ['<C-k>','<UP>']}
-let g:Lf_MruEnable =0 
+let g:Lf_MruEnable =1
 
 let g:Lf_MruMaxFiles=100000
 let g:Lf_ShowHidden  = 1

@@ -17,10 +17,13 @@
 " 
 
 function! EnableTrackInserts(a)
-    :autocmd TextYankPost * call SaveLastCopy()
-    :autocmd InsertLeave * call SaveLastInsert()
-    :au VimEnter * nested call LoadBaseInserts(0)
-endfunction 
+    augroup TrackInserts
+        autocmd!
+        autocmd TextYankPost * call SaveLastCopy()
+        autocmd InsertLeave * call SaveLastInsert()
+        autocmd VimEnter * nested call LoadBaseInserts(0)
+    augroup END
+endfunction
 function! LoadBaseInserts(pr)
 py3 << EOF
 import vim
@@ -153,8 +156,7 @@ if py3eval('toexit')
             return
         endif 
     endif
-    :autocmd! InsertLeave *
-    :autocmd! TextYankPost *
+    :autocmd! TrackInserts
     let g:restartinsertwatch=timer_start(20000,'EnableTrackInserts',{'repeat':1})
     :echo 'pause inserts'
     return

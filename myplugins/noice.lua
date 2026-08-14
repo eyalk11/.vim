@@ -96,6 +96,7 @@ require("noice").setup({
                         { find = 'GoNext' },
                         { find = 'GoPrev' },
                         { find = 'ON_ATTACH_ERROR' } ,
+                        { find = 'Creating new Claude Code terminal' },
                         { find = 'Cannot close last window'},
                         { find = 'LSP client '},
                         { find = 'No lines in buffer'},
