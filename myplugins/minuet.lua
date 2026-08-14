@@ -8,7 +8,7 @@ return {
                 request_timeout = 2,
                 throttle = 2000,
                 virtualtext = {
-                    auto_trigger_ft = { 'lua', 'python', 'javascript', 'typescript', 'vim', 'go', 'rust', 'c', 'cpp' },
+                    auto_trigger_ft = { 'lua', 'python', 'javascript', 'typescript', 'vim', 'go', 'rust', 'c', 'cpp' ,'tex','markdown'},
                     keymap = {
                         accept = '<C-j>',
                         accept_line = '<M-w>',

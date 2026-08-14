@@ -43,7 +43,7 @@ Plugit 'nvimtools/none-ls.nvim'
 Plugit 'junegunn/fzf.vim'
 Plugit 'nvim-telescope/telescope.nvim', {'event': 'VeryLazy'}
 Plugit 'nvim-telescope/telescope-symbols.nvim'
-Plugit 'nvim-telescop/telescope-live-grep-args.nvim'
+Plugit 'nvim-telescope/telescope-live-grep-args.nvim'
 Plugit 'ggandor/lightspeed.nvim'
 Plugit 'mbbill/undotree'
 Plugit 'kassio/neoterm'

@@ -763,6 +763,10 @@ function! CdDirPlug(item)
     :exe "cd ".a:item
     norm mt
 endfunction
+function! TcdDirPlug(item)
+    :exe "tcd ".a:item
+    norm mt
+endfunction
 
 function! HandleCommand(item)
     echo a:item

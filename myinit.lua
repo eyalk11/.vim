@@ -605,7 +605,8 @@ local function my_on_attach(bufnr)
 			fil = vim.fn.fnamemodify(node.absolute_path, ":h")
 		end
 
-		vim.api.nvim_command("cd " .. fil)
+		local cmd = vim.fn.exists("g:cd_mode") == 1 and vim.g.cd_mode == "tab" and "tcd" or "cd"
+		vim.api.nvim_command(cmd .. " " .. fil)
 	end
 
 	local function opts(desc)
@@ -753,3 +754,49 @@ end
 end
 end
 })
+
+
+-- Focus the Claude terminal whose cwd matches the current window's cwd.
+-- Falls back to any visible Claude terminal, then to ClaudeCodeFocus.
+function FocusClaudeCwd()
+  local cwd = vim.fn.getcwd()
+  local best_win, fallback_win = nil, nil
+
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buftype == "terminal" then
+      local name = vim.api.nvim_buf_get_name(buf)
+      if name:match("claude") then
+        -- term://<dir>//<pid>:cmd
+        local buf_cwd = name:match("^term://(.-)//")
+        if buf_cwd == cwd then
+          best_win = win
+          break
+        end
+        fallback_win = fallback_win or win
+      end
+    end
+  end
+
+  local target = best_win or fallback_win
+  if target then
+    vim.api.nvim_set_current_win(target)
+    vim.cmd("startinsert")
+  else
+    vim.cmd("ClaudeCodeFocus")
+  end
+end
+
+-- Open Claude in a full-height botright vsplit with MCP integration.
+function ClaudeVSplit()
+  local cc = require("claudecode")
+  if not cc.state.server then
+    cc.start(false)
+  end
+  local port = require("claudecode.server.init").state.port
+  local env = { ENABLE_IDE_INTEGRATION = "true", FORCE_CODE_TERMINAL = "true" }
+  if port then env.CLAUDE_CODE_SSE_PORT = tostring(port) end
+  vim.cmd("botright vnew")
+  vim.fn.termopen("claude", { env = env })
+  vim.cmd("startinsert")
+end

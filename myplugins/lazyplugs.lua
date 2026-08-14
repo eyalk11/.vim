@@ -33,6 +33,10 @@ return {
                         horizontal = "right:55%",
                     },
                 },
+                files = {
+                    -- show hidden files, exclude diff/patch files
+                    cmd = "rg --files --hidden --glob '!*.diff' --glob '!*.patch'",
+                },
             })
         end,
     },
@@ -161,6 +165,7 @@ return {
     { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
     { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
     { "<leader>aS", "<cmd>call CloseClaudeBufferInWindow()<cr><cmd>ClaudeCodeStart!<cr>", desc = "Claude Force Start" },
+    { "<leader>av", "<cmd>lua ClaudeVSplit()<cr>", desc = "Claude in vsplit" },
     { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
     { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
     { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },

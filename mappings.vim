@@ -443,10 +443,21 @@ if g:on_ek_computer
 " Pick from recently visited windows (Telescope)
 nmap _U <CMD>Telescope my_last_windows<CR>
 endif
-" cd to parent directory
-nmap _. <CMD>cd ..<CR>
-" cd to previous directory
-nmap _- <CMD>cd -<CR>
+" _m: toggle cd mode between global and tab-local (tcd)
+let g:cd_mode = 'tab'
+function! CdModeCmd(dir)
+    if g:cd_mode == 'tab'
+        exe 'tcd ' . a:dir
+    else
+        exe 'cd ' . a:dir
+    endif
+    echo 'cd (' . g:cd_mode . '): ' . getcwd()
+endfunction
+nmap _m <CMD>let g:cd_mode = (g:cd_mode == 'tab' ? 'global' : 'tab') \| echo 'cd mode: ' . g:cd_mode<CR>
+" _.: cd to parent directory
+nmap _. <CMD>call CdModeCmd('..')<CR>
+" _-: cd to previous directory
+nmap _- <CMD>call CdModeCmd('-')<CR>
 "previous window
 nmap _P <CMD>wprevious<CR>
 nmap _N <CMD>wnext<CR>
@@ -764,6 +775,8 @@ imap <c-s> <c-o>/\c
 inoremap <m-s> <c-o>?\c
 
 
+" c-t: new tab
+nmap <c-t> <cmd>tabnew<CR>
 " c-f: set mark H (save position for later recall with ml)
 nmap <c-f> mH
 "nmap <c-g> <CMD>call CocActionAsync("doHover")<cr>
@@ -1016,6 +1029,9 @@ nmap <m-m> <cmd>bnext<CR>
 nmap mC <CMD>call CopyPath()<CR>
 " mc: cd to current file's directory
 noremap mc <CMD>cd %:p:h<CR>
+" mlc / \mc: tcd to current file's directory (tab-local, affects all windows in tab)
+noremap mlc <CMD>tcd %:p:h<CR>
+noremap \mc <CMD>tcd %:p:h<CR>
 " md: refresh diff (diffupdate)
 nnoremap md <CMD>diffupdate<CR>
 " mf: open current file's folder in Explorer
@@ -1339,6 +1355,8 @@ nnoremap <silent> <C-a>a <CMD>call FZFOpen(':Ag')<CR>
 "nnoremap <silent> <C-a>d <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDirPlug'),'options': '-m'})<CR>
 " C-a d: directory picker (cd to selected dir)
 nnoremap <silent> <C-a>d <CMD>call FzfDirSelect()<CR>
+" C-a t: directory picker (tcd to selected dir, tab-local)
+nnoremap <silent> <C-a>t <CMD>call FzfDirSelectTcd()<CR>
 " C-a D: directory picker then open a file in that dir
 nnoremap <silent> <C-a>D <CMD>call FzfDirChooseFile()<CR>
 "nnoremap <silent> <C-a>D <CMD>call fzf#run({'source': uniq(sort(g:dirs)),'sink':function('CdDir'),'options': '-m'})<CR>
@@ -1357,22 +1375,21 @@ nnoremap <silent> <C-a><C-a> <C-a>
 "
 nmap <leader>W <CMD>set wrap<CR>
 
-function! GitDir()
-let top = systemlist("git rev-parse --show-toplevel")[0]
-return top . "/.git"
+function! GitTopLevel()
+return trim(system("git rev-parse --show-toplevel"))
 endfunction
 
 "does diff of all files (could be vs version) 
 function! GCWDComplete(A, L, P) abort
-return fugitive#Complete(a:A, a:L, a:P, {'git_dir': GitDir()})
+return fugitive#Complete(a:A, a:L, a:P, {'dir': GitTopLevel()})
 endfunction
 
-command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'git_dir': GitDir() })
+command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'dir': GitTopLevel() })
 
 " mg: fugitive status for cwd git root (GCWD command)
 nmap mg <CMD>GCWD<CR>
-" mG: reset b:git_dir + open standard fugitive status
-nmap mG <CMD>unlet b:git_dir<CR><CMD>G<CR>
+" mG: fugitive status for current buffer's git root (worktree-aware)
+nmap mG <CMD>execute 'Git -C ' . fnameescape(expand('%:p:h'))<CR>
 
 
 " \g2 / \g3: diffget from buffer 2 or 3 (3-way merge)
@@ -1692,6 +1709,8 @@ nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>call fzf#run({'s
 " jupyter buffer
 " \op: open Jupyter buffer in a horizontal split
 nmap <leader>op :sp <bar> :exec ':'. bufnr("\[jupyter\]") .'buffer'<CR><c-w>k
+" \oC: focus Claude panel matching current cwd (falls back to any claude terminal)
+nmap <leader>oC <CMD>lua FocusClaudeCwd()<CR>
 nmap <leader>upd \ttupama
 
 
@@ -1701,6 +1720,8 @@ nnoremap <leader>oi <CMD>call RecallInserts(0)<CR>
 nnoremap <leader>OI <CMD>call GetAllInserts()<CR>
 " \ol: open loclist
 nnoremap <leader>ol <CMD>lopen<CR>
+" \oF: open file path from clipboard
+nnoremap <leader>oF :e <C-R>=trim(@+)<CR><CR>
 " \ov: open newplug.vim in tab
 nnoremap <leader>ov <CMD>TN ~/.vim/newplug.vim<CR>
 " \om / \OM: open mappings.vim in tab / vsplit
@@ -3148,9 +3169,18 @@ nmap <leader>AF :Af =expand('%:p:h')<CR>
  endfunction
  
  function! FzfDirSelect()
+     let l:zoxide = systemlist('zoxide query --list 2>/dev/null')
+     let l:all = uniq(sort(map(copy(g:dirs), 'tolower(v:val)') + l:zoxide))
+     call fzf#run({
+         \ 'source': l:all,
+         \ 'sink': function('CdDirPlug'),
+         \ 'options': '--preview "ls {} | head -50"'
+     \ })
+ endfunction
+ function! FzfDirSelectTcd()
      call fzf#run({
          \ 'source': uniq(sort(map(copy(g:dirs), 'tolower(v:val)'))),
-         \ 'sink': function('CdDirPlug'),
+         \ 'sink': function('TcdDirPlug'),
          \ 'options': '--preview "ls {} | head -50"'
      \ })
  endfunction
