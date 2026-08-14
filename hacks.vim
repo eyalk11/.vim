@@ -229,17 +229,16 @@ function! EndSpecialInsert()
     endif
     let g:special_insert=0
 endfunction
-"C:\Program Files\WindowsApps\Microsoft.MicrosoftOfficeHub_19.2605.49101.0_x64__8wekyb3d8bbwe\ApplicationSettings.js"
 
 augroup monitor
- "C:\Program Files\WindowsApps\Microsoft.MicrosoftOfficeHub_19.2605.49101.0_x64__8wekyb3d8bbwe\ApplicationSettings.js"   au!
+    au!
     " when vim starts kick off the infinitely repeating calls to the monitor function
     au InsertEnter * call CheckSpecialInsert()
     au InsertLeave * call EndSpecialInsert()    " when cursor moves in Insert mode update the last activity time
 augroup END
 
 "autocmd TextChanged,TextChangedI * if &buftype == '' and &s | normal! mI | endif
-"autocmd InsertLeave * execute 'normal! mI'D
+"autocmd InsertLeave * execute 'normal! mI'
  
 " Mark M at the position when any modification happened in the Normal or Insert mode
 autocmd InsertLeave *  if &buftype == '' | execute 'normal! mM'| endif
