@@ -1386,8 +1386,10 @@ endfunction
 
 command! -bang -nargs=? -range=-1 -complete=customlist,GCWDComplete GCWD exe fugitive#Command(<line1>, <count>, +"<range>", <bang>0, "<mods>", <q-args>,   { 'dir': GitTopLevel() })
 
-" mg: fugitive status for cwd git root (GCWD command)
-nmap mg <CMD>GCWD<CR>
+" mg: fugitive status for the current buffer's repository
+nmap mg <CMD>G<CR>
+" \mg: fugitive status rooted at the current working directory's repository
+nmap <leader>mg <CMD>GCWD<CR>
 " mG: fugitive status for current buffer's git root (worktree-aware)
 nmap mG <CMD>execute 'Git -C ' . fnameescape(expand('%:p:h'))<CR>
 

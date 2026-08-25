@@ -97,7 +97,7 @@ filetype plugin indent on
 "set noswapfile
 "for swap files
 let &directory=g:user_home.'\.vim\swap'
-set shortmess=a  "added now
+set shortmess=aF  " suppress file info when editing a file
 set shm+=A
 set shortmess+=A
 set cmdheight=2

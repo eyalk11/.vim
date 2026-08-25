@@ -68,6 +68,7 @@ require("noice").setup({
                         { find = 'make_range_params'},
                         { find = 'builtin jq'},
                         {find= 'lua-language-server' },
+                        {find= 'Spawning language server with cmd' },
                         {find= 'Keyboard inte' },
                         {find= 'Unknown font' },
                     },
