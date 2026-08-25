@@ -108,7 +108,7 @@ require("noice").setup({
                         { find = 'make_range_params'},
                         { find = 'builtin jq'},
                         {find= 'lua-language-server' },
-                        {find= '^".*"$' },
+                        {find= '^%s*".*[\\/].*"%s*$' },
                         {find= 'Keyboard inte' },
                         {find= 'Unknown font' },
                     },
@@ -116,5 +116,8 @@ require("noice").setup({
                 opts = { skip = true },
             },
         }}
-    ) end,
+    )
+
+    vim.keymap.set("n", "<leader>em", "<cmd>NoiceHistory<cr>", { silent = true, desc = "Noice log" })
+end,
     }

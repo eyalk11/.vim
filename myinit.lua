@@ -351,7 +351,7 @@ end
 vim.keymap.set("n", "mt", opencwd, opts)
 -- CMP configuration has been moved to myplugins/cmp.lua (loaded via Lazy.nvim)
 
-vim.lsp.set_log_level("debug")
+vim.lsp.set_log_level("warn")
 
 --
 -- require'lspconfig'.jedi_language_server.setup{

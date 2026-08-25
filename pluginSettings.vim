@@ -450,6 +450,9 @@ let g:NETRPreviewDefaultOn=0
 
 "leaderf
 "
+" debug logging for diagnosing host crashes (E5108 python_execute on channel)
+let g:Lf_DebugLogLevel = 'DEBUG'
+let g:Lf_DebugLogFile = 'C:\temp\leaderf.log'
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
 function! LeaderfTogglePreviewFunc()

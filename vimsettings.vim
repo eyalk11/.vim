@@ -8,6 +8,10 @@ let $LANG="en_US.UTF-8"
 let g:user_home = $USERPROFILE
 let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
 let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
+" pynvim python host debug logging — must be set before first :py3 call
+" (env vars are inherited by the spawned host process)
+let $NVIM_PYTHON_LOG_FILE = 'C:\temp\nvim_pyhost.log'
+let $NVIM_PYTHON_LOG_LEVEL = 'DEBUG'
 let $PYENV_ROOT=g:user_home.'\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
 let g:on_windows=1
