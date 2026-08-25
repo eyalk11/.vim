@@ -611,7 +611,7 @@ endfunction
 " in normal mode M is same line
 "imap <M-f> <c-o><Plug>Lightspeed_s
 "imap ` <c-o><Plug>Lightspeed_s
-if IsPluginUsed('copilot.vim') "ask if function exists 
+if exists('*IsPluginUsed') && IsPluginUsed('copilot.vim')
     
     " C-j: accept Copilot suggestion
     imap <silent><script><expr> <C-j> copilot#Accept("")
@@ -1034,10 +1034,6 @@ noremap mlc <CMD>tcd %:p:h<CR>
 noremap \mc <CMD>tcd %:p:h<CR>
 " md: refresh diff (diffupdate)
 nnoremap md <CMD>diffupdate<CR>
-" mf: open current file's folder in Explorer
-nnoremap mf <CMD>!start %:p:h<CR>
-" \mF: open cwd in file manager
-nnoremap <leader>mF <CMD>exec '!open '.getcwd()<CR>
 " mF: execute current function (select function + F2)
 nmap mF vaf<F2>
 
@@ -1499,22 +1495,8 @@ nnoremap <leader>du <CMD>diffupdate<CR>
 nnoremap <leader>dt <CMD>diffthis<CR>
 
 
-function! DoRf()
-    let @+=expand("%:p")
-
-    norm \tt
-    call feedkeys("\<C-e>")
-    call feedkeys("\<C-v>\<CR>")
-    "exe "norm \<C-v>"
-
-endfunction
-
-
-
 " \rf (python): run current file in connected IPython kernel
 au filetype python nmap <leader>rf  <CMD>exec ":call IPyRun(\"%run ".escape( expand('%:p'),'\') . "\")"<CR>
-" \rf (ps1): run current PowerShell file in terminal
-au filetype ps1 nmap <leader>rf  <CMD>call DoRf()<CR>
 " \rb: interrupt IPython kernel
 map <silent> <leader>rb <Plug>(IPy-Interrupt)
 " \rt: terminate IPython kernel
@@ -1675,8 +1657,6 @@ nmap <c-g> _O
 "nmap <m-,> _O
 "nmap <c-\> <CMD>Telescope lsp_workspace_symbols<CR>
 
-" newv cwd  git file
-nmap <leader>mg <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><leader>gf
 "" newv choose file and folder picker
 "nmap <leader>of <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR>ml<M-Bslash>
 " newv buffer picker (close tree)
@@ -1735,60 +1715,6 @@ nmap <leader>ON <CMD>call CloseVspIfNeed()<CR><CMD>vnew<CR><CMD>e ~/.vim/myinit.
 
 "nnoremap <leader>oE <CMD>!
 
-function! TermLOV()
-    set splitright
-    let t=&shell
-    set shell=cmd.exe
-    let g:neoterm_shell = "wsl" 
-    vertical Tnew "~/"
-    let &shell=t
-endfunction
-
-function! TermOV(use_file_dir)
-    call CloseVspIfNeed()
-    let t=&shell
-    let g:neoterm_shell = executable('pwsh') ? 'pwsh' : 'powershell'
-    set shell=cmd.exe
-	set splitright
-	let k=g:neoterm.last_id+1
-	vertical Tnew "~/"
-	"exe k."T . /etc/bashrc"
-	"exe k."T . ~/.bash_profile"
-	if a:use_file_dir
-		exe k."T cd " . expand('%:p:h')
-	"else
-		"exe k."T hookvim" 
-	endif  
-		"exe k."T set -o emacs"
-	"if g:on_ek_computer
-		"exe k."T bind '\"\\C-r\": \"\\C-ahstr -- \\C-j\"'"
-	"endif
-	exe k."Tclear"
-    let &shell=t
-endfunction
-
-function! TermO()
-	let k=g:neoterm.last_id+1
-	Tnew
-
-	exe k."T . /etc/bashrc"
-	exe k."T . ~/.bash_profile"
-	exe k."T set -o emacs"
-	if g:on_ek_computer
-	exe k."T bind '\"\\C-r\": \"\\C-ahstr -- \\C-j\"'"
-	endif
-	exe k."Tclear"
-endfunction
-
-"open terminal in new tab
-nnoremap <leader>ot <CMD>tabnew <bar> :call TermO()<CR>:startinsert<CR>
-" \tt: open PowerShell terminal in vsplit (cwd)
-nmap <leader>tt <CMD>call TermOV(0)<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
-
-" \Tt: open PowerShell terminal in vsplit (file's dir)
-nmap <leader>Tt <CMD>call TermOV(1)<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
-" \gt: open WSL terminal in vsplit
-nmap <leader>gt <CMD>call TermLOV()<CR><CMD>call GoRight(0)<CR>:startinsert<CR>
 " \ge: show last vimscript error
 nmap <leader>ge <CMD>VimscriptLastError<CR>
 
@@ -2595,7 +2521,7 @@ endfunction
      let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
      :endif 
      ":echo a
-     :call writefile(a,'c:\temp\filelist.txt')
+     call writefile(a, g:config_temp_dir . '/filelist.txt')
      try
          echohl Question
          let pattern = input("Search pattern: ")
@@ -2603,7 +2529,7 @@ endfunction
      finally
          echohl None
      endtry
-     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     execute printf('Leaderf rg --filelist %s %s"%s"', shellescape(g:config_temp_dir . '/filelist.txt'), pattern =~ '^\s*$' ? '' : '-e ', pattern)
      if (a:curfile)
  
          :exe ':cd '.tmp
@@ -2626,14 +2552,14 @@ endfunction
      finally
          echohl None
      endtry
-     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     execute printf('Leaderf rg --filelist %s %s"%s"', shellescape(g:config_temp_dir . '/filelist.txt'), pattern =~ '^\s*$' ? '' : '-e ', pattern)
      if (a:curfile)
  
          :exe ':cd '.tmp
      endif 
  endfunction 
  function! ReplaceInFiles(path, pattern)
-     let f=readfile('c:\temp\filelist.txt')
+     let f = readfile(g:config_temp_dir . '/filelist.txt')
      " Validate pattern format /search/replace/
      if a:pattern !~ '^/.*/.*/\?$'
          echoerr "Invalid pattern format. Use /search/replace/"
@@ -2677,8 +2603,8 @@ endfunction
      let a= map(a, {idx,fname -> fnamemodify(fname, ':p')})
      :endif 
      ":echo a
-     :call writefile(a,'c:\temp\filelist.txt')
-     exec printf("Leaderf rg --filelist c:\\temp\\filelist.txt %s\"%s\"", pattern =~ '^\s*$' ? '' : '-e ', pattern )
+     call writefile(a, g:config_temp_dir . '/filelist.txt')
+     execute printf('Leaderf rg --filelist %s %s"%s"', shellescape(g:config_temp_dir . '/filelist.txt'), pattern =~ '^\s*$' ? '' : '-e ', pattern)
      if (a:curfile)
  
          :exe ':cd '.tmp
@@ -2867,15 +2793,7 @@ function! StashME()
  let stash = input('Enter name: ')
  exec "!git stash push -m \"". stash . '" -- '. expand('%') .' && git stash apply --index'
 endfunction
-function! StashAll() 
-    let stash = input('Enter name: ')
-    exec "!pwsh -command \"StashAll ". stash . "\""
-endfunction 
-
-
-
 nmap <leader>GS <CMD>call StashME()<CR>
-nmap <leader>Gs <CMD>call StashAll()<CR>
 nmap <leader>gp <CMD>exec '!python '.g:user_home.'/.vim/pycharmst.py "'. expand('%') . '" ' .line('.')<CR>
 nmap <leader>gc <CMD>cd ~/compare-my-stocks<CR>
 function! LfFil(a)
@@ -2908,11 +2826,7 @@ function! Command_dir(keymap) abort
   if empty(l:dir)
     let l:dir = '.'
   endif
-  if has("win64") || has("win32") || has("win16")
-      return l:dir . '\'
-  else 
-      return l:dir . '/'
-  endif
+  return l:dir . g:path_separator
 endfunction
 cnoremap <expr> %% Command_dir('%%')
 "delete same file
@@ -3068,7 +2982,6 @@ execute a:firstline . ',' . a:lastline . 'join'
 norm $x
 endfunction
 nmap <leader>vn <cmd>call CloseVspIfNeed()<CR><CMD>:vnew<CR>
-nmap <leader>ps <CMD>call TogglePS()<CR>
 nmap <c-,> mc<leader>ac
 nmap <leader>aF mc<CMD>ClaudeCodeStop<CR>ClaudeCodeOpen<CR>
 nmap <leader>mM <CMD>Minuet virtualtext toggle<CR>

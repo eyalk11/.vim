@@ -18,11 +18,11 @@ Personal Neovim (and legacy Vim) configuration.
 
 ### `.vimrc` — entry point
 Sets global flags and sources all other files via `Runit()`. Key globals:
-- `g:minimal` (0/1) — when 1, skips most sourcing (only `mappings.vim`); useful for fast startup
+- `g:minimal` (0/1) — when 1, loads platform globals plus common/platform mappings only; useful for fast startup
 - `g:on_ek_computer` — true when `$USERNAME` matches `karni`; gates personal-machine-only code
 - `g:vimloc` — path to `~/.vim` (derived from `&packpath`); used everywhere to build source paths
 
-`Runit()` load order: `pluginSettings.vim` → `newplug.vim` → `t.lua` → `secret.vim` → `hacks.vim` → `myinit.lua` → `math.vim` → `mappings.vim` → `c:\temp\quicksel.vim`
+`.vimrc` selects `g:platform` once (`win` or `mac`). `Runit()` loads each common file followed by its matching platform companion: `pluginSettings.vim` + `_win`/`_mac` → `newplug.vim` → `t.lua` → `secret.vim` → `hacks.vim` + companion → `myinit.lua` → `math.vim` → `mappings.vim` + companion. Windows-only `quicksel.vim` loading lives in `mappings_win.vim`.
 
 ### `vimsettings.vim` — vim options and global state
 Sourced first (before plugins). Sets:
@@ -33,6 +33,8 @@ Sourced first (before plugins). Sets:
 - `OnLoad()` / `OnEnd()` VimEnter/VimLeave hooks; `PyAS()` enables auto-save for python/ps1/lua/vim filetypes
 - `PY` command alias for `python3` (`:PY code`)
 - Writes vim messages to `~/.vim/vimlog.log`
+
+Platform globals, clipboard integration, GUI paste mappings, and restart behavior live in `vimsettings_win.vim` and `vimsettings_mac.vim`. Keep shared options in `vimsettings.vim`.
 
 ### `hacks.vim` — large utility function library
 The biggest vimscript file. Key functions/commands:
@@ -92,6 +94,8 @@ Contains all keybindings and non-trivial vimscript functions:
 - `<leader>gf` → `Telescope git_files` — fuzzy find git-tracked files
 - `<c-a>f` → `Telescope find_files` — fuzzy find all files in cwd
 - `ml` → jump to mark `l` (used to restore position after opening pickers)
+
+OS-specific file-manager, terminal, shell, and helper mappings live in `mappings_win.vim` and `mappings_mac.vim`; the large majority remains in `mappings.vim`. Plugin-specific OS settings follow the same convention in `pluginSettings_win.vim` and `pluginSettings_mac.vim`.
 
 ### `math.vim` — LaTeX/math editing
 All TeX-specific mappings and functions. Loaded for `filetype=tex`. Contains:

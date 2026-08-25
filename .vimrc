@@ -24,18 +24,31 @@
 " Gdiffsplit! for merge!!!! onlyplg is minimal.
 let $HOME=expand('~')
 
-let g:minimal = 0
+let g:minimal = get(g:, 'minimal', 0)
 let g:onlyplug=  "'Yggdroot/LeaderF'"  "'neovim/nvim-lspconfig' 
-let g:on_ek_computer= ($USERNAME =~? 'karni')
+let g:on_ek_computer = (($USERNAME . $USER) =~? 'karni')
 let g:on_vimr= ( $VIM=~# ".*VimR.*")
 
 let g:no_spec_map=1
 "silent !pyenv global 2.7
 "g:vimloc is ~/.vim folder
 let g:vimloc=split(&packpath,',')[0]
+let g:platform = get(g:, 'platform', (has('win32') || has('win64')) ? 'win' : 'mac')
 
+function! SourceCommonConfig(name) abort
+    execute 'source ' . fnameescape(g:vimloc . '/' . a:name . '.vim')
+endfunction
+
+function! SourcePlatformConfig(name) abort
+    let l:path = g:vimloc . '/' . a:name . '_' . g:platform . '.vim'
+    if filereadable(l:path)
+        execute 'source ' . fnameescape(l:path)
+    endif
+endfunction
+
+call SourcePlatformConfig('vimsettings')
 if g:minimal == 0
-    exe 'source' . " " . g:vimloc . "\\vimsettings.vim"
+    call SourceCommonConfig('vimsettings')
 endif
 
 "let &shell='/usr/bin/bash --login'
@@ -102,21 +115,23 @@ endif
 " Plug 'severin-lemaignan/vim-minimap'
 
 function! Runit() 
-    exe 'silent source' . " " . g:vimloc . "\\pluginSettings.vim"
-    exe 'silent source' . " " . g:vimloc . "\\newplug.vim"
-exe 'silent source' . " " . g:vimloc . "\\t.lua"
-exe 'silent source' . " " . g:vimloc    . "\\secret.vim"
+    call SourceCommonConfig('pluginSettings')
+    call SourcePlatformConfig('pluginSettings')
+    call SourceCommonConfig('newplug')
+execute 'silent source ' . fnameescape(g:vimloc . '/t.lua')
+execute 'silent source ' . fnameescape(g:vimloc . '/secret.vim')
     
-exe 'silent source' . " " . g:vimloc . "\\hacks.vim"
-exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
+call SourceCommonConfig('hacks')
+call SourcePlatformConfig('hacks')
+execute 'lua dofile(' . string(substitute(g:vimloc, '\\', '/', 'g') . '/myinit.lua') . ')'
 
 "include math mappings
-if filereadable(" " . g:vimloc . "\\math.vim")
-	exe 'silent source' . " " . g:vimloc . "\\math.vim"
+if filereadable(g:vimloc . '/math.vim')
+	execute 'silent source ' . fnameescape(g:vimloc . '/math.vim')
 endif
 
-exe 'silent source' . " " . g:vimloc . "\\mappings.vim"
-silent source c:\temp\quicksel.vim
+call SourceCommonConfig('mappings')
+call SourcePlatformConfig('mappings')
 endfunction
 
 if g:minimal==0
@@ -129,7 +144,8 @@ else
 	"exe 'source' . " " . g:vimloc . "\\hacks.vim"
 	"call CustomSources("newplug.vim") 
 	"exe 'lua' . " dofile('" . substitute(g:vimloc,'\','\\\\',"g") . "\\\\myinit.lua')"
-	exe 'source' . " " . g:vimloc . "\\mappings.vim"
+	call SourceCommonConfig('mappings')
+	call SourcePlatformConfig('mappings')
 	"exe 
 endif 
 if g:on_ek_computer 

@@ -146,7 +146,6 @@ if has('nvim')
 	endif
 endif
 
-let g:clang_library_path='/Applications/Xcode.app/Contents/Developer/usr/lib/llvm-gcc/4.2.1/'
 "let g:session_autosave='yes'
 let g:EnhancedJumps_CaptureJumpMessages = 0
 let g:gruvbox_contrast_dark = 'hard'
@@ -452,7 +451,7 @@ let g:NETRPreviewDefaultOn=0
 "
 " debug logging for diagnosing host crashes (E5108 python_execute on channel)
 let g:Lf_DebugLogLevel = 'DEBUG'
-let g:Lf_DebugLogFile = 'C:\temp\leaderf.log'
+let g:Lf_DebugLogFile = g:config_temp_dir . '/leaderf.log'
 "command! -bang -nargs=* LinesWithPreview call fzf#vim#grep( 'rg --with-filename --column --line-number --no-heading --color=always --smart-case . '.fnameescape(expand('%')), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4.. --no-sort'}, 'up:50%', '?'), 1)
 "let g:Lf_PreviewInPopup = 0 "causes bug 417
 function! LeaderfTogglePreviewFunc()
@@ -535,7 +534,7 @@ let g:Lf_WindowPosition = 'popup'
 
 ""ideally would be called each time
 let g:Lf_PopupPosition=[max([float2nr(&lines * 0.4),10]),1]
-let g:Lf_CacheDirectory = g:user_home.'\.vim\lcache'
+let g:Lf_CacheDirectory = g:vimloc . '/lcache'
 let g:Lf_IndexTimeLimit =7
 let g:Lf_RgConfig = [ "--max-columns=150"]
 let g:Lf_WorkingDirectoryMode = 'c'
@@ -569,11 +568,8 @@ command! -bang -nargs=* FzfRgDir
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
-let g:fzf_action = {'ctrl-o' : '!open'}
 "let g:fzf_history= "~/.fzf/history"
-let g:fzf_history=  g:user_home.'\.fzf\history_f'
-set shell=cmd.exe
-let $FZF_DEFAULT_OPTS="--history=" . ("C:/users/ekarni/.fzf/history_file")
+let g:fzf_history = g:user_home . '/.fzf/history_f'
 " had to change ~/.fzf to add escape for default_OPTS
 "#. "\\.fzf\\history_file"
 "nvim-ipy stuff
@@ -609,14 +605,7 @@ let g:vimtex_fold_enabled =1
 "autocmd BufEnter *.tex set foldexpr=vimtex#fold#level(v:lnum)
 "autocmd BufEnter *.tex set foldtext=vimtex#fold#text()
 "
-"let g:vimtex_view_method = 'skim'
-let g:vimtex_view_method = 'general'
-let g:vimtex_compiler_progname = 'nvr'
 "    \ 'build_dir' : '/tmp/builddir',
-  let g:vimtex_view_general_viewer = 'SumatraPDF'
-  let g:vimtex_view_general_options
-      \ = '-reuse-instance -forward-search @tex @line @pdf'
-  let g:vimtex_view_general_options_latexmk = '-reuse-instance'
 
 let g:vimtex_compiler_latexmk = {
     \ 'backend' : 'nvim',
@@ -813,8 +802,6 @@ augroup end
  let g:EasyMotion_leader_key='\rs'
 
 let g:ctrlsf_backend = 'rg'
-let g:Lf_Rg='C:\ProgramData\chocolatey\bin\rg.EXE'
-let g:neoformat_enabled_powershell=['PowerShellBeautifier']
 
 
 let g:peekaboo_ins_prefix = 0

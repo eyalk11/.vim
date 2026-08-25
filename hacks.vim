@@ -150,8 +150,6 @@ endfunction
 
 command! -nargs=1 -range GL <line1>,<line2>call GL(<f-args>)
 
-command! -nargs=1 P call RunPS(<f-args>) 
-command! -nargs=1 TP call TogglePS()
 
 "Matches
 "
@@ -458,48 +456,6 @@ nnoremap <silent> "<c-r> :call fzf#run({
 
 
 
-func! GrepPy()
-    call AddFiles("find . -iname '*.py' | grep -v __init__")
-endfunc
-func! AddFiles(grep)
-redir => tmp
-   call RunPS('RunBash "' . a:grep . '"')
-   redir END
-   for l in split(tmp,'\n')
-       if filereadable(l) 
-           exec ':e '.l
-        endif
-    endfor
-
-   "echo x
-endfunc
-func! RunPS(var)
-    if g:pwmod==0
-        call TogglePS()
-        exec 'silent! !Import-Module '.g:user_home.'\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
-        call TogglePS()
-    else
-        exec 'silent! !Import-Module '.g:user_home.'\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1;' . a:var
-    endif
-endfunction 
-
-func! TogglePS()
-        if g:pwmod
-            let &shell= g:sh  
-            let &shellcmdflag=g:shf
-            let &shellredir=g:shr
-            let &shellpipe=g:shellpipe
-            let &shellquote=g:shq
-            let &shellxquote=g:shxq
-        else
-            let &shell = executable('pwsh') ? 'powershell' : 'pwsh'
-            let &shellcmdflag = '-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
-            let &shellredir = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
-            let &shellpipe = ' | Out-File -Encoding UTF8 %s; exit $LastExitCode'
-            set shellquote= shellxquote=
-        endif
-        let g:pwmod= ! g:pwmod
-endfunction
 
 function! FilterAll(str,del)
     if a:del
@@ -1207,12 +1163,8 @@ function! DeleteMe()
     " Delete the buffer
     execute 'bdelete! ' . l:bufnr
 
-    " Delete the file
-    if has('win32') || has('win64')
-        call system('del /Q "' . l:filepath . '"')
-    else
-        call delete(l:filepath)
-    endif
+    " delete() is portable and avoids shell-specific quoting.
+    call delete(l:filepath)
 
     if filereadable(l:filepath)
         echohl ErrorMsg
@@ -1258,11 +1210,6 @@ function! MoveMe(...)
         let l:dest = l:dest . '/' . fnamemodify(l:current, ':t')
     endif
 
-    " Normalize path separators for Windows
-    if has('win32') || has('win64')
-        let l:dest = substitute(l:dest, '/', '\', 'g')
-    endif
-
     " Check if destination already exists
     if filereadable(l:dest)
         let l:confirm = confirm('Destination exists. Overwrite?', "&Yes\n&No", 2)
@@ -1272,12 +1219,12 @@ function! MoveMe(...)
         endif
     endif
 
-    " Move the file
-    if has('win32') || has('win64')
-        call system('move /Y "' . l:current . '" "' . l:dest . '"')
-    else
-        call rename(l:current, l:dest)
+    " rename() is portable. Remove an approved destination first because
+    " Windows does not replace it atomically like Unix does.
+    if filereadable(l:dest)
+        call delete(l:dest)
     endif
+    call rename(l:current, l:dest)
 
     " Check if move was successful
     if filereadable(l:dest) && !filereadable(l:current)

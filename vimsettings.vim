@@ -1,27 +1,16 @@
 
-set dictionary=C:\temp\words
+let &dictionary = g:config_temp_dir . '/words'
 "Vim settings
 "includes autocmds and autocmds for file types and commands
 "Should be indepdenent of plugins!
 let $LC_ALL="en_US.UTF-8"
 let $LANG="en_US.UTF-8"
-let g:user_home = $USERPROFILE
-let g:python3_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
-let g:python_host_prog=g:user_home.'\.pyenv\pyenv-win\versions\3.13\python.exe'
+if !isdirectory(g:config_temp_dir) | call mkdir(g:config_temp_dir, 'p', 0700) | endif
 " pynvim python host debug logging — must be set before first :py3 call
 " (env vars are inherited by the spawned host process)
-let $NVIM_PYTHON_LOG_FILE = 'C:\temp\nvim_pyhost.log'
+let $NVIM_PYTHON_LOG_FILE = g:config_temp_dir . '/nvim_pyhost.log'
 let $NVIM_PYTHON_LOG_LEVEL = 'DEBUG'
-let $PYENV_ROOT=g:user_home.'\.pyenv\pyenv-win'
 let ver= "3.9.6" "system('pyenv version')
-let g:on_windows=1
-let g:pwmod=0
-let g:sh = &shell
-let g:shf=&shellcmdflag
-let g:shr=&shellredir
-let g:shellpipe=&shellpipe
-let g:shq=&shellquote
-let g:shxq=&shellxquote
 
 set jumpoptions=stack
 
@@ -100,7 +89,8 @@ filetype plugin indent on
 "
 "set noswapfile
 "for swap files
-let &directory=g:user_home.'\.vim\swap'
+let &directory = g:vimloc . '/swap'
+if !isdirectory(&directory) | call mkdir(&directory, 'p', 0700) | endif
 set shortmess=aF  " suppress file info when editing a file
 set shm+=A
 set shortmess+=A
@@ -137,14 +127,14 @@ endif
 
 
 
-if !isdirectory($HOME."\\.vim")
-	call mkdir($HOME."\\.vim", "", 0770)
+if !isdirectory(g:vimloc)
+	call mkdir(g:vimloc, 'p', 0770)
 endif
-if !isdirectory($HOME."\\.vim\\undo")
-	call mkdir($HOME."\\.vim\\undo", "", 0700)
+if !isdirectory(g:vimloc . '/undo')
+	call mkdir(g:vimloc . '/undo', 'p', 0700)
 endif
 
-set undodir=~\\.vim\\undo
+let &undodir = g:vimloc . '/undo'
 set undofile
 
 "important autocmds
@@ -291,79 +281,10 @@ function! OnLoad()
 	"else
 		"nnoremap <c-s> :w<CR>
 	"endif
-	"nvimQT
-	
-let g:GuiLoaded=1  
-        "echom "exists"
-		"set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h12
-        "set guifont=Inconsolata-dz\ for\ powerline:h14
-		"if !exists(':GonvimWorkspaceNew')
-			":GuiTabline 0
-			""source /users/eyalkarni/nvim-osx64/share/nvim/runtime/macmap.vim
-			""it started to act normal
-			"imap <M-ß> :w<CR>
-			"nmap <D-W> :q<CR>
-			"nmap <D-w> :q<CR>
-			"nnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>
-			"inoremap <silent><RightMouse> <Esc>:call GuiShowContextMenu()<CR>
-			"vnoremap <silent><RightMouse> :call GuiShowContextMenu()<CR>gv
-			"if g:on_ek_computer
-
-
-                ""source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-				""nmap <leader>rv mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {control down, shift down}'<CR>:qa!<CR>
-				""nmap <leader>RV mwd:sleep 1<CR>:!osascript -e 'tell application "System Events" to keystroke "v" using {command down, shift down}'<CR>:qa!<CR> 
-				""nmap <leader>rv mwd:sleep 1<CR>:exec '!start \"powershell  ps \| Where-Object -Property ProcessName  -Like \"*goneovim*\" \| \%{Write-Host $_.Id ,$_.ProcessName ;$_.Kill()} ;  C:\Users\ekarni\Downloads\Goneovim-v0.4.12-win64\goneovim.exe\"'
-			"endif
-		"else
-			""~/nvimMACfiles/macmap042.vim
-		"endif 
-    if 1
-        if g:on_ek_computer
-            nmap <leader>rv :wshada!<CR>:exec "!start pwsh  -Command ResetNeo"<CR>
-
-            "source /Users/eyalkarni/neovim-0.4.2/runtime/macmap.vim 
-        endif
-        set shell=cmd 
-
-        exec "silent !echo ". v:servername . " > c:\\temp\\listen.txt"
-        "override
-        nmap <D-f> <Plug>(easymotion-s2) 
-
-        "imap <D-v> <c-o>P
-        nnoremap <Home> ^
-        vnoremap <Home> ^
-		"set guifont=Meslo\ LG\ S\ for\ Powerline:h14
-"		set guifont=Monaco\ for\ Powerline:h12 
-		set mouse=a
-        inoremap <c-p> <c-v>
-        cnoremap <c-p> <c-v>
-        inoremap <c-v> <c-r><c-p>+
-        inoremap <c-v> <c-r><c-p>+
-        cnoremap <c-v> <c-r>+
-		nnoremap <c-v> p
-        nnoremap <M-v> <c-v>
-        inoremap <M-v> <c-v>
-        nnoremap <M-a> ggVG
-		"nmap <D-v> p
-		"imap <D-V> 
-		"imap <D-v> 
-		"vmap <D-V> p
-		"vmap <D-v> p
-		"vmap <D-C> y
-		"vmap <D-c> y
-		"vmap <D-X> d
-		"vmap <D-x> d
-		"cmap <D-V> <c-r>+
-		"cmap <D-v> <c-r>+
-	else
-
-		if g:on_ek_computer
-			nmap <leader>rv mwd:!osascript -e 'do shell script "sh /users/eyalkarni/vimpy3/vimr.sh"'<CR>
-		endif
-	endif
+let g:GuiLoaded=1
+	call PlatformSettingsOnLoad()
 	"echom "ignore this no such mapping"
-if getcwd()=='/' || getcwd()=="c:\\Windows\\system32"
+if getcwd() ==# '/' || getcwd() =~? '[/\\]Windows[/\\]system32$'
     cd ~
     "normal \ov
 endif
@@ -373,24 +294,6 @@ endif
 	endif
 ":GitGutterEnable
 let g:autosaveWS=timer_start(70000,'TimerFunc',{'repeat':-1})
-if has('nvim')
-lua << EOF
-if vim.fn.executable('win32yank.exe') == 1 then
-  vim.g.clipboard = {
-    name = 'win32yank',
-    copy = {
-      ['+'] = { 'win32yank.exe', '-i', '--crlf' },
-      ['*'] = { 'win32yank.exe', '-i', '--crlf' },
-    },
-    paste = {
-      ['+'] = { 'win32yank.exe', '-o', '--lf' },
-      ['*'] = { 'win32yank.exe', '-o', '--lf' },
-    },
-    cache_enabled = 1,
-  }
-end
-EOF
-endif
 let g:timerb=timer_start(40000,'TimerFuncB',{'repeat':-1})
 augroup ClipboardOnFocus
     autocmd!
@@ -452,7 +355,6 @@ autocmd filetype vim let b:auto_save = 1
 
 
 "let $PATH="C:\\Users\\ekarni\\.pyenv\\pyenv-win\\versions\\3.9\\Scripts;". $PATH 
-let $PATH=g:user_home.'\AppData\Local\SumatraPDF;'. $PATH
 "autocmd! TermEnter * :startinsert
 
 "commands
