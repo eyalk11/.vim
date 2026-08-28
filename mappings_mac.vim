@@ -1,6 +1,20 @@
 " macOS-only mappings and helpers.
+nmap <c-w> <CMD>tabclose<CR>
+
 nnoremap mf <CMD>execute '!open ' . shellescape(expand('%:p:h'))<CR>
 nnoremap <leader>mF <CMD>execute '!open ' . shellescape(getcwd())<CR>
+
+" Preserve the Mac branch's repo shortcut after the common Git mappings load.
+nmap <leader>gc <CMD>cd ~/compare-my-stocks<CR>
+
+" On Mac, this picker changes the tab-local directory.
+function! FzfDirChooseFile() abort
+    call fzf#run({
+        \ 'source': uniq(sort(map(copy(g:dirs), 'tolower(v:val)'))),
+        \ 'sink': function('TcdDirPlug'),
+        \ 'options': '-i --preview "ls {} | head -50"'
+    \ })
+endfunction
 
 function! TermOV(use_file_dir) abort
     call CloseVspIfNeed()
@@ -40,10 +54,17 @@ function! CompileMmd() abort
         \ shellescape(l:node), shellescape(l:script), shellescape(l:src), shellescape(l:dst))]
     echo 'mmd compiling: ' . l:name . '...'
     let l:stderr_lines = []
-    call jobstart(l:cmd, {
-        \ 'on_stderr': {_, data, __ -> extend(l:stderr_lines, filter(copy(data), '!empty(v:val)'))},
-        \ 'on_exit': {_, code, __ -> s:MmdReport(l:name, code, join(l:stderr_lines, ' | '))},
-        \ })
+    if has('nvim')
+        call jobstart(l:cmd, {
+            \ 'on_stderr': {_, data, __ -> extend(l:stderr_lines, filter(copy(data), '!empty(v:val)'))},
+            \ 'on_exit': {_, code, __ -> s:MmdReport(l:name, code, join(l:stderr_lines, ' | '))},
+            \ })
+    else
+        call job_start(l:cmd, {
+            \ 'err_cb': {_, msg -> add(l:stderr_lines, msg)},
+            \ 'exit_cb': {_, code -> s:MmdReport(l:name, code, join(l:stderr_lines, ' | '))},
+            \ })
+    endif
 endfunction
 
 function! ToggleMmdAutoCompile() abort

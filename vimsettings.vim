@@ -293,8 +293,8 @@ endif
 		let g:lastdir=''
 	endif
 ":GitGutterEnable
-let g:autosaveWS=timer_start(70000,'TimerFunc',{'repeat':-1})
-let g:timerb=timer_start(40000,'TimerFuncB',{'repeat':-1})
+let g:autosaveWS=timer_start(g:autosave_ws_interval,'TimerFunc',{'repeat':-1})
+let g:timerb=timer_start(g:clipboard_timer_interval,'TimerFuncB',{'repeat':-1})
 augroup ClipboardOnFocus
     autocmd!
     autocmd FocusGained * call TimerFuncB(0)
